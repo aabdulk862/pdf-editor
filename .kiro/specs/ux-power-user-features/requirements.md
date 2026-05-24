@@ -53,7 +53,7 @@ This document defines the requirements for adding UX polish and power user featu
 
 1. THE Shortcut_Manager SHALL register unique keyboard shortcuts for navigation to each of the 29 PDF operation pages
 2. THE Shortcut_Manager SHALL register keyboard shortcuts for application-level actions including: open command palette, toggle theme, open shortcut reference panel, and close active modal
-3. WHEN a registered keyboard shortcut is pressed, THE Shortcut_Manager SHALL execute the associated action within 50ms of the keypress event
+3. WHEN a registered keyboard shortcut is pressed, THE Shortcut_Manager SHALL initiate the associated action within 50ms of the keypress event
 4. WHILE a text input, textarea, or contenteditable element has focus, THE Shortcut_Manager SHALL suppress operation-navigation shortcuts to prevent conflicts with text entry
 5. IF two shortcuts conflict, THEN THE Shortcut_Manager SHALL give priority to the more specific context-bound shortcut over the global shortcut
 
@@ -66,7 +66,7 @@ This document defines the requirements for adding UX polish and power user featu
 1. WHEN the user presses Shift+? (question mark), THE Application SHALL open the Shortcut_Reference_Panel as a modal overlay
 2. THE Shortcut_Reference_Panel SHALL display all registered shortcuts grouped by category: Navigation, Operations, and Application
 3. THE Shortcut_Reference_Panel SHALL display each shortcut with its key combination formatted for the current operating system (Cmd for macOS, Ctrl for Windows/Linux)
-4. WHEN the user presses Escape or clicks outside the panel, THE Shortcut_Reference_Panel SHALL close
+4. WHEN the user presses Escape regardless of mouse position, or clicks outside the panel, THE Shortcut_Reference_Panel SHALL close
 5. THE Shortcut_Reference_Panel SHALL be searchable by shortcut name or key combination
 
 ### Requirement 5: Multi-Tab Document Management
@@ -89,7 +89,7 @@ This document defines the requirements for adding UX polish and power user featu
 #### Acceptance Criteria
 
 1. WHEN the user selects pages in a Document_Tab and triggers a copy action (Ctrl+C / Cmd+C), THE Tab_Manager SHALL store the selected page data in an in-memory clipboard
-2. WHEN the user switches to a different Document_Tab and triggers a paste action (Ctrl+V / Cmd+V), THE Tab_Manager SHALL insert the copied pages at the designated position in the target document
+2. WHEN the user switches to a different Document_Tab and triggers a paste action (Ctrl+V / Cmd+V) and the clipboard contains page data, THE Tab_Manager SHALL insert the copied pages at the designated position in the target document
 3. THE Tab_Manager SHALL preserve the visual content and dimensions of copied pages when pasting into a different document
 4. IF the clipboard is empty when a paste action is triggered, THEN THE Tab_Manager SHALL display a toast notification indicating no pages are available to paste
 
@@ -126,7 +126,7 @@ This document defines the requirements for adding UX polish and power user featu
 
 1. IF an operation step within a template fails, THEN THE Template_Engine SHALL halt execution, display a toast notification identifying the failed step and error reason, and preserve the intermediate result from the last successful step
 2. WHEN a template completes all steps successfully, THE Template_Engine SHALL present the final output for download and display a success toast notification
-3. THE Template_Engine SHALL allow the user to cancel a running template execution at any point, preserving the result of the last completed step
+3. THE Template_Engine SHALL allow the user to cancel a running template execution at any point including during error states, preserving the result of the last completed step
 
 ### Requirement 10: Global Drag-and-Drop File Handling
 
