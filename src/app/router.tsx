@@ -1,6 +1,8 @@
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Layout } from '../components/ui/Layout';
-import { NavBar } from '../components/ui/NavBar';
+import { CategorizedNavBar } from '../features/navigation/CategorizedNavBar';
+import { useNavStore } from '../features/navigation/store/nav-store';
 import { useOperationShortcuts } from '../features/shortcuts/useOperationShortcuts';
 import { HomePage } from '../features/home/components/HomePage';
 import { DeletePagesPage } from '../features/delete-pages/components/DeletePagesPage';
@@ -32,12 +34,25 @@ import { ExtractTextPage } from '../features/extract-text/components/ExtractText
 import { FlattenPage } from '../features/flatten/components/FlattenPage';
 import { ComparePage } from '../features/compare/components/ComparePage';
 import { BookmarksPage } from '../features/bookmarks/components/BookmarksPage';
+import { OcrPage } from '../features/ocr/components/OcrPage';
+import { LetterheadPage } from '../features/letterhead/components/LetterheadPage';
 
 function RootLayout() {
   useOperationShortcuts();
+  const location = useLocation();
+  const addRecentTool = useNavStore((state) => state.addRecentTool);
+
+  // Track recent tool usage on route changes
+  useEffect(() => {
+    const path = location.pathname;
+    // Only track tool routes (not home or unknown routes)
+    if (path !== '/' && path !== '') {
+      addRecentTool(path);
+    }
+  }, [location.pathname, addRecentTool]);
 
   return (
-    <Layout sidebar={<NavBar />}>
+    <Layout sidebar={<CategorizedNavBar />}>
       <div className="transition-opacity duration-200 ease-in-out">
         <Outlet />
       </div>
@@ -93,6 +108,8 @@ export function AppRouter() {
           <Route path="/page-size" element={<PageSizePage />} />
           <Route path="/linearize" element={<LinearizePage />} />
           <Route path="/duplicate-pages" element={<DuplicatePagesPage />} />
+          <Route path="/ocr" element={<OcrPage />} />
+          <Route path="/letterhead" element={<LetterheadPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

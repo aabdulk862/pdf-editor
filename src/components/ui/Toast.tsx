@@ -10,18 +10,21 @@ const severityStyles: Record<ToastSeverity, string> = {
     'bg-amber-50 border-amber-400 text-amber-800 dark:bg-amber-900/30 dark:border-amber-600 dark:text-amber-200',
   error:
     'bg-red-50 border-red-400 text-red-800 dark:bg-red-900/30 dark:border-red-600 dark:text-red-200',
+  info: 'bg-blue-50 border-blue-400 text-blue-800 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-200',
 };
 
 const severityIcons: Record<ToastSeverity, string> = {
   success: '✓',
   warning: '⚠',
   error: '✕',
+  info: 'ℹ',
 };
 
 const severityIconStyles: Record<ToastSeverity, string> = {
   success: 'bg-green-500 text-white',
   warning: 'bg-amber-500 text-white',
   error: 'bg-red-500 text-white',
+  info: 'bg-blue-500 text-white',
 };
 
 interface ToastItemProps {

@@ -1,8 +1,11 @@
 import { useCallback, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { Button } from '@/components/ui/Button';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { useToast } from '@/hooks/useToast';
 import { PdfjsRenderEngine } from '@/core/render-engine/renderer';
+import { OcrEngine } from '@/core/ocr-engine/ocr-engine';
+import { useOcrIntegration, mergeNativeAndOcrText } from '@/features/ocr/hooks/useOcrIntegration';
 
 /**
  * ExtractTextPage component - Extracts all text content from a PDF.
@@ -10,13 +13,12 @@ import { PdfjsRenderEngine } from '@/core/render-engine/renderer';
  * Features:
  * - Upload a PDF file via drag-and-drop or click-to-browse
  * - Trigger text extraction using pdfjs-dist render engine
+ * - Detect scanned pages and offer OCR processing
  * - Display extracted text in a selectable text area with copy support
  * - Download extracted text as a UTF-8 .txt file
- * - Show toast if no extractable text found
- * - Indicate pages with no text
- * - Complete within 5s for ≤100 pages
+ * - Show OCR summary label with page numbers and confidence
  *
- * Requirements: 38.1, 38.2, 38.3, 38.4, 38.5, 38.6
+ * Requirements: 38.1, 38.2, 38.3, 38.4, 38.5, 38.6, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7
  */
 export function ExtractTextPage(): JSX.Element {
   const toast = useToast();
@@ -30,6 +32,22 @@ export function ExtractTextPage(): JSX.Element {
   const [extractedText, setExtractedText] = useState<string>('');
   const [emptyPages, setEmptyPages] = useState<number[]>([]);
   const [hasExtracted, setHasExtracted] = useState(false);
+  const [nativePageTexts, setNativePageTexts] = useState<string[]>([]);
+
+  // OCR integration state
+  const [showOcrPrompt, setShowOcrPrompt] = useState(false);
+  const [ocrSkipped, setOcrSkipped] = useState(false);
+
+  // OCR hook
+  const {
+    isProcessing: isOcrProcessing,
+    isInitializing: isOcrInitializing,
+    progress: ocrProgress,
+    ocrResults,
+    initializeOcr,
+    processPages: ocrProcessPages,
+    cancel: cancelOcr,
+  } = useOcrIntegration();
 
   // Ref for the text area to support copy
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -48,6 +66,9 @@ export function ExtractTextPage(): JSX.Element {
         setExtractedText('');
         setEmptyPages([]);
         setHasExtracted(false);
+        setNativePageTexts([]);
+        setShowOcrPrompt(false);
+        setOcrSkipped(false);
       };
       reader.onerror = () => {
         toast.error('Failed to read the file.');
@@ -72,6 +93,9 @@ export function ExtractTextPage(): JSX.Element {
     setExtractedText('');
     setEmptyPages([]);
     setHasExtracted(false);
+    setShowOcrPrompt(false);
+    setOcrSkipped(false);
+    setNativePageTexts([]);
 
     try {
       const renderEngine = new PdfjsRenderEngine();
@@ -86,33 +110,34 @@ export function ExtractTextPage(): JSX.Element {
         const pageText = await renderEngine.extractText(doc, i);
         pageTexts.push(pageText);
 
-        if (pageText.trim() === '') {
+        // Classify as scanned if fewer than 10 non-whitespace characters (Req 2.2)
+        const nonWhitespace = pageText.replace(/\s/g, '');
+        if (nonWhitespace.length < 10) {
           pagesWithNoText.push(i);
         }
       }
 
-      // Join with page delimiters
-      const fullText = pageTexts.join('\n\n--- Page Break ---\n\n');
-
+      setNativePageTexts(pageTexts);
       setEmptyPages(pagesWithNoText);
       setHasExtracted(true);
 
-      // Check if no text was found at all
-      if (fullText.replace(/--- Page Break ---/g, '').trim() === '') {
-        setExtractedText('');
-        toast.warning('This PDF contains no extractable text (e.g., scanned images only).');
-      } else {
-        setExtractedText(fullText);
+      // Join with page delimiters
+      const fullText = pageTexts.join('\n\n--- Page Break ---\n\n');
 
-        // Notify about pages with no text if it's a mix
-        if (pagesWithNoText.length > 0 && pagesWithNoText.length < pageCount) {
-          const pageList =
-            pagesWithNoText.length <= 5
-              ? pagesWithNoText.join(', ')
-              : `${pagesWithNoText.slice(0, 5).join(', ')}... and ${pagesWithNoText.length - 5} more`;
-          toast.warning(`Pages with no extractable text: ${pageList}`);
+      // Check if there are scanned pages that could benefit from OCR (Req 7.1)
+      if (pagesWithNoText.length > 0) {
+        // Show OCR prompt banner
+        setShowOcrPrompt(true);
+
+        // Still show the native text for pages that have it
+        if (fullText.replace(/--- Page Break ---/g, '').trim() === '') {
+          setExtractedText('');
+        } else {
+          setExtractedText(fullText);
         }
-
+      } else {
+        // No scanned pages — just show the text
+        setExtractedText(fullText);
         toast.success('Text extracted successfully.');
       }
     } catch (err) {
@@ -123,12 +148,55 @@ export function ExtractTextPage(): JSX.Element {
     }
   }, [pdfData, toast]);
 
-  // Copy text to clipboard
-  const handleCopy = useCallback(async () => {
-    if (!extractedText) return;
+  // Handle OCR acceptance (Req 7.3)
+  const handleRunOcr = useCallback(async () => {
+    if (!pdfData || emptyPages.length === 0) return;
+
+    setShowOcrPrompt(false);
 
     try {
-      await navigator.clipboard.writeText(extractedText);
+      // Initialize OCR engine
+      await initializeOcr();
+
+      // Process scanned pages
+      await ocrProcessPages(pdfData, emptyPages);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'OCR processing failed';
+      toast.error(`OCR failed: ${message}`);
+    }
+  }, [pdfData, emptyPages, initializeOcr, ocrProcessPages, toast]);
+
+  // Handle OCR skip (Req 7.2)
+  const handleSkipOcr = useCallback(() => {
+    setShowOcrPrompt(false);
+    setOcrSkipped(true);
+
+    // Show native text with placeholders for skipped pages
+    if (nativePageTexts.length > 0) {
+      const fullText = nativePageTexts.join('\n\n--- Page Break ---\n\n');
+      if (fullText.replace(/--- Page Break ---/g, '').trim() === '') {
+        setExtractedText('');
+        toast.warning('This PDF contains no extractable text (e.g., scanned images only).');
+      } else {
+        setExtractedText(fullText);
+        toast.success('Text extracted successfully (scanned pages skipped).');
+      }
+    }
+  }, [nativePageTexts, toast]);
+
+  // Compute merged result when OCR completes (Req 7.4)
+  const currentMergedResult =
+    ocrResults && nativePageTexts.length > 0 && !ocrSkipped
+      ? mergeNativeAndOcrText(nativePageTexts, ocrResults, emptyPages)
+      : null;
+
+  // Copy text to clipboard (Req 7.7)
+  const handleCopy = useCallback(async () => {
+    const textToCopy = currentMergedResult?.text || extractedText;
+    if (!textToCopy) return;
+
+    try {
+      await navigator.clipboard.writeText(textToCopy);
       toast.success('Text copied to clipboard.');
     } catch {
       // Fallback: select all text in textarea
@@ -140,13 +208,14 @@ export function ExtractTextPage(): JSX.Element {
         toast.error('Failed to copy text to clipboard.');
       }
     }
-  }, [extractedText, toast]);
+  }, [currentMergedResult, extractedText, toast]);
 
-  // Download as .txt file
+  // Download as .txt file (Req 7.7)
   const handleDownload = useCallback(() => {
-    if (!extractedText) return;
+    const textToDownload = currentMergedResult?.text || extractedText;
+    if (!textToDownload) return;
 
-    const blob = new Blob([extractedText], { type: 'text/plain;charset=utf-8' });
+    const blob = new Blob([textToDownload], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -155,7 +224,7 @@ export function ExtractTextPage(): JSX.Element {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  }, [extractedText, fileName]);
+  }, [currentMergedResult, extractedText, fileName]);
 
   // Reset to upload a different file
   const handleReset = useCallback(() => {
@@ -164,7 +233,18 @@ export function ExtractTextPage(): JSX.Element {
     setExtractedText('');
     setEmptyPages([]);
     setHasExtracted(false);
+    setNativePageTexts([]);
+    setShowOcrPrompt(false);
+    setOcrSkipped(false);
   }, []);
+
+  // Format ETA for progress display
+  const formatEta = (ms: number): string => {
+    return OcrEngine.formatEta(ms);
+  };
+
+  // Determine what text to show in the textarea
+  const textToDisplay = currentMergedResult?.text || extractedText;
 
   // If no file uploaded, show upload zone
   if (!pdfData) {
@@ -219,11 +299,92 @@ export function ExtractTextPage(): JSX.Element {
         </div>
       )}
 
+      {/* OCR Prompt Banner (Req 7.1, 7.2) */}
+      {showOcrPrompt && !isOcrProcessing && !isOcrInitializing && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                {emptyPages.length} {emptyPages.length === 1 ? 'page appears' : 'pages appear'} to
+                be scanned. Run OCR to extract text?
+              </p>
+              <p className="text-xs text-blue-600 dark:text-blue-300 mt-1">
+                OCR will attempt to recognize text from scanned page images.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="primary" size="sm" onClick={handleRunOcr}>
+                Run OCR
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleSkipOcr}>
+                Skip
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* OCR Initializing State */}
+      {isOcrInitializing && (
+        <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
+          <ProgressBar
+            progress={null}
+            label="Loading OCR engine..."
+            ariaLabel="OCR engine initialization in progress"
+          />
+        </div>
+      )}
+
+      {/* OCR Processing Progress (Req 7.3) */}
+      {isOcrProcessing && ocrProgress && (
+        <div className="rounded-lg border border-secondary-200 bg-white p-4 shadow-lg dark:border-secondary-700 dark:bg-secondary-800">
+          <ProgressBar
+            progress={ocrProgress.percentComplete}
+            label={`Processing page ${ocrProgress.currentPage} of ${ocrProgress.totalPages}`}
+            ariaLabel={`OCR processing progress: ${ocrProgress.percentComplete}% complete`}
+          />
+          {ocrProgress.estimatedTimeRemainingMs !== null && (
+            <p className="mt-2 text-sm text-secondary-500 dark:text-secondary-300">
+              Estimated time remaining: {formatEta(ocrProgress.estimatedTimeRemainingMs)}
+            </p>
+          )}
+          <div className="mt-3">
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={cancelOcr}
+              className="min-h-[44px] min-w-[44px]"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Results */}
-      {hasExtracted && (
+      {hasExtracted && !isOcrProcessing && !isOcrInitializing && (
         <div className="space-y-4">
-          {/* Empty pages indicator */}
-          {emptyPages.length > 0 && extractedText && (
+          {/* OCR Summary Label (Req 7.6) */}
+          {currentMergedResult && currentMergedResult.ocrPageNumbers.length > 0 && (
+            <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-700 dark:bg-green-900/20">
+              <p className="text-sm text-green-800 dark:text-green-200">
+                <span className="font-medium">
+                  Pages {currentMergedResult.ocrPageNumbers.join(', ')} used OCR
+                </span>
+                {currentMergedResult.averageConfidence !== null && (
+                  <span> (avg confidence: {currentMergedResult.averageConfidence}%)</span>
+                )}
+              </p>
+              {currentMergedResult.failedPageNumbers.length > 0 && (
+                <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                  Pages {currentMergedResult.failedPageNumbers.join(', ')} failed OCR recognition.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Empty pages indicator (only when OCR not run) */}
+          {emptyPages.length > 0 && !currentMergedResult && ocrSkipped && textToDisplay && (
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-700 dark:bg-amber-900/20">
               <p className="text-sm text-amber-800 dark:text-amber-200">
                 <span className="font-medium">Pages with no text:</span>{' '}
@@ -235,13 +396,13 @@ export function ExtractTextPage(): JSX.Element {
           )}
 
           {/* Text area with extracted content */}
-          {extractedText ? (
+          {textToDisplay ? (
             <>
               <div className="relative">
                 <textarea
                   ref={textAreaRef}
                   readOnly
-                  value={extractedText}
+                  value={textToDisplay}
                   className="w-full min-h-[300px] max-h-[600px] resize-y rounded-lg border border-secondary-200 bg-white p-4 font-mono text-sm text-text-light dark:border-secondary-700 dark:bg-secondary-800 dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary-500"
                   aria-label="Extracted text content"
                 />

@@ -7,6 +7,7 @@ export interface UseToastReturn {
   success: (message: string, duration?: number) => string;
   warning: (message: string, duration?: number) => string;
   error: (message: string, duration?: number) => string;
+  info: (message: string, duration?: number) => string;
 }
 
 export function useToast(): UseToastReturn {
@@ -28,5 +29,10 @@ export function useToast(): UseToastReturn {
     [addToast],
   );
 
-  return { addToast, removeToast, success, warning, error };
+  const info = useCallback(
+    (message: string, duration?: number) => addToast(message, 'info', duration),
+    [addToast],
+  );
+
+  return { addToast, removeToast, success, warning, error, info };
 }

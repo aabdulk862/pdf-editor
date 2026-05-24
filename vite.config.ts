@@ -1,7 +1,7 @@
 import { webcrypto } from 'crypto';
 
 if (!globalThis.crypto) {
-  // @ts-ignore
+  // @ts-expect-error webcrypto is compatible with globalThis.crypto for our usage
   globalThis.crypto = webcrypto;
 }
 
@@ -18,5 +18,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
+  },
+  worker: {
+    format: 'es',
   },
 });

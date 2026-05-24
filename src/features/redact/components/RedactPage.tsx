@@ -17,6 +17,15 @@ import type { AnnotationData } from '@/types/annotations';
 import type { RedactRegion } from '@/core/pdf-engine/index';
 import { QuickActionsBar } from '@/features/quick-actions/QuickActionsBar';
 import { useQuickActionsStore } from '@/store/quick-actions';
+import { useOcrRedaction } from '../hooks/useOcrRedaction';
+import { OcrWordOverlay } from './OcrWordOverlay';
+import {
+  applyRedactionToCanvas,
+  removeRedactedWordsFromOcrResults,
+  saveAllRedactedPagesToPdf,
+} from '../utils/ocr-redaction';
+import { useOcrStore } from '@/features/ocr/store/ocr-store';
+import type { OcrWord } from '@/core/ocr-engine/types';
 
 // Configure the PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -68,12 +77,20 @@ export function RedactPage(): JSX.Element {
   const [currentPage, setCurrentPage] = useState(1);
   const [zoom, setZoom] = useState(1);
 
+  // OCR redaction state
+  const ocrRedaction = useOcrRedaction();
+  const ocrResults = useOcrStore((s) => s.results);
+  const [ocrRedactionMode, setOcrRedactionMode] = useState(false);
+  const [isApplyingOcrRedaction, setIsApplyingOcrRedaction] = useState(false);
+  const [ocrNotificationShown, setOcrNotificationShown] = useState<Set<number>>(new Set());
+
   // Canvas refs
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const annotationCanvasRef = useRef<AnnotationCanvas | null>(null);
   const cleanupListenersRef = useRef<(() => void) | null>(null);
   const pdfDocRef = useRef<pdfjsLib.PDFDocumentProxy | null>(null);
   const pageCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const displayScaleFactorRef = useRef<number>(0);
 
   // Load PDF document
   useEffect(() => {
@@ -83,6 +100,8 @@ export function RedactPage(): JSX.Element {
       setRedactions([]);
       setResultData(null);
       setCurrentPage(1);
+      setOcrRedactionMode(false);
+      ocrRedaction.clearSelection();
       return;
     }
 
@@ -138,6 +157,15 @@ export function RedactPage(): JSX.Element {
         renderCanvas.style.display = 'block';
         container.appendChild(renderCanvas);
         pageCanvasRef.current = renderCanvas;
+
+        // Calculate display scale factor for OCR overlay
+        // OCR uses 300 DPI, viewport uses scale 1.5 (108 DPI)
+        // The canvas natural width = page width * 1.5
+        // OCR bbox is in 300 DPI pixels = page width * (300/72)
+        // Scale factor = viewport.width / (pageWidthInches * 300)
+        //             = (pageWidthPt * 1.5) / (pageWidthPt * 300/72)
+        //             = 1.5 / (300/72) = 1.5 * 72 / 300 = 108/300 = 0.36
+        displayScaleFactorRef.current = 1.5 / (300 / 72);
 
         const ctx = renderCanvas.getContext('2d');
         if (!ctx) return;
@@ -220,6 +248,88 @@ export function RedactPage(): JSX.Element {
     },
     [currentPage],
   );
+
+  // Show notification on unprocessed scanned pages (Req 9.5 / Task 9.4)
+  useEffect(() => {
+    if (!pdfData || pageCount === 0) return;
+
+    if (
+      ocrRedaction.isUnprocessedScannedPage(currentPage) &&
+      !ocrNotificationShown.has(currentPage)
+    ) {
+      toast.warning('This page appears to be scanned. Run OCR to enable text-based redaction.');
+      setOcrNotificationShown((prev) => new Set([...prev, currentPage]));
+    }
+  }, [currentPage, pdfData, pageCount, ocrRedaction, ocrNotificationShown, toast]);
+
+  // Detect OCR mode availability for current page
+  useEffect(() => {
+    if (ocrRedaction.hasOcrResults(currentPage)) {
+      setOcrRedactionMode(true);
+    }
+  }, [currentPage, ocrRedaction]);
+
+  // Handle OCR word click (toggle selection)
+  const handleOcrWordClick = useCallback(
+    (word: OcrWord, wordIndex: number) => {
+      ocrRedaction.toggleWordSelection(word, currentPage, wordIndex);
+    },
+    [ocrRedaction, currentPage],
+  );
+
+  // Handle OCR word range selection (drag)
+  const handleOcrWordRangeSelect = useCallback(
+    (startIndex: number, endIndex: number) => {
+      const pageResult = ocrRedaction.getPageOcrResult(currentPage);
+      if (!pageResult) return;
+      ocrRedaction.selectWordRange(pageResult.words, currentPage, startIndex, endIndex);
+    },
+    [ocrRedaction, currentPage],
+  );
+
+  // Confirm OCR redaction — draws black rectangles and removes text (Task 9.3, 9.5)
+  const handleConfirmOcrRedaction = useCallback(async () => {
+    const selectedForPage = ocrRedaction.getSelectedWordsForPage(currentPage);
+    if (selectedForPage.length === 0 || !pageCanvasRef.current || !pdfData) {
+      toast.warning('Please select at least one word to redact.');
+      return;
+    }
+
+    setIsApplyingOcrRedaction(true);
+
+    try {
+      // 1. Apply black rectangles to the page canvas (Req 9.3)
+      const redactedCanvas = applyRedactionToCanvas(
+        pageCanvasRef.current,
+        selectedForPage,
+        displayScaleFactorRef.current,
+      );
+
+      // 2. Remove redacted words from OCR results (Req 9.4)
+      if (ocrResults) {
+        const updatedResults = removeRedactedWordsFromOcrResults(ocrResults, selectedForPage);
+        // Update the OCR store with cleaned results
+        useOcrStore.setState({ results: updatedResults });
+      }
+
+      // 3. Save redacted page image back into PDF (Req 9.6 / Task 9.5)
+      const redactedPages = new Map<number, HTMLCanvasElement>();
+      redactedPages.set(currentPage, redactedCanvas);
+      const updatedPdf = await saveAllRedactedPagesToPdf(pdfData, redactedPages);
+
+      // Update state with the new PDF data
+      setPdfData(updatedPdf);
+      setResultData(updatedPdf);
+      ocrRedaction.clearSelection();
+
+      toast.success('Redaction applied. Selected text has been permanently removed.');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to apply OCR redaction.';
+      toast.error(message);
+    } finally {
+      setIsApplyingOcrRedaction(false);
+    }
+  }, [ocrRedaction, currentPage, pdfData, ocrResults, toast]);
 
   // Handle file upload
   const handleFilesAccepted = useCallback(
@@ -466,9 +576,57 @@ export function RedactPage(): JSX.Element {
           {/* PDF page and annotation canvas are rendered here dynamically */}
         </div>
 
+        {/* OCR Word Overlay for text-based redaction (Req 9.1, 9.2) */}
+        {ocrRedactionMode && ocrRedaction.hasOcrResults(currentPage) && pageCanvasRef.current && (
+          <div
+            className="relative border border-primary-200 dark:border-primary-700 rounded-lg overflow-hidden bg-secondary-100 dark:bg-secondary-800 max-w-full mt-3"
+            style={{ maxHeight: '600px', overflow: 'auto' }}
+          >
+            <div
+              className="relative"
+              style={{ width: `${pageCanvasRef.current.width}px`, maxWidth: '100%' }}
+            >
+              {/* Re-render the page canvas as an image for the OCR overlay */}
+              <img
+                src={pageCanvasRef.current.toDataURL()}
+                alt={`Page ${currentPage}`}
+                className="w-full h-auto block"
+                draggable={false}
+              />
+              {/* Word hit targets and selection highlights */}
+              {(() => {
+                const pageResult = ocrRedaction.getPageOcrResult(currentPage);
+                if (!pageResult) return null;
+
+                const selectedForPage = ocrRedaction.getSelectedWordsForPage(currentPage);
+                const selectedIndices = new Set(selectedForPage.map((sw) => sw.wordIndex));
+
+                // Calculate the actual displayed scale factor
+                // The image is displayed at 100% width of its container
+                // The natural width is viewport.width (page * 1.5)
+                // OCR coords are at 300 DPI, canvas is at 108 DPI (1.5 scale)
+                // But the image is CSS-scaled to fit container, so we use percentage-based positioning
+                // Actually, since we set the container width to the canvas width and use max-width: 100%,
+                // the scale factor relative to the image's natural size is displayScaleFactorRef.current
+                return (
+                  <OcrWordOverlay
+                    ocrPageResult={pageResult}
+                    scaleFactor={displayScaleFactorRef.current}
+                    selectedWordIndices={selectedIndices}
+                    onWordClick={handleOcrWordClick}
+                    onWordRangeSelect={handleOcrWordRangeSelect}
+                  />
+                );
+              })()}
+            </div>
+          </div>
+        )}
+
         <p className="text-xs text-secondary-400 dark:text-secondary-500">
           Click and drag on the page to select an area for redaction. You can add multiple areas
           across different pages.
+          {ocrRedaction.hasOcrResults(currentPage) &&
+            ' OCR text selection is also available below for word-level redaction.'}
         </p>
       </div>
 
@@ -536,6 +694,90 @@ export function RedactPage(): JSX.Element {
           Total redaction areas: {redactions.length} across{' '}
           {new Set(redactions.map((r) => r.page)).size} page(s)
         </p>
+      )}
+
+      {/* OCR Redaction Controls (Req 9.1, 9.2, 9.3) */}
+      {ocrRedactionMode && ocrRedaction.hasOcrResults(currentPage) && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-text-light dark:text-text-dark">
+              OCR Text Redaction — Page {currentPage}
+            </h2>
+            {ocrRedaction.getSelectedWordsForPage(currentPage).length > 0 && (
+              <button
+                type="button"
+                onClick={() => ocrRedaction.clearSelection()}
+                className="text-xs text-error-600 hover:text-error-700 dark:text-error-400 dark:hover:text-error-300 min-w-[44px] min-h-[44px] inline-flex items-center justify-center"
+              >
+                Clear selection
+              </button>
+            )}
+          </div>
+
+          {ocrRedaction.getSelectedWordsForPage(currentPage).length > 0 && (
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-primary-200 dark:border-primary-700 bg-primary-50 dark:bg-primary-900/20">
+              <p className="text-sm text-primary-700 dark:text-primary-300 flex-1">
+                {ocrRedaction.getSelectedWordsForPage(currentPage).length} word(s) selected for
+                redaction:{' '}
+                <span className="font-medium">
+                  {ocrRedaction
+                    .getSelectedWordsForPage(currentPage)
+                    .map((sw) => sw.word.text)
+                    .join(' ')}
+                </span>
+              </p>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <Button
+              variant="primary"
+              onClick={handleConfirmOcrRedaction}
+              loading={isApplyingOcrRedaction}
+              disabled={
+                isApplyingOcrRedaction ||
+                ocrRedaction.getSelectedWordsForPage(currentPage).length === 0
+              }
+            >
+              Confirm Text Redaction
+            </Button>
+          </div>
+
+          <p className="text-xs text-secondary-400 dark:text-secondary-500">
+            Click on words to select them for redaction. Drag across multiple words to select a
+            range. Click selected words to deselect.
+          </p>
+        </div>
+      )}
+
+      {/* OCR prompt for unprocessed scanned pages (Req 9.5 / Task 9.4) */}
+      {pdfData && ocrRedaction.isUnprocessedScannedPage(currentPage) && (
+        <div className="flex items-start gap-3 p-3 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+          <svg
+            className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm text-amber-700 dark:text-amber-300">
+              This page appears to be a scanned image. OCR processing is required to enable
+              text-based redaction.
+            </p>
+            <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+              You can still use rectangular area redaction above, or run OCR from the OCR tool to
+              enable word-level text selection.
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Action buttons */}

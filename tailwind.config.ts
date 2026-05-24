@@ -174,9 +174,14 @@ const config: Config = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(400%)' },
         },
+        'slide-up': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       },
       animation: {
         indeterminate: 'indeterminate 1.5s ease-in-out infinite',
+        'slide-up': 'slide-up 200ms ease',
       },
     },
   },
