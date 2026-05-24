@@ -294,6 +294,8 @@ export function BookmarksPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/bookmarks"
+          operationName="Bookmarks"
         />
       </div>
     );

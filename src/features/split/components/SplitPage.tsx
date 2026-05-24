@@ -98,6 +98,8 @@ export function SplitPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/split"
+          operationName="Split"
         />
       )}
 

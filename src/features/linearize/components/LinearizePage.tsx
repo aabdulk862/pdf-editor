@@ -155,6 +155,8 @@ export function LinearizePage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/linearize"
+          operationName="Linearize"
         />
       </div>
     );

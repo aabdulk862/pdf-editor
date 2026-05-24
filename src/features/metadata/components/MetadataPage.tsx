@@ -256,6 +256,8 @@ export function MetadataPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/metadata"
+          operationName="Metadata"
         />
       </div>
     );

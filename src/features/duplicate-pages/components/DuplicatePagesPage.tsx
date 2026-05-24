@@ -277,6 +277,8 @@ export function DuplicatePagesPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/duplicate-pages"
+          operationName="Duplicate Pages"
         />
       )}
 

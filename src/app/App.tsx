@@ -1,5 +1,10 @@
 import { AppRouter } from './router';
+import { ShortcutProvider } from '../features/shortcuts/ShortcutProvider';
 
 export function App() {
-  return <AppRouter />;
+  return (
+    <ShortcutProvider>
+      <AppRouter />
+    </ShortcutProvider>
+  );
 }

@@ -356,6 +356,8 @@ export function HighlightPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/highlight"
+          operationName="Highlight"
         />
       </div>
     );

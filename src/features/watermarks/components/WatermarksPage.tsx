@@ -204,6 +204,8 @@ export function WatermarksPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/watermarks"
+          operationName="Watermarks"
         />
       )}
 

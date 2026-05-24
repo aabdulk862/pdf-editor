@@ -240,6 +240,8 @@ export function TextOverlayPage(): JSX.Element {
         multiple={false}
         onFilesAccepted={handleFilesAccepted}
         onFileRejected={handleFileRejected}
+        operationRoute="/text-overlay"
+        operationName="Text Overlay"
       />
 
       {/* Configuration Panel */}

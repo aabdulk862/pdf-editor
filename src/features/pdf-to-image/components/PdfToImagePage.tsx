@@ -295,6 +295,8 @@ export function PdfToImagePage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/pdf-to-image"
+          operationName="PDF to Image"
         />
       </div>
     );

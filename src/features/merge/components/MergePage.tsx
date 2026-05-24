@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
@@ -6,6 +6,8 @@ import { useToast } from '@/hooks/useToast';
 import { formatFileSize } from '@/utils/file-size';
 import { MergeFileList } from './MergeFileList';
 import { useMerge } from '../hooks/useMerge';
+import { QuickActionsBar } from '@/features/quick-actions/QuickActionsBar';
+import { useQuickActionsStore } from '@/store/quick-actions';
 
 /**
  * MergePage - Route page for the Merge PDFs feature.
@@ -37,6 +39,17 @@ export function MergePage(): JSX.Element {
   const toast = useToast();
   const [zoom, setZoom] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Track previous mergedResult to detect new successful operations
+  const prevMergedResultRef = useRef<ArrayBuffer | null>(null);
+
+  // Trigger Quick Actions Bar when merge completes successfully
+  useEffect(() => {
+    if (mergedResult && mergedResult !== prevMergedResultRef.current) {
+      useQuickActionsStore.getState().show('merge', mergedResult);
+    }
+    prevMergedResultRef.current = mergedResult;
+  }, [mergedResult]);
 
   const handleFilesAccepted = useCallback(
     (newFiles: File[]) => {
@@ -95,6 +108,8 @@ export function MergePage(): JSX.Element {
         onFilesAccepted={handleFilesAccepted}
         onFileRejected={handleFileRejected}
         multiple
+        operationRoute="/merge"
+        operationName="Merge"
       />
 
       {/* File list with drag-and-drop reorder */}
@@ -139,6 +154,9 @@ export function MergePage(): JSX.Element {
               Download Merged PDF
             </Button>
           </div>
+
+          {/* Quick Actions Bar */}
+          <QuickActionsBar />
 
           {/* Preview of merged result */}
           <PreviewPanel

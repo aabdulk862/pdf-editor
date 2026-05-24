@@ -150,6 +150,8 @@ export function FlattenPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/flatten"
+          operationName="Flatten"
         />
       </div>
     );

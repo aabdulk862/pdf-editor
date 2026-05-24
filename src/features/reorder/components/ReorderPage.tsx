@@ -245,6 +245,8 @@ export function ReorderPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/reorder"
+          operationName="Reorder"
         />
       )}
 

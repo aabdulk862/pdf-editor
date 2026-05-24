@@ -1,9 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import { formatFileSize, calculatePercentChange } from '@/utils/file-size';
+import { QuickActionsBar } from '@/features/quick-actions/QuickActionsBar';
+import { useQuickActionsStore } from '@/store/quick-actions';
 
 /**
  * CompressPage component - Allows users to compress a PDF to reduce file size.
@@ -29,6 +31,17 @@ export function CompressPage(): JSX.Element {
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressedData, setCompressedData] = useState<ArrayBuffer | null>(null);
   const [compressedSize, setCompressedSize] = useState<number>(0);
+
+  // Track previous compressedData to detect new successful operations
+  const prevCompressedDataRef = useRef<ArrayBuffer | null>(null);
+
+  // Trigger Quick Actions Bar when compression completes successfully
+  useEffect(() => {
+    if (compressedData && compressedData !== prevCompressedDataRef.current) {
+      useQuickActionsStore.getState().show('compress', compressedData);
+    }
+    prevCompressedDataRef.current = compressedData;
+  }, [compressedData]);
 
   // Handle file upload
   const handleFilesAccepted = useCallback(
@@ -138,6 +151,8 @@ export function CompressPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/compress"
+          operationName="Compress"
         />
       </div>
     );
@@ -237,6 +252,9 @@ export function CompressPage(): JSX.Element {
           </Button>
         )}
       </div>
+
+      {/* Quick Actions Bar */}
+      {compressedData && <QuickActionsBar />}
     </div>
   );
 }

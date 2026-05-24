@@ -15,6 +15,8 @@ import type { AnnotationCanvas } from '@/core/annotation-engine/index';
 import type { Rect } from '@/types/common';
 import type { AnnotationData } from '@/types/annotations';
 import type { RedactRegion } from '@/core/pdf-engine/index';
+import { QuickActionsBar } from '@/features/quick-actions/QuickActionsBar';
+import { useQuickActionsStore } from '@/store/quick-actions';
 
 // Configure the PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -50,6 +52,17 @@ export function RedactPage(): JSX.Element {
   // Operation state
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultData, setResultData] = useState<ArrayBuffer | null>(null);
+
+  // Track previous resultData to detect new successful operations
+  const prevResultDataRef = useRef<ArrayBuffer | null>(null);
+
+  // Trigger Quick Actions Bar when redaction completes successfully
+  useEffect(() => {
+    if (resultData && resultData !== prevResultDataRef.current) {
+      useQuickActionsStore.getState().show('redact', resultData);
+    }
+    prevResultDataRef.current = resultData;
+  }, [resultData]);
 
   // Preview/navigation state
   const [currentPage, setCurrentPage] = useState(1);
@@ -329,6 +342,8 @@ export function RedactPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/redact"
+          operationName="Redact"
         />
       </div>
     );
@@ -539,6 +554,9 @@ export function RedactPage(): JSX.Element {
           </Button>
         )}
       </div>
+
+      {/* Quick Actions Bar */}
+      {resultData && <QuickActionsBar />}
 
       {/* Preview of result */}
       {resultData && (

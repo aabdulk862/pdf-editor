@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState, type DragEvent, type ChangeEvent } from 'react';
 import { formatFileSize } from '../../utils/file-size';
 import { validateFileType, validateFileSize } from '../../utils/validation';
+import { useRecentFilesStore } from '../../store/recent-files';
 
 export interface FileUploadZoneProps {
   /** Accepted MIME types */
@@ -15,6 +16,10 @@ export interface FileUploadZoneProps {
   onFileRejected?: (file: File, reason: string) => void;
   /** Allow multiple file selection (default: true) */
   multiple?: boolean;
+  /** Operation route for recent files tracking (e.g., "/compress") */
+  operationRoute?: string;
+  /** Operation display name for recent files tracking (e.g., "Compress") */
+  operationName?: string;
 }
 
 const DEFAULT_ACCEPT = ['application/pdf', 'image/png', 'image/jpeg'];
@@ -28,6 +33,8 @@ export function FileUploadZone({
   onFilesAccepted,
   onFileRejected,
   multiple = true,
+  operationRoute,
+  operationName,
 }: FileUploadZoneProps): JSX.Element {
   const [isDragOver, setIsDragOver] = useState(false);
   const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
@@ -71,9 +78,26 @@ export function FileUploadZone({
         const newAccepted = [...acceptedFiles, ...validFiles];
         setAcceptedFiles(newAccepted);
         onFilesAccepted(validFiles);
+
+        // Track recent files if operation info is provided
+        if (operationRoute && operationName) {
+          const addEntry = useRecentFilesStore.getState().addEntry;
+          for (const file of validFiles) {
+            addEntry(file, operationRoute, operationName);
+          }
+        }
       }
     },
-    [accept, acceptedFiles, maxFileSize, maxFiles, onFilesAccepted, onFileRejected],
+    [
+      accept,
+      acceptedFiles,
+      maxFileSize,
+      maxFiles,
+      onFilesAccepted,
+      onFileRejected,
+      operationRoute,
+      operationName,
+    ],
   );
 
   const handleDragEnter = useCallback((e: DragEvent<HTMLDivElement>) => {

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { Layout } from '../components/ui/Layout';
 import { NavBar } from '../components/ui/NavBar';
+import { useOperationShortcuts } from '../features/shortcuts/useOperationShortcuts';
 import { HomePage } from '../features/home/components/HomePage';
 import { DeletePagesPage } from '../features/delete-pages/components/DeletePagesPage';
 import { RotatePage } from '../features/rotate/components/RotatePage';
@@ -33,6 +34,8 @@ import { ComparePage } from '../features/compare/components/ComparePage';
 import { BookmarksPage } from '../features/bookmarks/components/BookmarksPage';
 
 function RootLayout() {
+  useOperationShortcuts();
+
   return (
     <Layout sidebar={<NavBar />}>
       <div className="transition-opacity duration-200 ease-in-out">

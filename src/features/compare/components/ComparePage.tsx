@@ -378,6 +378,8 @@ export function ComparePage(): JSX.Element {
                 multiple={false}
                 onFilesAccepted={handleFile1Accepted}
                 onFileRejected={handleFileRejected}
+                operationRoute="/compare"
+                operationName="Compare"
               />
             ) : (
               <div className="flex items-center gap-2 rounded-lg border border-success-300 bg-success-50 p-3 dark:border-success-700 dark:bg-success-900/20">
@@ -414,6 +416,8 @@ export function ComparePage(): JSX.Element {
                 multiple={false}
                 onFilesAccepted={handleFile2Accepted}
                 onFileRejected={handleFileRejected}
+                operationRoute="/compare"
+                operationName="Compare"
               />
             ) : (
               <div className="flex items-center gap-2 rounded-lg border border-success-300 bg-success-50 p-3 dark:border-success-700 dark:bg-success-900/20">

@@ -183,6 +183,8 @@ export function ExtractTextPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/extract-text"
+          operationName="Extract Text"
         />
       </div>
     );

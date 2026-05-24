@@ -18,6 +18,7 @@ export default defineConfig({
       'test/**/*.property.test.ts',
       'src/**/*.test.ts',
       'src/**/*.test.tsx',
+      'src/**/*.property.test.ts',
     ],
   },
 });

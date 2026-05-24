@@ -259,6 +259,8 @@ export function RotatePage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/rotate"
+          operationName="Rotate"
         />
       </div>
     );

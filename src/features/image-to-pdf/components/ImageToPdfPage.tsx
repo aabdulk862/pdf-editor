@@ -258,6 +258,8 @@ export function ImageToPdfPage(): JSX.Element {
           multiple={true}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/image-to-pdf"
+          operationName="Image to PDF"
         />
       )}
 

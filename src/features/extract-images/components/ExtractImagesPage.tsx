@@ -168,6 +168,8 @@ export function ExtractImagesPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/extract-images"
+          operationName="Extract Images"
         />
       </div>
     );

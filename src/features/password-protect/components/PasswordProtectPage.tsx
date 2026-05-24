@@ -174,6 +174,8 @@ export function PasswordProtectPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/password-protect"
+          operationName="Password Protect"
         />
       </div>
     );

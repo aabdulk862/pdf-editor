@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { RecentFilesSection } from '../../recent-files/RecentFilesSection';
+import { TemplateSection } from '../../templates/TemplateSection';
 
 interface ToolCardData {
   path: string;
@@ -681,6 +683,10 @@ export function HomePage() {
           leave your device.
         </p>
       </div>
+
+      <RecentFilesSection />
+
+      <TemplateSection />
 
       {groupedTools.map(({ category, label, items }) => (
         <section key={category} aria-labelledby={`category-${category}`}>

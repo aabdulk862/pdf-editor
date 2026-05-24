@@ -407,6 +407,7 @@ export function CropPage(): JSX.Element {
   }
 
   // Apply crop operation
+  /* eslint-disable react-hooks/exhaustive-deps */
   const handleApplyCrop = useCallback(async () => {
     if (!pdfData || !cropRect) {
       toast.warning('Please define a crop region first.');
@@ -462,7 +463,8 @@ export function CropPage(): JSX.Element {
     currentPage,
     pageCount,
     toast,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
+  ]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   // Download the result
   const handleDownload = useCallback(() => {
@@ -526,6 +528,8 @@ export function CropPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/crop"
+          operationName="Crop"
         />
       </div>
     );

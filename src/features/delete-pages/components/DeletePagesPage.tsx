@@ -261,6 +261,8 @@ export function DeletePagesPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/delete-pages"
+          operationName="Delete Pages"
         />
       )}
 

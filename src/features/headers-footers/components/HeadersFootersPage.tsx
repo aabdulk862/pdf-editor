@@ -353,6 +353,8 @@ export function HeadersFootersPage(): JSX.Element {
         multiple={false}
         onFilesAccepted={handleFilesAccepted}
         onFileRejected={handleFileRejected}
+        operationRoute="/headers-footers"
+        operationName="Headers & Footers"
       />
 
       {/* Configuration */}

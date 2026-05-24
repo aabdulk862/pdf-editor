@@ -1,10 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import type { PageNumberConfig } from '@/types/operations';
+import { QuickActionsBar } from '@/features/quick-actions/QuickActionsBar';
+import { useQuickActionsStore } from '@/store/quick-actions';
 
 type Position = PageNumberConfig['position'];
 
@@ -31,6 +33,17 @@ export function PageNumbersPage(): JSX.Element {
   const [processing, setProcessing] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Track previous modifiedData to detect new successful operations
+  const prevModifiedDataRef = useRef<ArrayBuffer | null>(null);
+
+  // Trigger Quick Actions Bar when page numbers are added successfully
+  useEffect(() => {
+    if (modifiedData && modifiedData !== prevModifiedDataRef.current) {
+      useQuickActionsStore.getState().show('add-page-numbers', modifiedData);
+    }
+    prevModifiedDataRef.current = modifiedData;
+  }, [modifiedData]);
 
   const handleFilesAccepted = useCallback(
     (files: File[]) => {
@@ -142,6 +155,8 @@ export function PageNumbersPage(): JSX.Element {
         multiple={false}
         onFilesAccepted={handleFilesAccepted}
         onFileRejected={handleFileRejected}
+        operationRoute="/page-numbers"
+        operationName="Page Numbers"
       />
 
       {/* Configuration */}
@@ -226,6 +241,9 @@ export function PageNumbersPage(): JSX.Element {
               </Button>
             )}
           </div>
+
+          {/* Quick Actions Bar */}
+          {modifiedData && <QuickActionsBar />}
         </div>
       )}
 

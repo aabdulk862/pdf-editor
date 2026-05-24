@@ -294,6 +294,8 @@ export function StampsPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/stamps"
+          operationName="Stamps"
         />
       </div>
     );

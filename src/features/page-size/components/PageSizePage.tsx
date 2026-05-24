@@ -319,6 +319,8 @@ export function PageSizePage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/page-size"
+          operationName="Page Size"
         />
       </div>
     );

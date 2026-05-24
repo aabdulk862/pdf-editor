@@ -166,6 +166,8 @@ export function FormFillPage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/form-fill"
+          operationName="Form Fill"
         />
       </div>
     );

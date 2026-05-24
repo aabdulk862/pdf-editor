@@ -269,6 +269,8 @@ export function SignaturePage(): JSX.Element {
           multiple={false}
           onFilesAccepted={handleFilesAccepted}
           onFileRejected={handleFileRejected}
+          operationRoute="/signature"
+          operationName="Signature"
         />
       </div>
     );
