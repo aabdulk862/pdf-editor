@@ -6,7 +6,7 @@ const COLLAPSED_KEY = 'pdf-editor-nav-collapsed';
 const SIDEBAR_KEY = 'pdf-editor-sidebar-collapsed';
 const USAGE_COUNTS_KEY = 'pdf-editor-usage-counts';
 const MAX_FAVORITES = 8;
-const MAX_RECENT = 5;
+const MAX_RECENT = 3;
 
 export interface NavStoreState {
   favorites: string[];

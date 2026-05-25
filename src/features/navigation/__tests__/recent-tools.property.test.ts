@@ -8,7 +8,7 @@ import { useNavStore } from '../store/nav-store';
  * **Validates: Requirements 2.3**
  *
  * Property: After any sequence of tool path additions to the recent list,
- * the list length never exceeds 5 items, is ordered most-recent-first,
+ * the list length never exceeds 3 items, is ordered most-recent-first,
  * and has no duplicates.
  */
 describe('Recent Tools Length/Ordering Invariant', () => {
@@ -24,7 +24,7 @@ describe('Recent Tools Length/Ordering Invariant', () => {
     localStorage.clear();
   });
 
-  it('recent tools list never exceeds 5 items after any sequence of additions', () => {
+  it('recent tools list never exceeds 3 items after any sequence of additions', () => {
     fc.assert(
       fc.property(
         fc.array(fc.string({ minLength: 1 }), { minLength: 1, maxLength: 50 }),
@@ -38,7 +38,7 @@ describe('Recent Tools Length/Ordering Invariant', () => {
           }
 
           const recents = useNavStore.getState().recentTools;
-          return recents.length <= 5;
+          return recents.length <= 3;
         },
       ),
     );

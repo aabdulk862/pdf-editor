@@ -103,11 +103,11 @@ describe('nav-store', () => {
       expect(useNavStore.getState().recentTools).toEqual(['/merge', '/split']);
     });
 
-    it('trims to max 5 entries', () => {
+    it('trims to max 3 entries', () => {
       for (let i = 0; i < 7; i++) {
         useNavStore.getState().addRecentTool(`/tool-${i}`);
       }
-      expect(useNavStore.getState().recentTools).toHaveLength(5);
+      expect(useNavStore.getState().recentTools).toHaveLength(3);
       expect(useNavStore.getState().recentTools[0]).toBe('/tool-6');
     });
 

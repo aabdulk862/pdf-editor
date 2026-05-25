@@ -54,7 +54,6 @@ function findToolByPath(path: string): NavTool | undefined {
 export function CategorizedNavBar() {
   const {
     favorites,
-    recentTools,
     collapsedCategories,
     sidebarCollapsed,
     filterQuery,
@@ -93,11 +92,6 @@ export function CategorizedNavBar() {
     .map((path) => findToolByPath(path))
     .filter((t): t is NavTool => t !== undefined);
 
-  // Resolve recent tools
-  const recentToolItems = recentTools
-    .map((path) => findToolByPath(path))
-    .filter((t): t is NavTool => t !== undefined);
-
   // Build flat list of visible tool paths for roving tabindex
   const visibleToolPaths = useMemo(() => {
     const paths: string[] = [];
@@ -105,11 +99,6 @@ export function CategorizedNavBar() {
     // Favorites (only shown when not filtering and has items)
     if (favoriteTools.length > 0 && !filterQuery) {
       favoriteTools.forEach((tool) => paths.push(tool.path));
-    }
-
-    // Recents (only shown when not filtering and has items)
-    if (recentToolItems.length > 0 && !filterQuery) {
-      recentToolItems.forEach((tool) => paths.push(tool.path));
     }
 
     // Category tools (only non-collapsed categories, or filtered results)
@@ -125,14 +114,7 @@ export function CategorizedNavBar() {
     }
 
     return paths;
-  }, [
-    favoriteTools,
-    recentToolItems,
-    filterQuery,
-    hasResults,
-    filteredCategories,
-    collapsedCategories,
-  ]);
+  }, [favoriteTools, filterQuery, hasResults, filteredCategories, collapsedCategories]);
 
   // Roving tabindex for keyboard navigation
   const { getTabIndex, getItemRef, handleKeyDown, focusedIndex, setFocusedIndex } =
@@ -357,31 +339,6 @@ export function CategorizedNavBar() {
             </p>
             <div className="space-y-0.5">
               {favoriteTools.map((tool) => {
-                const idx = getNextFlatIndex();
-                return (
-                  <NavToolLink
-                    key={tool.path}
-                    ref={getItemRef(idx)}
-                    tabIndex={getTabIndex(idx)}
-                    path={tool.path}
-                    label={tool.label}
-                    icon={CATEGORY_ICONS[tool.categoryId] ?? FolderIcon}
-                    onContextMenu={(pos) => handleContextMenu(tool.path, pos)}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Recent section — hidden if empty */}
-        {recentToolItems.length > 0 && !filterQuery && (
-          <div>
-            <p className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-secondary-500 dark:text-secondary-400">
-              Recent
-            </p>
-            <div className="space-y-0.5">
-              {recentToolItems.map((tool) => {
                 const idx = getNextFlatIndex();
                 return (
                   <NavToolLink

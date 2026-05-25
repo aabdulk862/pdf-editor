@@ -13,7 +13,13 @@ import { useCanvasRenderer } from '../hooks/useCanvasRenderer';
  *
  * Requirements: 15.2, 16.4
  */
-export function CanvasViewport() {
+
+export interface CanvasViewportProps {
+  /** Callback when a text element should enter inline editing mode */
+  onEditText?: (elementId: string) => void;
+}
+
+export function CanvasViewport({ onEditText }: CanvasViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Set up input handling (pointer events, wheel zoom/pan)
@@ -25,7 +31,11 @@ export function CanvasViewport() {
     cursorStyle,
     ghostElementRef,
     renderTick,
+    onDoubleClickTextRef,
   } = useCanvasInput(canvasRef);
+
+  // Wire up the double-click text editing callback
+  onDoubleClickTextRef.current = onEditText ?? null;
 
   // Set up rendering loop (subscribes to store, handles DPR, requestAnimationFrame)
   // Pass ghostElementRef so the renderer can include the ghost element in the render state

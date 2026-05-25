@@ -70,6 +70,15 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
   /** Ref exposing the ghost element (shape being drag-created) to the renderer */
   const ghostElementRef = useRef<CanvasElement | null>(null);
 
+  /** Callback to enter text editing mode (set by CanvasWorkspace) */
+  const onDoubleClickTextRef = useRef<((elementId: string) => void) | null>(null);
+
+  /** Track last pointer-down time and target for double-click detection */
+  const lastClickRef = useRef<{ time: number; elementId: string | null }>({
+    time: 0,
+    elementId: null,
+  });
+
   const dragState = useRef<DragState>({
     isDragging: false,
     dragMode: 'none',
@@ -140,6 +149,21 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
           const hitElement = hitTest(screenPoint, page.elements, viewport);
 
           if (hitElement) {
+            // Double-click detection: enter text editing mode
+            const now = Date.now();
+            const lastClick = lastClickRef.current;
+            if (
+              hitElement.type === 'text' &&
+              hitElement.id === lastClick.elementId &&
+              now - lastClick.time < 400
+            ) {
+              // Double-click on a text element — enter inline editing
+              onDoubleClickTextRef.current?.(hitElement.id);
+              lastClickRef.current = { time: 0, elementId: null };
+              break;
+            }
+            lastClickRef.current = { time: now, elementId: hitElement.id };
+
             // Select the element if not already selected
             if (!selection.selectedIds.includes(hitElement.id)) {
               if (e.shiftKey) {
@@ -200,6 +224,9 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
           store.addElement(textElement);
           store.select([textElement.id]);
           store.setActiveTool('select');
+
+          // Immediately enter text editing mode for the new element
+          onDoubleClickTextRef.current?.(textElement.id);
           break;
         }
 
@@ -527,6 +554,7 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
     cursorStyle,
     ghostElementRef,
     renderTick,
+    onDoubleClickTextRef,
   };
 }
 

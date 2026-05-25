@@ -27,6 +27,10 @@ export function CanvasWorkspace() {
   // Text editing state
   const [editingElementId, setEditingElementId] = useState<string | null>(null);
 
+  const handleEditText = useCallback((elementId: string) => {
+    setEditingElementId(elementId);
+  }, []);
+
   const handleEditComplete = useCallback(() => {
     setEditingElementId(null);
   }, []);
@@ -41,7 +45,7 @@ export function CanvasWorkspace() {
       className="flex-1 flex flex-col relative overflow-hidden bg-secondary-900"
       data-testid="canvas-workspace"
     >
-      <CanvasViewport />
+      <CanvasViewport onEditText={handleEditText} />
 
       {/* Selection overlay with resize/rotate handles */}
       <SelectionOverlay />

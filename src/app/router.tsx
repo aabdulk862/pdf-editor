@@ -1,8 +1,7 @@
-import { BrowserRouter, Routes, Route, Outlet, useLocation } from 'react-router-dom';
-import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import { AppShell } from './AppShell';
 import { CategorizedNavBar } from '../features/navigation/CategorizedNavBar';
-import { useNavStore } from '../features/navigation/store/nav-store';
 import { useOperationShortcuts } from '../features/shortcuts/useOperationShortcuts';
 import { GlobalDropZone } from '../features/global-drop-zone/GlobalDropZone';
 import { CommandPalette } from '../features/command-palette/CommandPalette';
@@ -189,17 +188,6 @@ function PageLoadingFallback() {
 
 function RootLayout() {
   useOperationShortcuts();
-  const location = useLocation();
-  const addRecentTool = useNavStore((state) => state.addRecentTool);
-
-  // Track recent tool usage on route changes
-  useEffect(() => {
-    const path = location.pathname;
-    // Only track tool routes (not home or unknown routes)
-    if (path !== '/' && path !== '') {
-      addRecentTool(path);
-    }
-  }, [location.pathname, addRecentTool]);
 
   return (
     <GlobalDropZone>
