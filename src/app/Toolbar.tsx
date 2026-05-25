@@ -185,7 +185,7 @@ export function Toolbar({ slots }: ToolbarProps) {
           <button
             type="button"
             onClick={() => setOverflowOpen(!overflowOpen)}
-            className="flex items-center justify-center w-9 h-9 rounded-md text-secondary-600 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors duration-fast ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
+            className="flex items-center justify-center min-w-[44px] min-h-[44px] md:w-9 md:h-9 md:min-w-0 md:min-h-0 rounded-md text-secondary-600 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors duration-fast ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
             aria-label="More toolbar actions"
             aria-expanded={overflowOpen}
             aria-haspopup="true"

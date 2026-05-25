@@ -179,7 +179,7 @@ function ToastItem({
       <button
         type="button"
         onClick={handleDismiss}
-        className="shrink-0 rounded p-1 opacity-70 transition-opacity duration-normal ease-out motion-reduce:transition-none hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
+        className="shrink-0 rounded-md min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 md:p-1 inline-flex items-center justify-center opacity-70 transition-opacity duration-normal ease-out motion-reduce:transition-none hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
         aria-label="Dismiss notification"
       >
         <svg
