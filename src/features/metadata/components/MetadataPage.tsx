@@ -280,7 +280,7 @@ export function MetadataPage(): JSX.Element {
 
       {isLoading ? (
         <div className="rounded-lg border border-secondary-200 bg-white p-6 dark:border-secondary-700 dark:bg-secondary-800">
-          <p className="text-secondary-500 dark:text-secondary-400 animate-pulse">
+          <p className="text-secondary-500 dark:text-secondary-400 animate-pulse motion-reduce:animate-none">
             Loading metadata...
           </p>
         </div>

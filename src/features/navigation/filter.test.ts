@@ -88,4 +88,38 @@ describe('filterNavigation', () => {
     filterNavigation('split');
     expect(NAV_CATEGORIES.find((c) => c.id === 'organize')!.tools.length).toBe(originalToolCount);
   });
+
+  it('matches tool descriptions (fuzzy matching across descriptions)', () => {
+    // "encrypt" appears in Password Protect's description but not its label
+    const result = filterNavigation('encrypt');
+    expect(result.hasResults).toBe(true);
+    const tools = result.categories.flatMap((c) => c.tools);
+    expect(tools.some((t) => t.label === 'Password Protect')).toBe(true);
+  });
+
+  it('matches partial description text', () => {
+    // "drag-and-drop" appears in Reorder's description
+    const result = filterNavigation('drag-and-drop');
+    expect(result.hasResults).toBe(true);
+    const tools = result.categories.flatMap((c) => c.tools);
+    expect(tools.some((t) => t.label === 'Reorder')).toBe(true);
+  });
+
+  it('matches description keywords that differ from tool name', () => {
+    // "sensitive" appears in Redact's description but not its label
+    const result = filterNavigation('sensitive');
+    expect(result.hasResults).toBe(true);
+    const tools = result.categories.flatMap((c) => c.tools);
+    expect(tools.some((t) => t.label === 'Redact')).toBe(true);
+  });
+
+  it('ranks label matches higher than description matches', () => {
+    // "Compress" is both a label and appears in descriptions
+    const result = filterNavigation('compress');
+    expect(result.hasResults).toBe(true);
+    const analyzeCategory = result.categories.find((c) => c.id === 'analyze');
+    expect(analyzeCategory).toBeDefined();
+    // Compress should be first in its category since it's an exact label match
+    expect(analyzeCategory!.tools[0].label).toBe('Compress');
+  });
 });

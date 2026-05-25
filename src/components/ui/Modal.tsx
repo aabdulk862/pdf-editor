@@ -83,7 +83,7 @@ export function Modal({
         'bg-white dark:bg-secondary-800',
         'w-[calc(100%-2rem)]',
         sizeClasses[size],
-        'animate-in fade-in duration-150',
+        'animate-in fade-in duration-150 motion-reduce:animate-none',
       ].join(' ')}
     >
       <div className="flex flex-col">

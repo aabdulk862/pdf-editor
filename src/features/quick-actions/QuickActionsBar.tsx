@@ -210,7 +210,7 @@ export function QuickActionsBar(): JSX.Element | null {
         'flex items-center gap-2 mt-3 p-3 rounded-lg',
         'border border-secondary-200 dark:border-secondary-700',
         'bg-secondary-50 dark:bg-secondary-800/50',
-        'transition-all duration-300 ease-in-out',
+        'transition-all duration-300 ease-in-out motion-reduce:transition-none',
         isAnimatedIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1',
       ].join(' ')}
     >

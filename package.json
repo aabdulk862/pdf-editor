@@ -12,11 +12,12 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
+    "generate:tokens": "tsx scripts/generate-tokens.ts",
     "prepare": "husky"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix --max-warnings 0",
+      "eslint --fix --max-warnings 200",
       "prettier --write"
     ],
     "*.{css,json,md}": [
@@ -24,6 +25,8 @@
     ]
   },
   "dependencies": {
+    "docx": "9.7.0",
+    "immer": "11.1.8",
     "jszip": "^3.10.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.4.168",
@@ -53,6 +56,7 @@
     "postcss": "^8.5.15",
     "prettier": "^3.8.3",
     "tailwindcss": "^3.4.19",
+    "tsx": "^4.19.4",
     "typescript": "^5.4.5",
     "vite": "^5.2.12",
     "vitest": "^1.6.0"

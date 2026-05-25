@@ -1,8 +1,16 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NavFilterInput } from './NavFilterInput';
 
 describe('NavFilterInput', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('renders with placeholder text "Filter tools..."', () => {
     render(<NavFilterInput value="" onChange={() => {}} />);
     expect(screen.getByPlaceholderText('Filter tools...')).toBeInTheDocument();
@@ -13,13 +21,44 @@ describe('NavFilterInput', () => {
     expect(screen.getByLabelText('Filter tools')).toBeInTheDocument();
   });
 
-  it('calls onChange on every keystroke', () => {
+  it('calls onChange after debounce delay', () => {
     const handleChange = vi.fn();
     render(<NavFilterInput value="" onChange={handleChange} />);
 
     const input = screen.getByLabelText('Filter tools');
     fireEvent.change(input, { target: { value: 'merge' } });
 
+    // Not called immediately due to debounce
+    expect(handleChange).not.toHaveBeenCalled();
+
+    // Called after debounce delay (50ms default)
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
+
+    expect(handleChange).toHaveBeenCalledWith('merge');
+  });
+
+  it('debounces rapid keystrokes and only calls onChange once', () => {
+    const handleChange = vi.fn();
+    render(<NavFilterInput value="" onChange={handleChange} />);
+
+    const input = screen.getByLabelText('Filter tools');
+    fireEvent.change(input, { target: { value: 'm' } });
+    fireEvent.change(input, { target: { value: 'me' } });
+    fireEvent.change(input, { target: { value: 'mer' } });
+    fireEvent.change(input, { target: { value: 'merg' } });
+    fireEvent.change(input, { target: { value: 'merge' } });
+
+    // Not called yet
+    expect(handleChange).not.toHaveBeenCalled();
+
+    // After debounce, only the final value is emitted
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
+
+    expect(handleChange).toHaveBeenCalledTimes(1);
     expect(handleChange).toHaveBeenCalledWith('merge');
   });
 

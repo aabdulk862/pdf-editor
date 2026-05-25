@@ -455,7 +455,7 @@ function PageLoadingPlaceholder(): JSX.Element {
       aria-label="Loading page"
     >
       <svg
-        className="w-8 h-8 animate-spin text-primary-500"
+        className="w-8 h-8 animate-spin motion-reduce:animate-none text-primary-500"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"

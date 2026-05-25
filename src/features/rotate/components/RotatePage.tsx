@@ -458,7 +458,7 @@ function PageThumbnailCard({
       <div className="w-full aspect-[3/4] flex items-center justify-center overflow-hidden rounded bg-secondary-100 dark:bg-secondary-700">
         {thumbnail.loading && (
           <svg
-            className="w-6 h-6 animate-spin text-secondary-400"
+            className="w-6 h-6 animate-spin motion-reduce:animate-none text-secondary-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

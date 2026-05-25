@@ -191,7 +191,12 @@ export function FormFillPage(): JSX.Element {
       {/* Detecting indicator */}
       {isDetecting && (
         <div className="flex items-center gap-2 text-sm text-secondary-500 dark:text-secondary-400">
-          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <svg
+            className="w-4 h-4 animate-spin motion-reduce:animate-none"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <circle
               className="opacity-25"
               cx="12"

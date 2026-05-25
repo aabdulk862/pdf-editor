@@ -8,6 +8,7 @@ import { MergeFileList } from './MergeFileList';
 import { useMerge } from '../hooks/useMerge';
 import { QuickActionsBar } from '@/features/quick-actions/QuickActionsBar';
 import { useQuickActionsStore } from '@/store/quick-actions';
+import { consumePendingMergePdf } from '@/features/canvas-editor/utils/pdf-pipeline';
 
 /**
  * MergePage - Route page for the Merge PDFs feature.
@@ -42,6 +43,14 @@ export function MergePage(): JSX.Element {
 
   // Track previous mergedResult to detect new successful operations
   const prevMergedResultRef = useRef<ArrayBuffer | null>(null);
+
+  // Check for a pending PDF file from the canvas editor's "Insert into PDF" flow
+  useEffect(() => {
+    const pendingFile = consumePendingMergePdf();
+    if (pendingFile) {
+      addFiles([pendingFile]);
+    }
+  }, [addFiles]);
 
   // Trigger Quick Actions Bar when merge completes successfully
   useEffect(() => {

@@ -177,7 +177,7 @@ export function FileUploadZone({
         onKeyDown={handleKeyDown}
         className={[
           'relative flex min-h-[180px] min-w-[44px] cursor-pointer flex-col items-center justify-center',
-          'rounded-lg border-2 border-dashed p-6 transition-colors duration-150',
+          'rounded-lg border-2 border-dashed p-6 transition-colors duration-150 motion-reduce:transition-none',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
           'dark:focus-visible:ring-offset-background-dark',
           isDragOver
@@ -190,7 +190,7 @@ export function FileUploadZone({
         {/* Upload icon */}
         <svg
           className={[
-            'mb-3 h-10 w-10 transition-colors duration-150',
+            'mb-3 h-10 w-10 transition-colors duration-150 motion-reduce:transition-none',
             isDragOver
               ? 'text-primary-500 dark:text-primary-400'
               : 'text-secondary-400 dark:text-secondary-500',

@@ -1,5 +1,22 @@
 import '@testing-library/jest-dom';
 
+// Polyfill window.matchMedia for jsdom (used by useReducedMotion and theme hooks)
+if (typeof window.matchMedia === 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
 // Polyfill localStorage for Node.js 26+ where jsdom doesn't expose it on window/global
 if (typeof globalThis.localStorage === 'undefined') {
   const store: Record<string, string> = {};

@@ -78,7 +78,7 @@ export function ProgressBar({ progress, label, ariaLabel }: ProgressBarProps): J
 
   return (
     <div
-      className={`w-full transition-opacity duration-300 ${fadingOut ? 'opacity-0' : 'opacity-100'}`}
+      className={`w-full transition-opacity duration-300 motion-reduce:transition-none ${fadingOut ? 'opacity-0' : 'opacity-100'}`}
     >
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-text-light dark:text-text-dark">{label}</span>
@@ -98,11 +98,11 @@ export function ProgressBar({ progress, label, ariaLabel }: ProgressBarProps): J
       >
         {isDeterminate ? (
           <div
-            className="h-full rounded-full bg-primary-500 dark:bg-primary-400 transition-all duration-200 ease-out"
+            className="h-full rounded-full bg-primary-500 dark:bg-primary-400 transition-all duration-200 ease-out motion-reduce:transition-none"
             style={{ width: `${clampedProgress}%` }}
           />
         ) : (
-          <div className="h-full w-1/3 rounded-full bg-primary-500 dark:bg-primary-400 animate-indeterminate" />
+          <div className="h-full w-1/3 rounded-full bg-primary-500 dark:bg-primary-400 animate-indeterminate motion-reduce:animate-none" />
         )}
       </div>
     </div>

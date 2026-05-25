@@ -489,7 +489,7 @@ function PageThumbnailItem({
         {thumbnail.loading ? (
           <div className="flex h-[120px] w-full items-center justify-center">
             <svg
-              className="h-6 w-6 animate-spin text-secondary-400"
+              className="h-6 w-6 animate-spin motion-reduce:animate-none text-secondary-400"
               fill="none"
               viewBox="0 0 24 24"
               aria-hidden="true"

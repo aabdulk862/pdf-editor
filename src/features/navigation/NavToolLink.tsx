@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import type { FC } from 'react';
 
@@ -7,6 +7,8 @@ export interface NavToolLinkProps {
   label: string;
   icon: FC<{ className?: string }>;
   onContextMenu: (position: { x: number; y: number }) => void;
+  /** Roving tabindex value. When provided, controls the tabIndex of the link. */
+  tabIndex?: 0 | -1;
 }
 
 /**
@@ -18,8 +20,12 @@ export interface NavToolLinkProps {
  * - Active state: 3px left border + primary background highlight
  * - Right-click (desktop) and long-press 500ms (mobile) for context menu
  * - Minimum 44px height for touch target accessibility
+ * - Supports roving tabindex via forwarded ref and tabIndex prop
  */
-export function NavToolLink({ path, label, icon: Icon, onContextMenu }: NavToolLinkProps) {
+export const NavToolLink = forwardRef<HTMLAnchorElement, NavToolLinkProps>(function NavToolLink(
+  { path, label, icon: Icon, onContextMenu, tabIndex },
+  ref,
+) {
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
 
@@ -65,6 +71,8 @@ export function NavToolLink({ path, label, icon: Icon, onContextMenu }: NavToolL
   return (
     <NavLink
       to={path}
+      ref={ref}
+      tabIndex={tabIndex}
       onContextMenu={handleContextMenu}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -83,4 +91,4 @@ export function NavToolLink({ path, label, icon: Icon, onContextMenu }: NavToolL
       <span className="truncate">{label}</span>
     </NavLink>
   );
-}
+});

@@ -433,7 +433,7 @@ function DocumentPreview({
         {workflowState === 'detecting' && (
           <div className="flex items-center gap-2 text-sm text-secondary-500 dark:text-secondary-400">
             <svg
-              className="h-5 w-5 animate-spin text-primary-500"
+              className="h-5 w-5 animate-spin motion-reduce:animate-none text-primary-500"
               fill="none"
               viewBox="0 0 24 24"
               aria-hidden="true"

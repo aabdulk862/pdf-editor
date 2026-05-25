@@ -406,7 +406,7 @@ function DraggablePageThumbnail({
       >
         {thumbnail?.loading && (
           <svg
-            className="w-5 h-5 animate-spin text-secondary-400"
+            className="w-5 h-5 animate-spin motion-reduce:animate-none text-secondary-400"
             fill="none"
             viewBox="0 0 24 24"
             aria-hidden="true"

@@ -72,7 +72,7 @@ export function TemplateConfigScreen() {
       aria-modal="true"
       aria-labelledby="template-config-title"
     >
-      <div className="w-full max-w-lg mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-150">
+      <div className="w-full max-w-lg mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-150 motion-reduce:animate-none">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-secondary-200 dark:border-secondary-700 px-6 py-4">
           <h2
@@ -85,7 +85,7 @@ export function TemplateConfigScreen() {
             type="button"
             onClick={handleCancel}
             aria-label="Close configuration"
-            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-secondary-500 transition-colors hover:bg-secondary-100 hover:text-secondary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-200"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-secondary-500 transition-colors motion-reduce:transition-none hover:bg-secondary-100 hover:text-secondary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

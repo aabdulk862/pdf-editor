@@ -1,6 +1,13 @@
-import { Link } from 'react-router-dom';
+import { useCallback, useRef, useState, type DragEvent, type ChangeEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { RecentFilesSection } from '../../recent-files/RecentFilesSection';
 import { TemplateSection } from '../../templates/TemplateSection';
+import { WelcomeBanner } from '../../onboarding';
+import { QuickActions } from './QuickActions';
+import { useReducedMotion } from '../../../hooks/useReducedMotion';
+import { usePageEnter } from '../../../hooks/usePageEnter';
+import { validateFileSize } from '../../../utils/validation';
+import { useRecentFilesStore } from '../../../store/recent-files';
 
 interface ToolCardData {
   path: string;
@@ -662,10 +669,12 @@ const categoryOrder: ToolCardData['category'][] = [
 /**
  * Home page component displaying all 28 PDF operations as navigable cards.
  * Cards are grouped by category and displayed in a responsive grid layout.
+ * Features a prominent hero Drop Zone for quick file upload.
  *
- * Requirements: 5.1, 30.1, 30.2
+ * Requirements: 4.1, 4.2, 4.3, 5.1, 30.1, 30.2
  */
 export function HomePage() {
+  const { style: pageEnterStyle } = usePageEnter();
   const groupedTools = categoryOrder.map((category) => ({
     category,
     label: categoryLabels[category],
@@ -673,7 +682,10 @@ export function HomePage() {
   }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" style={pageEnterStyle}>
+      {/* Welcome banner for first-time visitors */}
+      <WelcomeBanner />
+
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-text-light dark:text-text-dark">
           PDF Editor
@@ -683,6 +695,12 @@ export function HomePage() {
           leave your device.
         </p>
       </div>
+
+      {/* Hero Drop Zone */}
+      <HeroDropZone />
+
+      {/* Quick Actions — top 4 most-used tools */}
+      <QuickActions />
 
       <RecentFilesSection />
 
@@ -701,13 +719,29 @@ export function HomePage() {
               <Link
                 key={tool.path}
                 to={tool.path}
-                className="group flex items-start gap-3 p-4 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all duration-150 min-h-[44px]"
+                className={[
+                  'group flex items-start gap-3 p-4 rounded-lg border border-secondary-200 dark:border-secondary-700',
+                  'bg-white dark:bg-secondary-800 shadow-level-1',
+                  // Hover: elevation + border highlight
+                  'hover:border-primary-300 dark:hover:border-primary-600',
+                  'hover:shadow-level-2 hover:-translate-y-0.5',
+                  // Click: brief scale press animation (100ms)
+                  'active:scale-[0.97]',
+                  // Transition: 150ms ease-out for hover, 100ms for active press
+                  'transition-all duration-normal ease-out active:duration-fast active:ease-in-out',
+                  // Reduced motion: disable transforms, keep color/shadow transitions
+                  'motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 motion-reduce:transition-colors motion-reduce:transform-none',
+                  // Touch target
+                  'min-h-[44px]',
+                ].join(' ')}
               >
-                <div className="flex-shrink-0 p-2 rounded-md bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 transition-colors duration-150">
-                  {tool.icon}
+                <div className="flex-shrink-0 p-2 rounded-md bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 transition-colors duration-normal ease-out">
+                  <span className="block h-6 w-6 [&>svg]:h-6 [&>svg]:w-6 [&>svg]:stroke-[1.5]">
+                    {tool.icon}
+                  </span>
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm font-medium text-text-light dark:text-text-dark group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-150">
+                  <h3 className="text-sm font-medium text-text-light dark:text-text-dark group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-normal ease-out">
                     {tool.name}
                   </h3>
                   <p className="mt-0.5 text-xs text-secondary-500 dark:text-secondary-400 line-clamp-2">
@@ -720,5 +754,302 @@ export function HomePage() {
         </section>
       ))}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Hero Drop Zone Component
+// ---------------------------------------------------------------------------
+
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
+
+/**
+ * Prominent hero drop zone for the home page.
+ * Displays an animated dashed border on drag-over, a large upload icon,
+ * instructional text, supported formats, and a browse button.
+ *
+ * Requirements: 4.1 (drag-over highlight within 100ms), 4.2 (begin processing on valid drop),
+ * 4.3 (inline error for unsupported types), 5.1 (prominent Drop_Zone)
+ */
+function HeroDropZone() {
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragCounterRef = useRef(0);
+  const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
+
+  const handleFileDrop = useCallback(
+    (files: FileList | File[]) => {
+      setError(null);
+      const fileArray = Array.from(files);
+
+      if (fileArray.length === 0) return;
+
+      const file = fileArray[0];
+
+      // Validate file type — only PDF accepted from hero zone
+      if (file.type !== 'application/pdf') {
+        setError('Unsupported file type. Please upload a PDF file (application/pdf).');
+        return;
+      }
+
+      // Validate file size
+      const sizeResult = validateFileSize(file, MAX_FILE_SIZE);
+      if (!sizeResult.valid) {
+        setError(sizeResult.error ?? 'File exceeds maximum size of 100MB.');
+        return;
+      }
+
+      // Track recent file
+      const addEntry = useRecentFilesStore.getState().addEntry;
+      addEntry(file, '/merge', 'Upload');
+
+      // Navigate to merge tool with the file (most common starting point)
+      // Store file in sessionStorage for the target page to pick up
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          sessionStorage.setItem(
+            'pdf-editor-home-upload',
+            JSON.stringify({
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              lastModified: file.lastModified,
+            }),
+          );
+          // Navigate to merge as the default tool for uploaded PDFs
+          navigate('/merge');
+        } catch {
+          // If sessionStorage fails, still navigate
+          navigate('/merge');
+        }
+      };
+      reader.onerror = () => {
+        navigate('/merge');
+      };
+      reader.readAsArrayBuffer(file.slice(0, 1)); // Minimal read to trigger onload
+    },
+    [navigate],
+  );
+
+  const handleDragEnter = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current += 1;
+    if (dragCounterRef.current === 1) {
+      setIsDragOver(true);
+      setError(null);
+    }
+  }, []);
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current -= 1;
+    if (dragCounterRef.current === 0) {
+      setIsDragOver(false);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounterRef.current = 0;
+      setIsDragOver(false);
+
+      const { files } = e.dataTransfer;
+      if (files.length > 0) {
+        handleFileDrop(files);
+      }
+    },
+    [handleFileDrop],
+  );
+
+  const handleClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInputRef.current?.click();
+    }
+  }, []);
+
+  const handleFileInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const { files } = e.target;
+      if (files && files.length > 0) {
+        handleFileDrop(files);
+      }
+      // Reset input so the same file can be selected again
+      e.target.value = '';
+    },
+    [handleFileDrop],
+  );
+
+  return (
+    <section aria-labelledby="hero-drop-zone-heading">
+      <h2 id="hero-drop-zone-heading" className="sr-only">
+        Upload PDF
+      </h2>
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Upload PDF file. Drag and drop a PDF here or click to browse."
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        className={[
+          // Base styles
+          'relative flex flex-col items-center justify-center cursor-pointer',
+          'rounded-xl border-2 border-dashed p-8 sm:p-12',
+          'min-h-[220px] sm:min-h-[260px]',
+          // Focus ring
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+          'dark:focus-visible:ring-offset-secondary-900',
+          // Transition — 100ms (duration-fast) for drag-over response per Requirement 4.1
+          !prefersReducedMotion && 'transition-all duration-fast ease-out',
+          prefersReducedMotion && 'transition-colors duration-fast',
+          // Motion-safe scale on drag-over
+          !prefersReducedMotion && isDragOver && 'scale-[1.01]',
+          // Drag-over state
+          isDragOver
+            ? 'border-primary-500 bg-primary-50/80 dark:border-primary-400 dark:bg-primary-900/30 shadow-level-2'
+            : 'border-secondary-300 bg-secondary-50/50 hover:border-primary-400 hover:bg-secondary-100/80 dark:border-secondary-600 dark:bg-secondary-800/50 dark:hover:border-primary-500 dark:hover:bg-secondary-700/50',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {/* Large upload icon — 48px for prominence */}
+        <div
+          className={[
+            'mb-4 rounded-full p-4',
+            'transition-colors duration-fast ease-out',
+            isDragOver
+              ? 'bg-primary-100 dark:bg-primary-800/40'
+              : 'bg-secondary-100 dark:bg-secondary-700/50',
+          ].join(' ')}
+        >
+          <svg
+            className={[
+              'h-12 w-12 transition-colors duration-fast ease-out',
+              isDragOver
+                ? 'text-primary-600 dark:text-primary-300'
+                : 'text-secondary-400 dark:text-secondary-500',
+            ].join(' ')}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+            />
+          </svg>
+        </div>
+
+        {/* Instructional text */}
+        <p className="mb-1 text-lg font-semibold text-secondary-800 dark:text-secondary-100">
+          {isDragOver ? 'Drop your PDF here' : 'Drop your PDF here to get started'}
+        </p>
+        <p className="mb-4 text-sm text-secondary-500 dark:text-secondary-400">
+          or click to browse files
+        </p>
+
+        {/* Browse button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            fileInputRef.current?.click();
+          }}
+          className={[
+            'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg',
+            'text-sm font-medium',
+            'bg-primary-600 text-white hover:bg-primary-700',
+            'dark:bg-primary-500 dark:hover:bg-primary-600',
+            'active:scale-[0.97] transition-all duration-fast ease-out',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+            'dark:focus-visible:ring-offset-secondary-900',
+            'min-h-[44px] min-w-[44px]',
+          ].join(' ')}
+        >
+          <svg
+            className="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+            />
+          </svg>
+          Browse files
+        </button>
+
+        {/* Supported formats text */}
+        <p className="mt-4 text-xs text-secondary-400 dark:text-secondary-500">
+          Supports PDF files up to 100MB
+        </p>
+
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf"
+          onChange={handleFileInputChange}
+          className="sr-only"
+          tabIndex={-1}
+          aria-hidden="true"
+        />
+      </div>
+
+      {/* Inline error message for unsupported file types (Requirement 4.3) */}
+      {error && (
+        <div
+          role="alert"
+          aria-live="assertive"
+          className="mt-3 flex items-center gap-2 rounded-lg border border-error-200 bg-error-50 px-4 py-3 dark:border-error-800 dark:bg-error-900/30"
+        >
+          <svg
+            className="h-5 w-5 flex-shrink-0 text-error-500 dark:text-error-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+            />
+          </svg>
+          <p className="text-sm text-error-700 dark:text-error-300">{error}</p>
+        </div>
+      )}
+    </section>
   );
 }

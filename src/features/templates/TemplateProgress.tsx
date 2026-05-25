@@ -98,7 +98,7 @@ export function TemplateProgress() {
       aria-modal="true"
       aria-labelledby="template-progress-title"
     >
-      <div className="w-full max-w-md mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-150">
+      <div className="w-full max-w-md mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-150 motion-reduce:animate-none">
         {/* Header */}
         <div className="px-6 py-4 border-b border-secondary-200 dark:border-secondary-700">
           <h2
@@ -135,7 +135,7 @@ export function TemplateProgress() {
           >
             <div
               className={[
-                'h-full rounded-full transition-all duration-300 ease-out',
+                'h-full rounded-full transition-all duration-300 ease-out motion-reduce:transition-none',
                 execution.status === 'failed'
                   ? 'bg-red-500 dark:bg-red-400'
                   : execution.status === 'completed'
@@ -150,7 +150,9 @@ export function TemplateProgress() {
           <p className="text-sm text-secondary-600 dark:text-secondary-300 mb-1">
             {execution.status === 'executing' && (
               <>
-                <span className="inline-block animate-pulse mr-1">●</span>
+                <span className="inline-block animate-pulse motion-reduce:animate-none mr-1">
+                  ●
+                </span>
                 {execution.currentStepName}
               </>
             )}
@@ -171,7 +173,8 @@ export function TemplateProgress() {
                 dotColor = 'bg-green-500 dark:bg-green-400';
               } else if (i === execution.currentStepIndex) {
                 if (execution.status === 'executing') {
-                  dotColor = 'bg-primary-500 dark:bg-primary-400 animate-pulse';
+                  dotColor =
+                    'bg-primary-500 dark:bg-primary-400 animate-pulse motion-reduce:animate-none';
                 } else if (execution.status === 'failed') {
                   dotColor = 'bg-red-500 dark:bg-red-400';
                 } else if (execution.status === 'completed') {

@@ -1,8 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useDebouncedCallback } from '../../hooks/useDebouncedCallback';
 
 export interface NavFilterInputProps {
   value: string;
   onChange: (query: string) => void;
+  /** Debounce delay in milliseconds. Defaults to 50ms. */
+  debounceMs?: number;
 }
 
 /**
@@ -13,10 +16,33 @@ export interface NavFilterInputProps {
  * - Clear button (X) appears when input has value
  * - Minimum 44x44px touch target for input and clear button
  * - Focus-visible ring styling matching existing Input component
- * - Calls onChange on every keystroke (no debounce needed for local filtering)
+ * - Debounces onChange with 50ms threshold to prevent excessive re-renders during fast typing
  */
-export function NavFilterInput({ value, onChange }: NavFilterInputProps) {
+export function NavFilterInput({ value, onChange, debounceMs = 50 }: NavFilterInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  // Local state for immediate visual feedback while debouncing
+  const [localValue, setLocalValue] = useState(value);
+
+  // Sync local state when controlled value changes externally (e.g., clear)
+  if (value !== localValue && value === '') {
+    setLocalValue('');
+  }
+
+  const debouncedOnChange = useDebouncedCallback((query: string) => {
+    onChange(query);
+  }, debounceMs);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
+    debouncedOnChange(newValue);
+  };
+
+  const handleClear = () => {
+    setLocalValue('');
+    onChange(''); // Clear immediately, no debounce
+    inputRef.current?.focus();
+  };
 
   return (
     <div className="relative flex items-center">
@@ -40,8 +66,8 @@ export function NavFilterInput({ value, onChange }: NavFilterInputProps) {
       <input
         ref={inputRef}
         type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        value={localValue}
+        onChange={handleChange}
         placeholder="Filter tools..."
         aria-label="Filter tools"
         className={[
@@ -55,13 +81,10 @@ export function NavFilterInput({ value, onChange }: NavFilterInputProps) {
       />
 
       {/* Clear button — visible only when input has value */}
-      {value && (
+      {localValue && (
         <button
           type="button"
-          onClick={() => {
-            onChange('');
-            inputRef.current?.focus();
-          }}
+          onClick={handleClear}
           aria-label="Clear filter"
           className={[
             'absolute right-1 flex items-center justify-center',

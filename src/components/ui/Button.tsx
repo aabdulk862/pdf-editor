@@ -54,13 +54,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         aria-disabled={isDisabled}
         aria-busy={loading}
         className={[
-          'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors duration-150',
+          // Base layout & typography
+          'inline-flex items-center justify-center gap-2 rounded-md font-medium',
+          // Transitions: colors + transform with token-based duration and easing
+          'transition-[color,background-color,border-color,transform] duration-fast ease-in-out',
+          // Press animation (scale down on active)
+          'active:scale-[0.97]',
+          // Respect prefers-reduced-motion
+          'motion-reduce:transform-none motion-reduce:transition-none',
+          // Focus ring
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
           'dark:focus-visible:ring-offset-background-dark',
+          // Variant-specific colors
           variantClasses[variant],
+          // Size-specific spacing
           sizeClasses[size],
           fullWidth ? 'w-full' : '',
-          isDisabled ? 'cursor-not-allowed opacity-50' : '',
+          isDisabled ? 'cursor-not-allowed opacity-50 active:scale-100' : '',
           className,
         ]
           .filter(Boolean)
@@ -69,7 +79,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading && (
           <svg
-            className="h-4 w-4 animate-spin"
+            className="h-4 w-4 animate-spin motion-reduce:animate-none"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToastStore, type Toast as ToastType, type ToastSeverity } from '../../store/toast';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const MAX_VISIBLE = 3;
+
+/** Duration for the slide-up entrance animation (ms) */
+const ENTER_DURATION = 200;
+/** Duration for the slide-down exit animation (ms) */
+const EXIT_DURATION = 150;
 
 const severityStyles: Record<ToastSeverity, string> = {
   success:
@@ -27,23 +33,51 @@ const severityIconStyles: Record<ToastSeverity, string> = {
   info: 'bg-blue-500 text-white',
 };
 
+type AnimationPhase = 'entering' | 'visible' | 'exiting' | 'exited';
+
 interface ToastItemProps {
   toast: ToastType;
   onDismiss: (id: string) => void;
+  reducedMotion: boolean;
 }
 
-function ToastItem({ toast, onDismiss }: ToastItemProps): JSX.Element {
+function ToastItem({ toast, onDismiss, reducedMotion }: ToastItemProps): JSX.Element | null {
+  const [phase, setPhase] = useState<AnimationPhase>('entering');
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const remainingRef = useRef(toast.duration);
   const startTimeRef = useRef(Date.now());
 
+  // Trigger entrance animation on mount
+  useEffect(() => {
+    if (reducedMotion) {
+      setPhase('visible');
+      return;
+    }
+    // Use requestAnimationFrame to ensure the initial transform is painted before transitioning
+    const raf = requestAnimationFrame(() => {
+      setPhase('visible');
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [reducedMotion]);
+
+  const startExitAnimation = useCallback(() => {
+    if (reducedMotion) {
+      onDismiss(toast.id);
+      return;
+    }
+    setPhase('exiting');
+    setTimeout(() => {
+      onDismiss(toast.id);
+    }, EXIT_DURATION);
+  }, [onDismiss, toast.id, reducedMotion]);
+
   const startTimer = useCallback(() => {
     startTimeRef.current = Date.now();
     timerRef.current = setTimeout(() => {
-      onDismiss(toast.id);
+      startExitAnimation();
     }, remainingRef.current);
-  }, [onDismiss, toast.id]);
+  }, [startExitAnimation]);
 
   const pauseTimer = useCallback(() => {
     if (timerRef.current) {
@@ -55,7 +89,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps): JSX.Element {
   }, []);
 
   useEffect(() => {
-    if (!isPaused) {
+    if (!isPaused && phase === 'visible') {
       startTimer();
     } else {
       pauseTimer();
@@ -66,7 +100,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps): JSX.Element {
         clearTimeout(timerRef.current);
       }
     };
-  }, [isPaused, startTimer, pauseTimer]);
+  }, [isPaused, phase, startTimer, pauseTimer]);
 
   const handleMouseEnter = (): void => {
     setIsPaused(true);
@@ -77,7 +111,40 @@ function ToastItem({ toast, onDismiss }: ToastItemProps): JSX.Element {
   };
 
   const handleDismiss = (): void => {
-    onDismiss(toast.id);
+    startExitAnimation();
+  };
+
+  // Compute inline transform style for GPU-accelerated animation
+  const getTransformStyle = (): React.CSSProperties => {
+    if (reducedMotion) {
+      return { opacity: 1 };
+    }
+
+    switch (phase) {
+      case 'entering':
+        return {
+          transform: 'translateY(100%)',
+          opacity: 0,
+          transition: 'none',
+        };
+      case 'visible':
+        return {
+          transform: 'translateY(0)',
+          opacity: 1,
+          transition: `transform ${ENTER_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1), opacity ${ENTER_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1)`,
+        };
+      case 'exiting':
+        return {
+          transform: 'translateY(100%)',
+          opacity: 0,
+          transition: `transform ${EXIT_DURATION}ms cubic-bezier(0.32, 0, 0.67, 0), opacity ${EXIT_DURATION}ms cubic-bezier(0.32, 0, 0.67, 0)`,
+        };
+      case 'exited':
+        return {
+          transform: 'translateY(100%)',
+          opacity: 0,
+        };
+    }
   };
 
   return (
@@ -85,7 +152,11 @@ function ToastItem({ toast, onDismiss }: ToastItemProps): JSX.Element {
       role="alert"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`flex items-start gap-3 rounded-lg border p-4 shadow-lg transition-all duration-300 ${severityStyles[toast.severity]}`}
+      style={{
+        ...getTransformStyle(),
+        willChange: 'transform, opacity',
+      }}
+      className={`flex items-start gap-3 rounded-lg border p-4 shadow-lg ${severityStyles[toast.severity]}`}
     >
       <span
         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold ${severityIconStyles[toast.severity]}`}
@@ -97,7 +168,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps): JSX.Element {
       <button
         type="button"
         onClick={handleDismiss}
-        className="shrink-0 rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-current"
+        className="shrink-0 rounded p-1 opacity-70 transition-opacity motion-reduce:transition-none hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-current"
         aria-label="Dismiss notification"
       >
         <svg
@@ -114,9 +185,21 @@ function ToastItem({ toast, onDismiss }: ToastItemProps): JSX.Element {
   );
 }
 
+/**
+ * Toast container with responsive positioning:
+ * - Mobile (< md): bottom-center, thumb-reachable
+ * - Desktop (>= md): top-right
+ *
+ * Toasts animate with:
+ * - Entrance: slide-up (translateY 100% → 0) over 200ms ease-out
+ * - Exit: slide-down (translateY 0 → 100%) over 150ms ease-in
+ *
+ * Respects prefers-reduced-motion by disabling transform animations.
+ */
 export function ToastContainer(): JSX.Element {
   const toasts = useToastStore((state) => state.toasts);
   const removeToast = useToastStore((state) => state.removeToast);
+  const reducedMotion = useReducedMotion();
 
   const visibleToasts = toasts.slice(-MAX_VISIBLE);
 
@@ -124,7 +207,15 @@ export function ToastContainer(): JSX.Element {
   const nonErrorToasts = visibleToasts.filter((t) => t.severity !== 'error');
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 flex flex-col items-end justify-end gap-2 p-4 sm:justify-start sm:p-6">
+    <div
+      className={[
+        'pointer-events-none fixed z-50 flex flex-col gap-2 p-4',
+        // Mobile: bottom-center (thumb-reachable)
+        'inset-x-0 bottom-0 items-center',
+        // Desktop (md+): top-right
+        'md:inset-x-auto md:bottom-auto md:right-0 md:top-0 md:items-end md:p-6',
+      ].join(' ')}
+    >
       {/* Assertive region for error toasts - announced immediately */}
       <div
         aria-live="assertive"
@@ -132,18 +223,28 @@ export function ToastContainer(): JSX.Element {
         className="pointer-events-auto w-full max-w-sm space-y-2"
       >
         {errorToasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} onDismiss={removeToast} />
+          <ToastItem
+            key={toast.id}
+            toast={toast}
+            onDismiss={removeToast}
+            reducedMotion={reducedMotion}
+          />
         ))}
       </div>
 
-      {/* Polite region for success/warning toasts - announced when convenient */}
+      {/* Polite region for success/warning/info toasts - announced when convenient */}
       <div
         aria-live="polite"
         aria-atomic="true"
         className="pointer-events-auto w-full max-w-sm space-y-2"
       >
         {nonErrorToasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} onDismiss={removeToast} />
+          <ToastItem
+            key={toast.id}
+            toast={toast}
+            onDismiss={removeToast}
+            reducedMotion={reducedMotion}
+          />
         ))}
       </div>
     </div>

@@ -18,7 +18,8 @@ export function Skeleton({
   className = '',
   lines = 1,
 }: SkeletonProps) {
-  const baseClasses = 'animate-pulse bg-secondary-200 dark:bg-secondary-700';
+  const baseClasses =
+    'animate-pulse motion-reduce:animate-none bg-secondary-200 dark:bg-secondary-700';
 
   if (variant === 'text') {
     return (

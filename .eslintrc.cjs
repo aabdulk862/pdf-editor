@@ -41,5 +41,22 @@ module.exports = {
     // General rules
     'no-console': 'warn',
     'no-debugger': 'error',
+
+    // Design token enforcement: forbid raw gray-* Tailwind classes
+    'no-restricted-syntax': [
+      'warn',
+      {
+        selector:
+          'JSXAttribute[name.name="className"] Literal[value=/\\b(bg|text|border|ring|divide|placeholder|from|via|to)-gray-/]',
+        message:
+          'Avoid raw gray-* Tailwind classes. Use secondary-* design token classes instead (e.g., bg-secondary-100, text-secondary-700, border-secondary-300).',
+      },
+      {
+        selector:
+          'JSXAttribute[name.name="className"] TemplateLiteral Literal[value=/\\b(bg|text|border|ring|divide|placeholder|from|via|to)-gray-/]',
+        message:
+          'Avoid raw gray-* Tailwind classes in template literals. Use secondary-* design token classes instead (e.g., bg-secondary-100, text-secondary-700, border-secondary-300).',
+      },
+    ],
   },
 };

@@ -45,7 +45,7 @@ const Merge = () => {
       setDownloadable(true);
       setProcessing(false);
     } catch (error) {
-      console.error(error);
+      console.error(error); // eslint-disable-line no-console
       alert('Something went wrong. Please try again or check the console for more information.');
     }
   };

@@ -9,6 +9,7 @@ import { TabBar } from '../../features/tabs/TabBar';
 import { TabContent } from '../../features/tabs/TabContent';
 import { TemplateConfigScreen } from '../../features/templates/TemplateConfigScreen';
 import { TemplateProgress } from '../../features/templates/TemplateProgress';
+import { InstallPrompt } from '../../features/canvas-editor/components/InstallPrompt';
 import { useNavStore } from '../../features/navigation/store/nav-store';
 
 /** Navigation link item for the sidebar/mobile nav */
@@ -43,7 +44,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
 
   return (
     <GlobalDropZone>
-      <div className="min-h-screen flex flex-col md:flex-row bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200">
+      <div className="min-h-screen flex flex-col md:flex-row bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-200 motion-reduce:transition-none">
         {/* Mobile top bar */}
         <header className="md:hidden sticky top-0 z-40 w-full border-b border-secondary-200 dark:border-secondary-700 bg-background-light dark:bg-background-dark">
           <div className="flex items-center justify-between px-4 h-14">
@@ -154,7 +155,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
 
           {/* Mobile navigation drawer */}
           <nav
-            className={`overflow-hidden transition-all duration-200 ease-in-out ${
+            className={`overflow-hidden transition-all duration-200 ease-in-out motion-reduce:transition-none ${
               sidebarOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'
             }`}
             aria-label="Mobile navigation"
@@ -167,7 +168,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
 
         {/* Desktop sidebar */}
         <aside
-          className={`hidden md:flex md:flex-col md:flex-shrink-0 border-r border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900 sticky top-0 h-screen overflow-y-auto transition-all duration-200 ease-in-out ${
+          className={`hidden md:flex md:flex-col md:flex-shrink-0 border-r border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900 sticky top-0 h-screen overflow-y-auto transition-all duration-200 ease-in-out motion-reduce:transition-none ${
             sidebarCollapsed ? 'md:w-12' : 'md:w-64 lg:w-72'
           }`}
           aria-label="Desktop navigation"
@@ -190,7 +191,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
         </aside>
 
         {/* Main content area */}
-        <main className="flex-1 min-w-0 transition-all duration-200">
+        <main className="flex-1 min-w-0 transition-all duration-200 motion-reduce:transition-none">
           {/* Tab bar above main content */}
           <TabBar />
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -201,7 +202,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
         {/* Mobile overlay backdrop when sidebar is open */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 z-30 bg-black/20 md:hidden transition-opacity duration-150"
+            className="fixed inset-0 z-30 bg-black/20 md:hidden transition-opacity duration-150 motion-reduce:transition-none"
             onClick={() => setSidebarOpen(false)}
             aria-hidden="true"
           />
@@ -213,6 +214,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
       <ShortcutReferencePanel />
       <TemplateConfigScreen />
       <TemplateProgress />
+      <InstallPrompt />
     </GlobalDropZone>
   );
 }
@@ -249,7 +251,7 @@ export function ExpandableSection({
         >
           <span>{title}</span>
           <svg
-            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 transition-transform duration-200 motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -259,7 +261,7 @@ export function ExpandableSection({
           </svg>
         </button>
         <div
-          className={`transition-all duration-200 ease-in-out overflow-hidden ${
+          className={`transition-all duration-200 ease-in-out motion-reduce:transition-none overflow-hidden ${
             isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}
         >

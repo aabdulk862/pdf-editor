@@ -177,12 +177,8 @@ describe('DeletePagesPage', () => {
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
     fireEvent.change(input, { target: { files: [file] } });
 
-    await waitFor(() => {
-      expect(screen.getByText('test.pdf')).toBeInTheDocument();
-    });
-
-    // Select all pages
-    const selectAllBtn = screen.getByText('Select All');
+    // Wait for PDF to be fully loaded (Select All button appears)
+    const selectAllBtn = await screen.findByText('Select All');
     fireEvent.click(selectAllBtn);
 
     // Try to delete

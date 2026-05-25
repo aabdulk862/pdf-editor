@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,6 +35,25 @@ export function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+
+  // Animation state: starts false, transitions to true after mount to trigger CSS transitions
+  const [animateIn, setAnimateIn] = useState(false);
+
+  // Trigger entrance animation after the portal renders
+  useEffect(() => {
+    if (isOpen) {
+      // Reset animation state when opening
+      setAnimateIn(false);
+      // Use requestAnimationFrame to ensure the initial state is painted before transitioning
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setAnimateIn(true);
+        });
+      });
+    } else {
+      setAnimateIn(false);
+    }
+  }, [isOpen]);
 
   // Auto-focus the search input when the palette opens
   useEffect(() => {
@@ -111,12 +130,23 @@ export function CommandPalette() {
       onClick={handleBackdropClick}
     >
       {/* Backdrop — prevents interaction with elements behind */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
+      <div
+        className={[
+          'absolute inset-0 bg-black/50',
+          'transition-[opacity,backdrop-filter] duration-fast ease-out motion-reduce:transition-none',
+          animateIn ? 'opacity-100 backdrop-blur-sm' : 'opacity-0 backdrop-blur-none',
+        ].join(' ')}
+        aria-hidden="true"
+      />
 
       {/* Modal content */}
       <div
         ref={contentRef}
-        className="relative z-10 w-full max-w-lg mx-4 overflow-hidden rounded-xl border border-secondary-200 bg-white shadow-2xl dark:border-secondary-700 dark:bg-secondary-800"
+        className={[
+          'relative z-10 w-full max-w-lg mx-4 overflow-hidden rounded-xl border border-secondary-200 bg-white shadow-2xl dark:border-secondary-700 dark:bg-secondary-800',
+          'transition-transform duration-normal ease-out motion-reduce:transition-none',
+          animateIn ? 'scale-100' : 'scale-95',
+        ].join(' ')}
       >
         {/* Search input */}
         <div className="flex items-center border-b border-secondary-200 px-4 dark:border-secondary-700">

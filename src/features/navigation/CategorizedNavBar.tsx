@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useNavStore } from './store/nav-store';
 import { useThemeStore } from '../../store/theme';
 import { filterNavigation } from './filter';
@@ -8,6 +8,8 @@ import { NavFilterInput } from './NavFilterInput';
 import { NavCategoryGroup } from './NavCategoryGroup';
 import { NavToolLink } from './NavToolLink';
 import { NavContextMenu } from './NavContextMenu';
+import { useRovingTabindex } from '../../hooks/useRovingTabindex';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { FolderIcon, PencilIcon, ConvertIcon, ShieldIcon, ChartIcon, ScanIcon } from './icons';
 import type { FC } from 'react';
 import type { NavTool } from './categories';
@@ -63,6 +65,7 @@ export function CategorizedNavBar() {
   } = useNavStore();
 
   const { theme, toggleTheme } = useThemeStore();
+  const navigate = useNavigate();
 
   // Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -72,7 +75,10 @@ export function CategorizedNavBar() {
 
   // Tooltip state for collapsed mode
   const [tooltip, setTooltip] = useState<{ label: string; top: number } | null>(null);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
   const tooltipTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tooltipFadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   // Load persisted state on mount
   useEffect(() => {
@@ -92,6 +98,72 @@ export function CategorizedNavBar() {
     .map((path) => findToolByPath(path))
     .filter((t): t is NavTool => t !== undefined);
 
+  // Build flat list of visible tool paths for roving tabindex
+  const visibleToolPaths = useMemo(() => {
+    const paths: string[] = [];
+
+    // Favorites (only shown when not filtering and has items)
+    if (favoriteTools.length > 0 && !filterQuery) {
+      favoriteTools.forEach((tool) => paths.push(tool.path));
+    }
+
+    // Recents (only shown when not filtering and has items)
+    if (recentToolItems.length > 0 && !filterQuery) {
+      recentToolItems.forEach((tool) => paths.push(tool.path));
+    }
+
+    // Category tools (only non-collapsed categories, or filtered results)
+    if (hasResults) {
+      filteredCategories.forEach((category) => {
+        // When filtering, show all results regardless of collapse state
+        // When not filtering, respect collapse state
+        const isCollapsed = !filterQuery && !!collapsedCategories[category.id];
+        if (!isCollapsed) {
+          category.tools.forEach((tool) => paths.push(tool.path));
+        }
+      });
+    }
+
+    return paths;
+  }, [
+    favoriteTools,
+    recentToolItems,
+    filterQuery,
+    hasResults,
+    filteredCategories,
+    collapsedCategories,
+  ]);
+
+  // Roving tabindex for keyboard navigation
+  const { getTabIndex, getItemRef, handleKeyDown, focusedIndex, setFocusedIndex } =
+    useRovingTabindex({
+      itemCount: visibleToolPaths.length,
+      wrap: true,
+      onActivate: (index) => {
+        const path = visibleToolPaths[index];
+        if (path) {
+          navigate(path);
+        }
+      },
+    });
+
+  // Reset focused index when visible items change (e.g., filter or collapse)
+  useEffect(() => {
+    if (focusedIndex >= visibleToolPaths.length && visibleToolPaths.length > 0) {
+      setFocusedIndex(0);
+    }
+  }, [visibleToolPaths.length, focusedIndex, setFocusedIndex]);
+
+  // Track the current flat index as we render items
+  let flatIndex = 0;
+
+  /** Get the next flat index and increment the counter */
+  const getNextFlatIndex = () => {
+    const idx = flatIndex;
+    flatIndex++;
+    return idx;
+  };
+
   const handleContextMenu = useCallback((toolPath: string, position: { x: number; y: number }) => {
     setContextMenu({ toolPath, position });
   }, []);
@@ -107,9 +179,19 @@ export function CategorizedNavBar() {
       const rect = event.currentTarget.getBoundingClientRect();
       tooltipTimer.current = setTimeout(() => {
         setTooltip({ label, top: rect.top + rect.height / 2 });
+        // If reduced motion is preferred, show instantly; otherwise trigger fade-in
+        if (prefersReducedMotion) {
+          setTooltipVisible(true);
+        } else {
+          // Start with opacity 0, then trigger fade-in on next frame
+          setTooltipVisible(false);
+          tooltipFadeTimer.current = setTimeout(() => {
+            setTooltipVisible(true);
+          }, 10);
+        }
       }, 300);
     },
-    [sidebarCollapsed],
+    [sidebarCollapsed, prefersReducedMotion],
   );
 
   const handleToolMouseLeave = useCallback(() => {
@@ -117,7 +199,12 @@ export function CategorizedNavBar() {
       clearTimeout(tooltipTimer.current);
       tooltipTimer.current = null;
     }
+    if (tooltipFadeTimer.current) {
+      clearTimeout(tooltipFadeTimer.current);
+      tooltipFadeTimer.current = null;
+    }
     setTooltip(null);
+    setTooltipVisible(false);
   }, []);
 
   // ─── Collapsed Sidebar (Desktop) ─────────────────────────────────────────────
@@ -196,7 +283,13 @@ export function CategorizedNavBar() {
         {tooltip && (
           <div
             className="fixed left-14 z-50 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-gray-700 rounded shadow-lg whitespace-nowrap pointer-events-none"
-            style={{ top: tooltip.top, transform: 'translateY(-50%)' }}
+            style={{
+              top: tooltip.top,
+              transform: 'translateY(-50%)',
+              opacity: tooltipVisible ? 1 : 0,
+              transition: prefersReducedMotion ? 'none' : 'opacity 150ms ease-out',
+              willChange: 'opacity',
+            }}
             role="tooltip"
           >
             {tooltip.label}
@@ -235,7 +328,12 @@ export function CategorizedNavBar() {
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto px-3 space-y-3">
+      <div
+        className="flex-1 overflow-y-auto px-3 space-y-3"
+        role="listbox"
+        aria-label="PDF Tools"
+        onKeyDown={handleKeyDown}
+      >
         {/* Favorites section — hidden if empty */}
         {favoriteTools.length > 0 && !filterQuery && (
           <div>
@@ -243,15 +341,20 @@ export function CategorizedNavBar() {
               Favorites
             </p>
             <div className="space-y-0.5">
-              {favoriteTools.map((tool) => (
-                <NavToolLink
-                  key={tool.path}
-                  path={tool.path}
-                  label={tool.label}
-                  icon={CATEGORY_ICONS[tool.categoryId] ?? FolderIcon}
-                  onContextMenu={(pos) => handleContextMenu(tool.path, pos)}
-                />
-              ))}
+              {favoriteTools.map((tool) => {
+                const idx = getNextFlatIndex();
+                return (
+                  <NavToolLink
+                    key={tool.path}
+                    ref={getItemRef(idx)}
+                    tabIndex={getTabIndex(idx)}
+                    path={tool.path}
+                    label={tool.label}
+                    icon={CATEGORY_ICONS[tool.categoryId] ?? FolderIcon}
+                    onContextMenu={(pos) => handleContextMenu(tool.path, pos)}
+                  />
+                );
+              })}
             </div>
           </div>
         )}
@@ -263,40 +366,53 @@ export function CategorizedNavBar() {
               Recent
             </p>
             <div className="space-y-0.5">
-              {recentToolItems.map((tool) => (
-                <NavToolLink
-                  key={tool.path}
-                  path={tool.path}
-                  label={tool.label}
-                  icon={CATEGORY_ICONS[tool.categoryId] ?? FolderIcon}
-                  onContextMenu={(pos) => handleContextMenu(tool.path, pos)}
-                />
-              ))}
+              {recentToolItems.map((tool) => {
+                const idx = getNextFlatIndex();
+                return (
+                  <NavToolLink
+                    key={tool.path}
+                    ref={getItemRef(idx)}
+                    tabIndex={getTabIndex(idx)}
+                    path={tool.path}
+                    label={tool.label}
+                    icon={CATEGORY_ICONS[tool.categoryId] ?? FolderIcon}
+                    onContextMenu={(pos) => handleContextMenu(tool.path, pos)}
+                  />
+                );
+              })}
             </div>
           </div>
         )}
 
         {/* Category groups or "No tools found" */}
         {hasResults ? (
-          filteredCategories.map((category) => (
-            <NavCategoryGroup
-              key={category.id}
-              category={category}
-              icon={CATEGORY_ICONS[category.id] ?? FolderIcon}
-              isCollapsed={!!collapsedCategories[category.id]}
-              onToggle={() => toggleCategory(category.id)}
-            >
-              {category.tools.map((tool) => (
-                <NavToolLink
-                  key={tool.path}
-                  path={tool.path}
-                  label={tool.label}
-                  icon={CATEGORY_ICONS[tool.categoryId] ?? FolderIcon}
-                  onContextMenu={(pos) => handleContextMenu(tool.path, pos)}
-                />
-              ))}
-            </NavCategoryGroup>
-          ))
+          filteredCategories.map((category) => {
+            const isCollapsed = !filterQuery && !!collapsedCategories[category.id];
+            return (
+              <NavCategoryGroup
+                key={category.id}
+                category={category}
+                icon={CATEGORY_ICONS[category.id] ?? FolderIcon}
+                isCollapsed={isCollapsed}
+                onToggle={() => toggleCategory(category.id)}
+              >
+                {category.tools.map((tool) => {
+                  const idx = getNextFlatIndex();
+                  return (
+                    <NavToolLink
+                      key={tool.path}
+                      ref={getItemRef(idx)}
+                      tabIndex={getTabIndex(idx)}
+                      path={tool.path}
+                      label={tool.label}
+                      icon={CATEGORY_ICONS[tool.categoryId] ?? FolderIcon}
+                      onContextMenu={(pos) => handleContextMenu(tool.path, pos)}
+                    />
+                  );
+                })}
+              </NavCategoryGroup>
+            );
+          })
         ) : (
           <div className="px-3 py-6 text-center">
             <svg

@@ -2,27 +2,22 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useRecentFilesStore } from '../../store/recent-files';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+
+/** Maximum number of recent files to display in the section. */
+const MAX_DISPLAY = 8;
 
 /**
- * Truncates a file name to a maximum of 60 characters, appending "…" if truncated.
+ * Truncates a file name to a maximum length, appending "…" if truncated.
  */
-function truncateFileName(name: string, maxLength = 60): string {
+function truncateFileName(name: string, maxLength = 24): string {
   if (name.length <= maxLength) return name;
   return name.slice(0, maxLength - 1) + '…';
 }
 
 /**
- * Formats a file size in bytes to a human-readable string (e.g., "1.2 MB", "500 KB").
- */
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
-}
-
-/**
- * Formats a timestamp into a relative time string (e.g., "2 minutes ago", "1 hour ago").
+ * Formats a timestamp into a relative time string (e.g., "2 min ago", "1 hr ago").
+ * Uses compact labels to fit within card width.
  */
 function formatRelativeTime(timestamp: number): string {
   const now = Date.now();
@@ -33,30 +28,38 @@ function formatRelativeTime(timestamp: number): string {
   const diffDays = Math.floor(diffHours / 24);
 
   if (diffSeconds < 60) return 'just now';
-  if (diffMinutes === 1) return '1 minute ago';
-  if (diffMinutes < 60) return `${diffMinutes} minutes ago`;
+  if (diffMinutes === 1) return '1 min ago';
+  if (diffMinutes < 60) return `${diffMinutes} min ago`;
   if (diffHours === 1) return '1 hour ago';
   if (diffHours < 24) return `${diffHours} hours ago`;
   if (diffDays === 1) return '1 day ago';
-  return `${diffDays} days ago`;
+  if (diffDays < 30) return `${diffDays} days ago`;
+  return `${Math.floor(diffDays / 30)} mo ago`;
 }
 
 /**
- * Home page section displaying recent file entries sorted by recency.
- * Each entry shows file name (truncated to 60 chars), file size, relative time, and operation name.
- * Clicking an entry navigates to the associated operation route.
+ * Home page section displaying recent file entries as horizontally-scrollable cards.
+ * Each card shows a PDF thumbnail placeholder, file name (truncated), and relative timestamp.
+ * Clicking a card navigates to the associated operation route.
+ * Shows up to 8 most recent files. If no recent files exist, the section is not rendered.
  *
- * Requirements: 7.4, 7.5, 7.6
+ * Requirements: 5.2 (Recent Files section with thumbnail previews, file names, timestamps)
  */
 export function RecentFilesSection() {
   const rawEntries = useRecentFilesStore((state) => state.entries);
   const clearAll = useRecentFilesStore((state) => state.clearAll);
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
 
   const entries = useMemo(
-    () => [...rawEntries].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt),
+    () => [...rawEntries].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt).slice(0, MAX_DISPLAY),
     [rawEntries],
   );
+
+  // Don't render the section if there are no recent files
+  if (entries.length === 0) {
+    return null;
+  }
 
   return (
     <section aria-labelledby="recent-files-heading">
@@ -67,68 +70,81 @@ export function RecentFilesSection() {
         >
           Recent Files
         </h2>
-        {entries.length > 0 && (
-          <button
-            onClick={clearAll}
-            className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-150"
-            aria-label="Clear all recent files"
-          >
-            Clear All
-          </button>
-        )}
+        <button
+          onClick={clearAll}
+          className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-normal min-h-[44px] min-w-[44px] flex items-center justify-center"
+          aria-label="Clear all recent files"
+        >
+          Clear All
+        </button>
       </div>
 
-      {entries.length === 0 ? (
-        <p className="text-sm text-secondary-500 dark:text-secondary-400 py-4">No recent files</p>
-      ) : (
-        <ul className="space-y-2">
-          {entries.map((entry) => (
-            <li key={entry.id}>
-              <button
-                onClick={() => navigate(entry.operationRoute)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all duration-150 text-left min-h-[44px]"
-                aria-label={`Open ${entry.fileName} in ${entry.operationName}`}
+      {/* Horizontal scroll container */}
+      <div
+        className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide"
+        role="list"
+        aria-label="Recent files"
+      >
+        {entries.map((entry) => (
+          <button
+            key={entry.id}
+            role="listitem"
+            onClick={() => navigate(entry.operationRoute)}
+            aria-label={`Open ${entry.fileName} in ${entry.operationName}`}
+            className={[
+              // Card sizing — consistent 160px width with PDF page aspect ratio
+              'flex-shrink-0 w-40 flex flex-col rounded-lg overflow-hidden',
+              'border border-secondary-200 dark:border-secondary-700',
+              'bg-white dark:bg-secondary-800',
+              'hover:border-primary-300 dark:hover:border-primary-600',
+              'hover:shadow-level-2',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+              'dark:focus-visible:ring-offset-secondary-900',
+              'cursor-pointer text-left',
+              // Animation
+              !prefersReducedMotion &&
+                'transition-all duration-normal ease-out hover:-translate-y-0.5',
+              prefersReducedMotion && 'transition-colors duration-normal',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+          >
+            {/* Thumbnail preview placeholder — PDF page aspect ratio (roughly 8.5:11) */}
+            <div className="relative w-full aspect-[85/110] bg-secondary-100 dark:bg-secondary-700 flex items-center justify-center">
+              {/* PDF page icon as placeholder */}
+              <svg
+                className="h-10 w-10 text-secondary-300 dark:text-secondary-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1}
+                stroke="currentColor"
+                aria-hidden="true"
               >
-                <div className="flex-shrink-0 p-2 rounded-md bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-text-light dark:text-text-dark truncate">
-                    {truncateFileName(entry.fileName)}
-                  </p>
-                  <p className="text-xs text-secondary-500 dark:text-secondary-400">
-                    {formatFileSize(entry.fileSize)} · {formatRelativeTime(entry.lastOpenedAt)} ·{' '}
-                    {entry.operationName}
-                  </p>
-                </div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 flex-shrink-0 text-secondary-400 dark:text-secondary-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                />
+              </svg>
+              {/* Operation badge */}
+              <span className="absolute bottom-1.5 right-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 leading-tight">
+                {entry.operationName}
+              </span>
+            </div>
+
+            {/* File info */}
+            <div className="px-2.5 py-2 flex flex-col gap-0.5 min-w-0">
+              <p className="text-xs font-medium text-text-light dark:text-text-dark truncate">
+                {truncateFileName(entry.fileName)}
+              </p>
+              <p className="text-[11px] text-secondary-500 dark:text-secondary-400 leading-tight">
+                {formatRelativeTime(entry.lastOpenedAt)}
+              </p>
+            </div>
+          </button>
+        ))}
+      </div>
     </section>
   );
 }

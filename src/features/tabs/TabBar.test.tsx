@@ -138,4 +138,33 @@ describe('TabBar', () => {
 
     expect(screen.getByRole('tablist')).toBeInTheDocument();
   });
+
+  it('renders a sliding active indicator element for the active tab', () => {
+    const tab1 = createMockTab('tab-1', 'document.pdf');
+    const tab2 = createMockTab('tab-2', 'report.pdf');
+    useTabStore.setState({ tabs: [tab1, tab2], activeTabId: 'tab-1' });
+
+    render(<TabBar />);
+
+    const indicator = screen.getByTestId('tab-active-indicator');
+    expect(indicator).toBeInTheDocument();
+    expect(indicator).toHaveAttribute('aria-hidden', 'true');
+    expect(indicator.className).toContain('transition-transform');
+    expect(indicator.className).toContain('duration-normal');
+    expect(indicator.className).toContain('ease-in-out');
+    expect(indicator.className).toContain('motion-reduce:transition-none');
+    expect(indicator.className).toContain('bg-primary-500');
+  });
+
+  it('uses translateX for indicator positioning (GPU-accelerated)', () => {
+    const tab1 = createMockTab('tab-1', 'document.pdf');
+    const tab2 = createMockTab('tab-2', 'report.pdf');
+    useTabStore.setState({ tabs: [tab1, tab2], activeTabId: 'tab-1' });
+
+    render(<TabBar />);
+
+    const indicator = screen.getByTestId('tab-active-indicator');
+    expect(indicator.style.transform).toMatch(/translateX\(.+px\)/);
+    expect(indicator.style.left).toBe('0px');
+  });
 });
