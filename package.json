@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest --run --passWithNoTests",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
@@ -57,7 +57,7 @@
     "prettier": "^3.8.3",
     "tailwindcss": "^3.4.19",
     "tsx": "^4.19.4",
-    "typescript": "^5.4.5",
+    "typescript": "5.9.3",
     "vite": "^5.2.12",
     "vitest": "^1.6.0"
   }

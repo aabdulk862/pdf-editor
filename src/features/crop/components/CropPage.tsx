@@ -825,6 +825,19 @@ export function CropPage(): JSX.Element {
         )}
       </div>
 
+      {/* Error recovery state */}
+      {errorState && (
+        <ErrorRecovery
+          error={errorState}
+          onReset={() => {
+            setPdfData(null);
+            setFileName('');
+            setResultData(null);
+            setErrorState(null);
+          }}
+        />
+      )}
+
       {/* Preview of result */}
       {resultData && (
         <div className="space-y-3">

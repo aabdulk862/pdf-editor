@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToastStore, type Toast as ToastType, type ToastSeverity } from '../../store/toast';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 const MAX_VISIBLE = 3;
 
-/** Duration for the slide-up entrance animation (ms) */
+/** Duration for the entrance animation (ms) */
 const ENTER_DURATION = 200;
-/** Duration for the slide-down exit animation (ms) */
+/** Duration for the exit animation (ms) */
 const EXIT_DURATION = 150;
 
 const severityStyles: Record<ToastSeverity, string> = {
@@ -39,9 +40,15 @@ interface ToastItemProps {
   toast: ToastType;
   onDismiss: (id: string) => void;
   reducedMotion: boolean;
+  isMobile: boolean;
 }
 
-function ToastItem({ toast, onDismiss, reducedMotion }: ToastItemProps): JSX.Element | null {
+function ToastItem({
+  toast,
+  onDismiss,
+  reducedMotion,
+  isMobile,
+}: ToastItemProps): JSX.Element | null {
   const [phase, setPhase] = useState<AnimationPhase>('entering');
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

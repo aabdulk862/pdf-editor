@@ -4,6 +4,7 @@ import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { ProcessingState } from '@/components/ui/ProcessingState';
+import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
@@ -71,6 +72,7 @@ export function PageSizePage(): JSX.Element {
   // Operation state
   const [isProcessing, setIsProcessing] = useState(false);
   const [resizedData, setResizedData] = useState<ArrayBuffer | null>(null);
+  const [errorState, setErrorState] = useState<ToolErrorState | null>(null);
 
   // Preview state
   const [zoom, setZoom] = useState(1);
@@ -253,6 +255,7 @@ export function PageSizePage(): JSX.Element {
 
     setIsProcessing(true);
     setResizedData(null);
+    setErrorState(null);
 
     try {
       const client = getPdfWorkerClient({ onError: (msg) => toast.warning(msg) });
@@ -267,11 +270,22 @@ export function PageSizePage(): JSX.Element {
         setResizedData(result.data);
         toast.success('Pages resized successfully.');
       } else {
-        toast.error(result.error ?? 'Failed to resize pages.');
+        const message = result.error ?? 'Failed to resize pages.';
+        setErrorState({
+          type: 'processing-failed',
+          message,
+          recoverable: true,
+          retryAction: () => handleResize(),
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      toast.error(message);
+      setErrorState({
+        type: 'unknown',
+        message,
+        recoverable: true,
+        retryAction: () => handleResize(),
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -559,6 +573,19 @@ export function PageSizePage(): JSX.Element {
           </div>
         )}
       </div>
+
+      {/* Error recovery state */}
+      {errorState && (
+        <ErrorRecovery
+          error={errorState}
+          onReset={() => {
+            setPdfData(null);
+            setFileName('');
+            setResizedData(null);
+            setErrorState(null);
+          }}
+        />
+      )}
 
       {/* Processing state skeleton */}
       <ProcessingState isProcessing={isProcessing} label="Resizing pages..." variant="preview" />
