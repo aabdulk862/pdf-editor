@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
 /**
@@ -61,7 +61,13 @@ export function Toolbar({ slots }: ToolbarProps) {
   }
 
   // Sort slots by priority (lower priority number = renders first, higher = overflows first)
-  const sortedSlots = [...slots].sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
+  // Memoize to avoid infinite re-render loops in useEffect/useCallback
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const sortedSlots = useMemo(
+    () => [...slots].sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(slots.map((s) => ({ id: s.id, position: s.position, priority: s.priority })))],
+  );
 
   const leftSlots = sortedSlots.filter((s) => s.position === 'left');
   const centerSlots = sortedSlots.filter((s) => s.position === 'center');

@@ -57,7 +57,7 @@ describe('HomePage', () => {
   it('renders the hero drop zone section', () => {
     renderHomePage();
     const dropZone = screen.getByRole('button', {
-      name: /upload pdf file/i,
+      name: /upload pdf/i,
     });
     expect(dropZone).toBeTruthy();
   });
@@ -80,7 +80,7 @@ describe('HomePage', () => {
   it('shows highlighted state on drag over', () => {
     renderHomePage();
     const dropZone = screen.getByRole('button', {
-      name: /upload pdf file/i,
+      name: /upload pdf/i,
     });
 
     fireEvent.dragEnter(dropZone, {
@@ -96,7 +96,7 @@ describe('HomePage', () => {
   it('removes highlighted state on drag leave', () => {
     renderHomePage();
     const dropZone = screen.getByRole('button', {
-      name: /upload pdf file/i,
+      name: /upload pdf/i,
     });
 
     fireEvent.dragEnter(dropZone, {
@@ -115,7 +115,7 @@ describe('HomePage', () => {
   it('shows error message when non-PDF file is dropped', () => {
     renderHomePage();
     const dropZone = screen.getByRole('button', {
-      name: /upload pdf file/i,
+      name: /upload pdf/i,
     });
 
     const file = new File(['content'], 'image.png', { type: 'image/png' });
@@ -130,7 +130,7 @@ describe('HomePage', () => {
   it('navigates to merge page when valid PDF is dropped', () => {
     renderHomePage();
     const dropZone = screen.getByRole('button', {
-      name: /upload pdf file/i,
+      name: /upload pdf/i,
     });
 
     const file = new File(['%PDF-1.4'], 'document.pdf', { type: 'application/pdf' });
@@ -163,7 +163,7 @@ describe('HomePage', () => {
   it('drop zone has proper focus-visible ring classes', () => {
     renderHomePage();
     const dropZone = screen.getByRole('button', {
-      name: /upload pdf file/i,
+      name: /upload pdf/i,
     });
     expect(dropZone.className).toContain('focus-visible:ring-2');
     expect(dropZone.className).toContain('focus-visible:ring-primary-500');
@@ -172,7 +172,7 @@ describe('HomePage', () => {
   it('uses duration-fast for transition timing (100ms)', () => {
     renderHomePage();
     const dropZone = screen.getByRole('button', {
-      name: /upload pdf file/i,
+      name: /upload pdf/i,
     });
     expect(dropZone.className).toContain('duration-fast');
   });

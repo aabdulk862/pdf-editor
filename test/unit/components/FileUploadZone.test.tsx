@@ -204,7 +204,7 @@ describe('FileUploadZone', () => {
     render(<FileUploadZone onFilesAccepted={onFilesAccepted} />);
 
     const dropZone = screen.getByRole('button');
-    expect(dropZone.getAttribute('aria-label')).toContain('Upload files');
+    expect(dropZone.getAttribute('aria-label')).toContain('browse or drag and drop');
     expect(dropZone.getAttribute('tabindex')).toBe('0');
   });
 });

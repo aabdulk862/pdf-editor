@@ -73,6 +73,7 @@ const mockContext = {
   createImageData: (w: number, h: number) => ({
     data: new Uint8ClampedArray(w * h * 4),
   }),
+  scale: vi.fn(),
 };
 
 const originalCreateElement = document.createElement.bind(document);

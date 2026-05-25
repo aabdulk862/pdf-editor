@@ -139,7 +139,7 @@ describe('DeletePagesPage', () => {
 
     expect(screen.getByText('Delete Pages')).toBeInTheDocument();
     expect(screen.getByText('Select pages to remove from your PDF document.')).toBeInTheDocument();
-    expect(screen.getByLabelText(/upload files/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/click to browse or drag and drop/i)).toBeInTheDocument();
   });
 
   it('shows file upload zone when no PDF is loaded', () => {
