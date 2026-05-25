@@ -69,8 +69,10 @@ export function CmdKHint() {
       aria-label="Command palette hint"
       data-testid="cmd-k-hint"
       className={[
+        // Hidden on small screens — keyboard shortcut hints are non-essential on mobile
+        'hidden sm:inline-flex',
         // Layout
-        'inline-flex items-center gap-2',
+        'items-center gap-2',
         // Spacing
         'px-3 py-2',
         // Colors (light)

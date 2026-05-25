@@ -374,7 +374,7 @@ export function QuickActions() {
               'dark:focus-visible:ring-offset-secondary-900',
               'min-h-[44px]',
               !prefersReducedMotion &&
-                'transition-all duration-normal ease-out active:duration-fast active:ease-in-out hover:-translate-y-0.5 hover:shadow-level-2',
+                'transition-[transform,box-shadow,border-color] duration-normal ease-out active:duration-fast active:ease-in-out hover:-translate-y-0.5 hover:shadow-level-2',
               prefersReducedMotion &&
                 'transition-colors duration-normal ease-in-out transform-none',
             ]
@@ -396,7 +396,7 @@ export function QuickActions() {
               <h3 className="text-sm font-medium text-text-light dark:text-text-dark group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-normal ease-in-out">
                 {tool.name}
               </h3>
-              <p className="mt-0.5 text-xs text-secondary-500 dark:text-secondary-400 line-clamp-2">
+              <p className="hidden sm:block mt-0.5 text-xs text-secondary-500 dark:text-secondary-400 line-clamp-2">
                 {tool.description}
               </p>
             </div>

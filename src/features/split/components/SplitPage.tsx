@@ -225,7 +225,7 @@ export function SplitPage(): JSX.Element {
                       aria-label={`Download ${result.fileName}`}
                     >
                       <svg
-                        className="mr-1.5 h-4 w-4"
+                        className="mr-2 h-4 w-4"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"

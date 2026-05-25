@@ -94,7 +94,7 @@ export function RecentFilesPanel() {
         {displayedFiles.map((entry) => (
           <div
             key={entry.id}
-            className="group relative flex flex-col rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 overflow-hidden hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md active:scale-[0.98] transition-all duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 text-left cursor-pointer"
+            className="group relative flex flex-col rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 overflow-hidden hover:border-primary-300 dark:hover:border-primary-500 hover:shadow-level-2 active:scale-[0.98] transition-[transform,border-color,box-shadow] duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 text-left cursor-pointer"
             role="button"
             tabIndex={0}
             onClick={() => handleOpenFile(entry)}
@@ -143,7 +143,7 @@ export function RecentFilesPanel() {
             {/* Delete button (visible on hover) */}
             <button
               type="button"
-              className="absolute top-1 right-1 min-w-[44px] min-h-[44px] md:w-6 md:h-6 md:min-w-0 md:min-h-0 flex items-center justify-center rounded-full bg-white/80 dark:bg-secondary-800/80 backdrop-blur-sm text-secondary-400 dark:text-secondary-500 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-normal ease-in-out motion-reduce:transition-none focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+              className="absolute top-1 right-1 min-w-[44px] min-h-[44px] md:w-6 md:h-6 md:min-w-0 md:min-h-0 flex items-center justify-center rounded-full bg-white/80 dark:bg-secondary-800/80 backdrop-blur-sm text-secondary-400 dark:text-secondary-500 opacity-0 group-hover:opacity-100 hover:text-error-500 hover:bg-error-50 dark:hover:bg-error-900/20 transition-[opacity,color,background-color] duration-normal ease-in-out motion-reduce:transition-none focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error-500"
               onClick={(e) => handleRemoveFile(e, entry.id)}
               aria-label={`Remove ${entry.name} from recent files`}
             >

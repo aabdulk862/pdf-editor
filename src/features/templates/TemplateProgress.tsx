@@ -98,7 +98,7 @@ export function TemplateProgress() {
       aria-modal="true"
       aria-labelledby="template-progress-title"
     >
-      <div className="w-full max-w-md mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-normal motion-reduce:animate-none">
+      <div className="w-full max-w-[min(28rem,calc(100vw-32px))] max-h-[calc(100vh-32px)] mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-level-4 animate-in fade-in duration-normal motion-reduce:animate-none overflow-y-auto">
         {/* Header */}
         <div className="px-6 py-4 border-b border-secondary-200 dark:border-secondary-700">
           <h2
@@ -135,11 +135,11 @@ export function TemplateProgress() {
           >
             <div
               className={[
-                'h-full rounded-full transition-all duration-slow ease-out motion-reduce:transition-none',
+                'h-full rounded-full transition-[width] duration-slow ease-out motion-reduce:transition-none',
                 execution.status === 'failed'
-                  ? 'bg-red-500 dark:bg-red-400'
+                  ? 'bg-error-500 dark:bg-error-400'
                   : execution.status === 'completed'
-                    ? 'bg-green-500 dark:bg-green-400'
+                    ? 'bg-success-500 dark:bg-success-400'
                     : 'bg-primary-500 dark:bg-primary-400',
               ].join(' ')}
               style={{ width: isTerminal ? '100%' : `${progressPercent}%` }}
@@ -158,7 +158,7 @@ export function TemplateProgress() {
             )}
             {execution.status === 'completed' && 'All steps completed successfully.'}
             {execution.status === 'failed' && execution.error && (
-              <span className="text-red-600 dark:text-red-400">
+              <span className="text-error-600 dark:text-error-400">
                 Failed at "{execution.error.stepName}": {execution.error.reason}
               </span>
             )}
@@ -170,15 +170,15 @@ export function TemplateProgress() {
             {Array.from({ length: execution.totalSteps }).map((_, i) => {
               let dotColor = 'bg-secondary-300 dark:bg-secondary-600';
               if (i < execution.currentStepIndex) {
-                dotColor = 'bg-green-500 dark:bg-green-400';
+                dotColor = 'bg-success-500 dark:bg-success-400';
               } else if (i === execution.currentStepIndex) {
                 if (execution.status === 'executing') {
                   dotColor =
                     'bg-primary-500 dark:bg-primary-400 animate-pulse motion-reduce:animate-none';
                 } else if (execution.status === 'failed') {
-                  dotColor = 'bg-red-500 dark:bg-red-400';
+                  dotColor = 'bg-error-500 dark:bg-error-400';
                 } else if (execution.status === 'completed') {
-                  dotColor = 'bg-green-500 dark:bg-green-400';
+                  dotColor = 'bg-success-500 dark:bg-success-400';
                 }
               }
               return (

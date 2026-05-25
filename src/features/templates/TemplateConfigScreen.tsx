@@ -72,7 +72,7 @@ export function TemplateConfigScreen() {
       aria-modal="true"
       aria-labelledby="template-config-title"
     >
-      <div className="w-full max-w-lg mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-normal motion-reduce:animate-none">
+      <div className="w-full max-w-[min(32rem,calc(100vw-32px))] max-h-[calc(100vh-32px)] mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-level-4 animate-in fade-in duration-normal motion-reduce:animate-none overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-secondary-200 dark:border-secondary-700 px-6 py-4">
           <h2

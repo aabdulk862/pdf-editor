@@ -5,6 +5,7 @@ import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/hooks/useToast';
+import { getDevicePixelRatio } from '@/core/render-engine/hidpi';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 
 // Configure the PDF.js worker
@@ -76,12 +77,16 @@ export function DuplicatePagesPage(): JSX.Element {
             const thumbnailWidth = 150;
             const scale = thumbnailWidth / viewport.width;
             const scaledViewport = page.getViewport({ scale });
+            const dpr = getDevicePixelRatio();
 
             const canvas = document.createElement('canvas');
-            canvas.width = scaledViewport.width;
-            canvas.height = scaledViewport.height;
+            canvas.width = Math.round(scaledViewport.width * dpr);
+            canvas.height = Math.round(scaledViewport.height * dpr);
+            canvas.style.width = `${scaledViewport.width}px`;
+            canvas.style.height = `${scaledViewport.height}px`;
             const ctx = canvas.getContext('2d');
             if (ctx) {
+              ctx.scale(dpr, dpr);
               await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
             }
             thumbs.push(canvas);
@@ -443,12 +448,12 @@ function PageThumbnail({
       aria-pressed={isSelected}
       aria-label={`Page ${pageNum}${isSelected ? ', selected' : ''}`}
       className={[
-        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-normal ease-in-out',
+        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-[border-color,background-color,box-shadow] duration-normal ease-in-out',
         'min-h-[44px] min-w-[44px] cursor-pointer',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:focus-visible:ring-offset-background-dark',
         isSelected
-          ? 'border-primary-500 bg-primary-50 shadow-sm dark:border-primary-400 dark:bg-primary-900/20'
+          ? 'border-primary-500 bg-primary-50 shadow-level-1 dark:border-primary-400 dark:bg-primary-900/20'
           : 'border-secondary-200 bg-white hover:border-primary-300 hover:bg-secondary-50 dark:border-secondary-700 dark:bg-secondary-800 dark:hover:border-primary-600 dark:hover:bg-secondary-700',
       ].join(' ')}
     >

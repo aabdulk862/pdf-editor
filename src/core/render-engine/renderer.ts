@@ -1,6 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import type { IRenderEngine, RenderableDocument, RenderablePage, ExtractedImage } from './index';
+import { getDevicePixelRatio } from './hidpi';
 
 // Configure the worker source for pdfjs-dist
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -25,13 +26,23 @@ class PdfjsRenderablePage implements RenderablePage {
 
   async render(canvas: HTMLCanvasElement, scale: number): Promise<void> {
     const viewport = this.page.getViewport({ scale });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    const dpr = getDevicePixelRatio();
+
+    // Set canvas buffer to physical pixel dimensions for HiDPI sharpness
+    canvas.width = Math.round(viewport.width * dpr);
+    canvas.height = Math.round(viewport.height * dpr);
+
+    // Set CSS dimensions to logical size
+    canvas.style.width = `${viewport.width}px`;
+    canvas.style.height = `${viewport.height}px`;
 
     const context = canvas.getContext('2d');
     if (!context) {
       throw new Error('Failed to get 2D canvas context');
     }
+
+    // Scale context so pdf.js renders at physical pixel resolution
+    context.scale(dpr, dpr);
 
     await this.page.render({
       canvasContext: context,

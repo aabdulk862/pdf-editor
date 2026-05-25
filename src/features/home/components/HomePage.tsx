@@ -728,7 +728,7 @@ export function HomePage() {
                   // Click: brief scale press animation (100ms)
                   'active:scale-[0.97]',
                   // Transition: 150ms ease-out for hover, 100ms for active press
-                  'transition-all duration-normal ease-out active:duration-fast active:ease-in-out',
+                  'transition-[transform,box-shadow,border-color] duration-normal ease-out active:duration-fast active:ease-in-out',
                   // Reduced motion: disable transforms, keep color/shadow transitions
                   'motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 motion-reduce:transition-colors duration-normal ease-in-out motion-reduce:transform-none',
                   // Touch target
@@ -744,7 +744,7 @@ export function HomePage() {
                   <h3 className="text-sm font-medium text-text-light dark:text-text-dark group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-normal ease-out">
                     {tool.name}
                   </h3>
-                  <p className="mt-0.5 text-xs text-secondary-500 dark:text-secondary-400 line-clamp-2">
+                  <p className="hidden sm:block mt-0.5 text-xs text-secondary-500 dark:text-secondary-400 line-clamp-2">
                     {tool.description}
                   </p>
                 </div>
@@ -920,7 +920,8 @@ function HeroDropZone() {
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
           'dark:focus-visible:ring-offset-secondary-900',
           // Transition — 100ms (duration-fast) for drag-over response per Requirement 4.1
-          !prefersReducedMotion && 'transition-all duration-fast ease-out',
+          !prefersReducedMotion &&
+            'transition-[transform,border-color,background-color,box-shadow] duration-fast ease-out',
           prefersReducedMotion && 'transition-colors duration-fast ease-in-out',
           // Motion-safe scale on drag-over
           !prefersReducedMotion && isDragOver && 'scale-[1.01]',
@@ -980,11 +981,11 @@ function HeroDropZone() {
             fileInputRef.current?.click();
           }}
           className={[
-            'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg',
+            'inline-flex items-center gap-2 px-5 py-3 rounded-lg',
             'text-sm font-medium',
             'bg-primary-600 text-white hover:bg-primary-700',
             'dark:bg-primary-500 dark:hover:bg-primary-600',
-            'active:scale-[0.97] transition-all duration-fast ease-out',
+            'active:scale-[0.97] transition-[transform,background-color] duration-fast ease-out',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
             'dark:focus-visible:ring-offset-secondary-900',
             'min-h-[44px] min-w-[44px]',

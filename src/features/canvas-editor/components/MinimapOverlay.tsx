@@ -114,7 +114,7 @@ export function MinimapOverlay() {
   return (
     <div
       ref={containerRef}
-      className="absolute bottom-4 right-4 border border-secondary-300 bg-white dark:bg-secondary-800 rounded-md shadow-lg cursor-crosshair overflow-hidden z-50"
+      className="absolute bottom-4 right-4 border border-secondary-300 bg-white dark:bg-secondary-800 rounded-md shadow-level-3 cursor-crosshair overflow-hidden z-50"
       style={{ width: `${MINIMAP_WIDTH}px`, height: `${MINIMAP_HEIGHT}px` }}
       onClick={handleMinimapClick}
       role="navigation"
@@ -146,11 +146,11 @@ export function MinimapOverlay() {
                 key={el.id}
                 className={`absolute ${
                   el.type === 'text'
-                    ? 'bg-blue-400/50'
+                    ? 'bg-primary-400/50'
                     : el.type === 'image'
-                      ? 'bg-green-400/50'
+                      ? 'bg-success-400/50'
                       : el.type === 'shape'
-                        ? 'bg-purple-400/50'
+                        ? 'bg-accent-400/50'
                         : 'bg-secondary-400/50'
                 }`}
                 style={{
@@ -166,7 +166,7 @@ export function MinimapOverlay() {
 
       {/* Viewport indicator rectangle */}
       <div
-        className="absolute border-2 border-blue-500 bg-blue-500/20 pointer-events-none"
+        className="absolute border-2 border-primary-500 bg-primary-500/20 pointer-events-none"
         style={{
           left: `${Math.max(0, indicatorX)}px`,
           top: `${Math.max(0, indicatorY)}px`,

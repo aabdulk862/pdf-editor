@@ -91,7 +91,7 @@ export function DownloadHistoryPanel() {
                 disabled={!available}
                 aria-disabled={!available}
                 className={[
-                  'w-full text-left px-3 py-2.5 rounded-md transition-colors duration-normal ease-in-out min-h-[44px]',
+                  'w-full text-left px-3 py-3 rounded-md transition-colors duration-normal ease-in-out min-h-[44px]',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900',
                   available
                     ? 'hover:bg-secondary-100 dark:hover:bg-secondary-800 cursor-pointer'

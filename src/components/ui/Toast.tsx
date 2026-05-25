@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToastStore, type Toast as ToastType, type ToastSeverity } from '../../store/toast';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { Icon } from '../../design-system/primitives/Icon';
 
 const MAX_VISIBLE = 3;
 
@@ -12,12 +13,12 @@ const EXIT_DURATION = 150;
 
 const severityStyles: Record<ToastSeverity, string> = {
   success:
-    'bg-green-50 border-green-400 text-green-800 dark:bg-green-900/30 dark:border-green-600 dark:text-green-200',
+    'bg-success-50 border-success-400 text-success-800 dark:bg-success-900/30 dark:border-success-600 dark:text-success-200',
   warning:
     'bg-amber-50 border-amber-400 text-amber-800 dark:bg-amber-900/30 dark:border-amber-600 dark:text-amber-200',
   error:
-    'bg-red-50 border-red-400 text-red-800 dark:bg-red-900/30 dark:border-red-600 dark:text-red-200',
-  info: 'bg-blue-50 border-blue-400 text-blue-800 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-200',
+    'bg-error-50 border-error-400 text-error-800 dark:bg-error-900/30 dark:border-error-600 dark:text-error-200',
+  info: 'bg-primary-50 border-primary-400 text-primary-800 dark:bg-primary-900/30 dark:border-primary-600 dark:text-primary-200',
 };
 
 const severityIcons: Record<ToastSeverity, string> = {
@@ -28,10 +29,10 @@ const severityIcons: Record<ToastSeverity, string> = {
 };
 
 const severityIconStyles: Record<ToastSeverity, string> = {
-  success: 'bg-green-500 text-white',
+  success: 'bg-success-500 text-white',
   warning: 'bg-amber-500 text-white',
-  error: 'bg-red-500 text-white',
-  info: 'bg-blue-500 text-white',
+  error: 'bg-error-500 text-white',
+  info: 'bg-primary-500 text-white',
 };
 
 type AnimationPhase = 'entering' | 'visible' | 'exiting' | 'exited';
@@ -167,7 +168,7 @@ function ToastItem({
         ...getTransformStyle(),
         willChange: 'transform, opacity',
       }}
-      className={`flex items-start gap-3 rounded-lg border p-4 shadow-lg ${severityStyles[toast.severity]}`}
+      className={`flex items-start gap-3 rounded-lg border p-4 shadow-level-3 ${severityStyles[toast.severity]}`}
     >
       <span
         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold ${severityIconStyles[toast.severity]}`}
@@ -182,16 +183,7 @@ function ToastItem({
         className="shrink-0 rounded-md min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 md:p-1 inline-flex items-center justify-center opacity-70 transition-opacity duration-normal ease-out motion-reduce:transition-none hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
         aria-label="Dismiss notification"
       >
-        <svg
-          className="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          aria-hidden="true"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <Icon name="close" size={16} />
       </button>
     </div>
   );

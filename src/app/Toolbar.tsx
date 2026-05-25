@@ -38,6 +38,11 @@ export interface ToolbarProps {
  * - Right slot: Common actions (download, share, undo/redo)
  * - Overflow: Controls that don't fit collapse into a "more" menu
  *
+ * On narrow viewports (below md breakpoint):
+ * - The center slot becomes a scrollable horizontal strip with hidden scrollbar
+ * - Touch scrolling is enabled for mobile devices
+ * - Controls that overflow are collected into a "more" dropdown menu
+ *
  * The toolbar is conditionally visible — it only renders when there are
  * slots to display.
  *
@@ -155,13 +160,13 @@ export function Toolbar({ slots }: ToolbarProps) {
           </div>
         )}
 
-        {/* Center slot */}
+        {/* Center slot — scrollable horizontal strip on narrow viewports */}
         <div
-          className="flex items-center gap-1 flex-1 justify-center min-w-0 overflow-x-auto scrollbar-none"
+          className="flex items-center gap-1 flex-1 justify-center min-w-0 overflow-x-auto scrollbar-hide touch-pan-x snap-x snap-mandatory md:snap-none md:overflow-x-visible"
           data-testid="toolbar-center"
         >
           {visibleCenter.map((slot) => (
-            <div key={slot.id} data-slot-id={slot.id} className="shrink-0">
+            <div key={slot.id} data-slot-id={slot.id} className="shrink-0 snap-start">
               {slot.component}
             </div>
           ))}
@@ -179,7 +184,7 @@ export function Toolbar({ slots }: ToolbarProps) {
         )}
       </div>
 
-      {/* Overflow menu */}
+      {/* Overflow "more" menu — visible when controls overflow on narrow viewports */}
       {overflowItems.length > 0 && (
         <div className="relative shrink-0" ref={overflowMenuRef}>
           <button
@@ -211,7 +216,7 @@ export function Toolbar({ slots }: ToolbarProps) {
 
           {overflowOpen && (
             <div
-              className="absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-md border border-secondary-200 dark:border-secondary-700 bg-background-light dark:bg-background-dark shadow-level-3 p-1"
+              className="absolute right-0 top-full mt-1 z-50 min-w-[160px] max-w-[calc(100vw-32px)] max-h-[60vh] overflow-y-auto rounded-md border border-secondary-200 dark:border-secondary-700 bg-background-light dark:bg-background-dark shadow-level-3 p-1"
               role="menu"
               aria-label="Overflow toolbar actions"
               data-testid="toolbar-overflow-menu"
@@ -220,7 +225,7 @@ export function Toolbar({ slots }: ToolbarProps) {
                 <div
                   key={slot.id}
                   role="menuitem"
-                  className="px-2 py-1.5 rounded-sm"
+                  className="px-2 py-2 rounded-sm"
                   data-slot-id={slot.id}
                 >
                   {slot.component}

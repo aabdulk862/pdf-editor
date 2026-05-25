@@ -294,7 +294,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           >
             {/* Cursor indicator */}
             <div
-              className="absolute w-4 h-4 border-2 border-white rounded-full shadow-md pointer-events-none -translate-x-1/2 -translate-y-1/2"
+              className="absolute w-4 h-4 border-2 border-white rounded-full shadow-level-1 pointer-events-none -translate-x-1/2 -translate-y-1/2"
               style={{
                 left: `${spectrumCursorX * 100}%`,
                 top: `${spectrumCursorY * 100}%`,
@@ -322,7 +322,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           >
             {/* Hue cursor */}
             <div
-              className="absolute top-1/2 w-4 h-4 border-2 border-white rounded-full shadow-md pointer-events-none -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-1/2 w-4 h-4 border-2 border-white rounded-full shadow-level-1 pointer-events-none -translate-x-1/2 -translate-y-1/2"
               style={{
                 left: `${hueCursorX * 100}%`,
                 backgroundColor: `hsl(${hsl.h}, 100%, 50%)`,
@@ -333,12 +333,12 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       )}
 
       {/* Color swatch presets */}
-      <div className="grid grid-cols-6 gap-1.5">
+      <div className="grid grid-cols-6 gap-2">
         {PRESET_COLORS.map((preset) => (
           <button
             key={preset}
             type="button"
-            className="min-w-[44px] min-h-[44px] rounded-md border border-secondary-200 dark:border-secondary-600 transition-all duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none
+            className="min-w-[44px] min-h-[44px] rounded-md border border-secondary-200 dark:border-secondary-600 transition-[transform,border-color] duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none
               hover:scale-110 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500
               active:scale-95"
             style={{ backgroundColor: preset }}

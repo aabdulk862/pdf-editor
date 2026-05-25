@@ -7,6 +7,7 @@ import { ProcessingState } from '@/components/ui/ProcessingState';
 import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
+import { getDevicePixelRatio } from '@/core/render-engine/hidpi';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 
 // Configure the PDF.js worker
@@ -101,13 +102,17 @@ export function RotatePage(): JSX.Element {
             const thumbnailWidth = 150;
             const scale = thumbnailWidth / viewport.width;
             const scaledViewport = page.getViewport({ scale });
+            const dpr = getDevicePixelRatio();
 
             const canvas = document.createElement('canvas');
-            canvas.width = scaledViewport.width;
-            canvas.height = scaledViewport.height;
+            canvas.width = Math.round(scaledViewport.width * dpr);
+            canvas.height = Math.round(scaledViewport.height * dpr);
+            canvas.style.width = `${scaledViewport.width}px`;
+            canvas.style.height = `${scaledViewport.height}px`;
             const ctx = canvas.getContext('2d');
             if (!ctx) throw new Error('Failed to get canvas context');
 
+            ctx.scale(dpr, dpr);
             await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
 
             if (!cancelled) {
@@ -454,7 +459,7 @@ function PageThumbnailCard({
       aria-pressed={isSelected}
       aria-label={`Page ${thumbnail.pageNumber}${isSelected ? ' (selected)' : ''}`}
       className={[
-        'relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-normal ease-in-out cursor-pointer',
+        'relative flex flex-col items-center rounded-lg border-2 p-2 transition-[border-color,background-color,box-shadow] duration-normal ease-in-out cursor-pointer',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:focus-visible:ring-offset-background-dark',
         'min-w-[44px] min-h-[44px]',

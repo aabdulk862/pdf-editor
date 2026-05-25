@@ -301,14 +301,14 @@ export function ExtractTextPage(): JSX.Element {
 
       {/* OCR Prompt Banner (Req 7.1, 7.2) */}
       {showOcrPrompt && !isOcrProcessing && !isOcrInitializing && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20">
+        <div className="rounded-lg border border-primary-200 bg-primary-50 p-4 dark:border-primary-700 dark:bg-primary-900/20">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+              <p className="text-sm font-medium text-primary-800 dark:text-primary-200">
                 {emptyPages.length} {emptyPages.length === 1 ? 'page appears' : 'pages appear'} to
                 be scanned. Run OCR to extract text?
               </p>
-              <p className="text-xs text-blue-600 dark:text-blue-300 mt-1">
+              <p className="text-xs text-primary-600 dark:text-primary-300 mt-1">
                 OCR will attempt to recognize text from scanned page images.
               </p>
             </div>
@@ -337,7 +337,7 @@ export function ExtractTextPage(): JSX.Element {
 
       {/* OCR Processing Progress (Req 7.3) */}
       {isOcrProcessing && ocrProgress && (
-        <div className="rounded-lg border border-secondary-200 bg-white p-4 shadow-lg dark:border-secondary-700 dark:bg-secondary-800">
+        <div className="rounded-lg border border-secondary-200 bg-white p-4 shadow-level-3 dark:border-secondary-700 dark:bg-secondary-800">
           <ProgressBar
             progress={ocrProgress.percentComplete}
             label={`Processing page ${ocrProgress.currentPage} of ${ocrProgress.totalPages}`}
@@ -366,8 +366,8 @@ export function ExtractTextPage(): JSX.Element {
         <div className="space-y-4">
           {/* OCR Summary Label (Req 7.6) */}
           {currentMergedResult && currentMergedResult.ocrPageNumbers.length > 0 && (
-            <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-700 dark:bg-green-900/20">
-              <p className="text-sm text-green-800 dark:text-green-200">
+            <div className="rounded-lg border border-success-200 bg-success-50 p-3 dark:border-success-700 dark:bg-success-900/20">
+              <p className="text-sm text-success-800 dark:text-success-200">
                 <span className="font-medium">
                   Pages {currentMergedResult.ocrPageNumbers.join(', ')} used OCR
                 </span>

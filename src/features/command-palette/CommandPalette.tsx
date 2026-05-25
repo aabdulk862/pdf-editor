@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useCommandPaletteStore } from '../../store/command-palette';
 import { useRovingTabindex } from '../../hooks/useRovingTabindex';
+import { Icon } from '../../design-system/primitives/Icon';
 
 /**
  * Command Palette — a modal overlay for keyboard-driven navigation.
@@ -173,27 +174,22 @@ export function CommandPalette() {
       <div
         ref={contentRef}
         className={[
-          'relative z-10 w-full max-w-lg mx-4 overflow-hidden rounded-xl border border-secondary-200 bg-white shadow-2xl dark:border-secondary-700 dark:bg-secondary-800',
+          'relative z-10 w-full max-w-[min(32rem,calc(100vw-32px))] max-h-[calc(100vh-32px)] mx-4 overflow-hidden rounded-xl border border-secondary-200 bg-white shadow-level-4 dark:border-secondary-700 dark:bg-secondary-800',
           'transition-transform duration-normal ease-out motion-reduce:transition-none',
           animateIn ? 'scale-100' : 'scale-95',
         ].join(' ')}
       >
         {/* Search input */}
         <div className="flex items-center border-b border-secondary-200 px-4 dark:border-secondary-700">
-          <svg
-            className="h-5 w-5 shrink-0 text-secondary-400 dark:text-secondary-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
+          <Icon size={20} className="shrink-0 text-secondary-400 dark:text-secondary-500">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </Icon>
           <input
             ref={inputRef}
             type="text"
@@ -246,11 +242,11 @@ export function CommandPalette() {
                 >
                   <div className="flex-1 min-w-0">
                     <div className="font-medium truncate">{item.name}</div>
-                    <div className="truncate text-xs text-secondary-500 dark:text-secondary-400">
+                    <div className="hidden sm:block truncate text-xs text-secondary-500 dark:text-secondary-400">
                       {item.description}
                     </div>
                   </div>
-                  <span className="shrink-0 text-xs text-secondary-400 dark:text-secondary-500">
+                  <span className="hidden sm:inline shrink-0 text-xs text-secondary-400 dark:text-secondary-500">
                     {item.route}
                   </span>
                 </li>
@@ -259,8 +255,8 @@ export function CommandPalette() {
           )}
         </div>
 
-        {/* Footer hint */}
-        <div className="flex items-center gap-4 border-t border-secondary-200 px-4 py-2 text-xs text-secondary-400 dark:border-secondary-700 dark:text-secondary-500">
+        {/* Footer hint — hidden on small screens (keyboard shortcut hints non-essential on mobile) */}
+        <div className="hidden sm:flex items-center gap-4 border-t border-secondary-200 px-4 py-2 text-xs text-secondary-400 dark:border-secondary-700 dark:text-secondary-500">
           <span>
             <kbd className="rounded border border-secondary-300 px-1.5 py-0.5 font-mono text-[10px] dark:border-secondary-600">
               ↑↓

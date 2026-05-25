@@ -378,7 +378,7 @@ function ImageCard({
       onDrop={(e) => onDrop(e, index)}
       onDragEnd={onDragEnd}
       className={[
-        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-normal ease-in-out',
+        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-[border-color,background-color,box-shadow,opacity] duration-normal ease-in-out',
         'cursor-grab active:cursor-grabbing',
         isDragging
           ? 'opacity-50 border-primary-300 dark:border-primary-600'

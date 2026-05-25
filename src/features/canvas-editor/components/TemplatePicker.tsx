@@ -145,7 +145,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
       onClick={handleBackdropClick}
       aria-labelledby="template-picker-title"
       className={[
-        'fixed inset-0 m-auto rounded-xl border-none p-0 shadow-xl',
+        'fixed inset-0 m-auto rounded-xl border-none p-0 shadow-level-4',
         'backdrop:bg-black/50 backdrop:backdrop-blur-sm',
         'bg-white dark:bg-secondary-800',
         'w-[calc(100%-2rem)] max-w-3xl max-h-[85vh]',
@@ -190,7 +190,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
               onClick={() => setActiveCategory('all')}
               aria-pressed={activeCategory === 'all'}
               className={[
-                'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-normal ease-in-out',
+                'rounded-md px-3 py-2 text-sm font-medium transition-colors duration-normal ease-in-out',
                 'min-h-[44px] md:min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                 activeCategory === 'all'
                   ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
@@ -206,7 +206,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
                 onClick={() => setActiveCategory(cat)}
                 aria-pressed={activeCategory === cat}
                 className={[
-                  'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-normal ease-in-out',
+                  'rounded-md px-3 py-2 text-sm font-medium transition-colors duration-normal ease-in-out',
                   'min-h-[44px] md:min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                   activeCategory === cat
                     ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
@@ -263,8 +263,8 @@ function TemplateCard({ template, onSelect, disabled }: TemplateCardProps) {
       aria-label={`Use ${template.name} template`}
       className={[
         'group flex flex-col items-center gap-2 rounded-lg border border-secondary-200 p-3',
-        'transition-all duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none',
-        'hover:border-primary-300 hover:shadow-md hover:scale-[1.02]',
+        'transition-[transform,border-color,box-shadow] duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none',
+        'hover:border-primary-300 hover:shadow-level-2 hover:scale-[1.02]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:border-secondary-600 dark:hover:border-primary-500',
         disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',

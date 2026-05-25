@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { useToast } from '@/hooks/useToast';
+import { getDevicePixelRatio } from '@/core/render-engine/hidpi';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import {
   annotationEngine,
@@ -143,9 +144,10 @@ export function CropPage(): JSX.Element {
         container.innerHTML = '';
 
         // Create page render canvas
+        const dpr = getDevicePixelRatio();
         const renderCanvas = document.createElement('canvas');
-        renderCanvas.width = viewport.width;
-        renderCanvas.height = viewport.height;
+        renderCanvas.width = Math.round(viewport.width * dpr);
+        renderCanvas.height = Math.round(viewport.height * dpr);
         renderCanvas.style.width = '100%';
         renderCanvas.style.height = 'auto';
         renderCanvas.style.display = 'block';
@@ -154,6 +156,7 @@ export function CropPage(): JSX.Element {
         const ctx = renderCanvas.getContext('2d');
         if (!ctx) return;
 
+        ctx.scale(dpr, dpr);
         await page.render({ canvasContext: ctx, viewport }).promise;
         if (cancelled) return;
 
@@ -577,7 +580,7 @@ export function CropPage(): JSX.Element {
 
       {/* Drawing area with page navigation */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-medium text-text-light dark:text-text-dark">
             Draw Crop Region — Page {currentPage} of {pageCount}
           </h2>

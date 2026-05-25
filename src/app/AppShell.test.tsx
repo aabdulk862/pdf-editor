@@ -70,7 +70,7 @@ describe('AppShell', () => {
     expect(screen.getByTestId('canvas-content')).toBeTruthy();
   });
 
-  it('enforces minimum canvas width of 320px', () => {
+  it('enforces canvas area uses min-w-0 to allow proper grid sizing', () => {
     render(
       <AppShell sidebar={<div>Sidebar</div>}>
         <div>Canvas</div>
@@ -78,7 +78,8 @@ describe('AppShell', () => {
     );
 
     const main = screen.getByRole('main');
-    expect(main.style.minWidth).toBe('320px');
+    expect(main.className).toContain('min-w-0');
+    expect(main.className).toContain('overflow-x-hidden');
   });
 
   it('provides ARIA landmarks: banner, navigation, main, complementary', () => {

@@ -69,7 +69,7 @@ export function NavCategoryGroup({
         role="group"
         aria-label={category.label}
         className={[
-          'overflow-hidden transition-all duration-moderate ease-in-out motion-reduce:transition-none',
+          'overflow-hidden transition-[max-height,opacity] duration-moderate ease-in-out motion-reduce:transition-none',
           isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100',
         ].join(' ')}
       >

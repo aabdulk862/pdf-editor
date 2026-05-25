@@ -238,8 +238,7 @@ export function AppShell({ sidebar, children, rightPanel }: AppShellProps) {
 
       {/* Canvas Area — row 3 (main content) */}
       <main
-        className="overflow-auto bg-background-light dark:bg-background-dark"
-        style={{ minWidth: '320px' }}
+        className="overflow-x-hidden overflow-y-auto bg-background-light dark:bg-background-dark min-w-0"
         role="main"
         data-zone="canvas"
       >

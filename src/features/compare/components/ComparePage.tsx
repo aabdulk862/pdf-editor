@@ -463,7 +463,7 @@ export function ComparePage(): JSX.Element {
           <h1 className="text-2xl sm:text-3xl font-bold text-text-light dark:text-text-dark">
             Compare PDFs
           </h1>
-          <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-1">
+          <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-1 truncate">
             {file1Name} vs {file2Name}
           </p>
         </div>
@@ -543,15 +543,15 @@ export function ComparePage(): JSX.Element {
 
             {/* Difference navigation */}
             {comparisonResult.differences.length > 0 && (
-              <div className="mt-3 flex items-center gap-2 border-t border-secondary-200 pt-3 dark:border-secondary-700">
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-secondary-200 pt-3 dark:border-secondary-700">
                 <Button variant="outline" size="sm" onClick={handlePrevDiff}>
-                  ← Previous diff
+                  ← Prev
                 </Button>
                 <span className="text-sm text-secondary-500 dark:text-secondary-400">
                   {currentDiffIndex + 1} of {comparisonResult.differences.length}
                 </span>
                 <Button variant="outline" size="sm" onClick={handleNextDiff}>
-                  Next diff →
+                  Next →
                 </Button>
               </div>
             )}
@@ -688,7 +688,7 @@ export function ComparePage(): JSX.Element {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Document 1 panel */}
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium text-secondary-600 dark:text-secondary-400 px-1">
+          <h3 className="text-sm font-medium text-secondary-600 dark:text-secondary-400 px-1 truncate">
             Document 1 — {file1Name}
           </h3>
           <div
@@ -703,7 +703,7 @@ export function ComparePage(): JSX.Element {
 
         {/* Document 2 panel */}
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium text-secondary-600 dark:text-secondary-400 px-1">
+          <h3 className="text-sm font-medium text-secondary-600 dark:text-secondary-400 px-1 truncate">
             Document 2 — {file2Name}
           </h3>
           <div

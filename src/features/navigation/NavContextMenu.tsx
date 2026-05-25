@@ -85,7 +85,7 @@ export function NavContextMenu({ toolPath, position, onClose }: NavContextMenuPr
     <div
       ref={menuRef}
       role="menu"
-      className="fixed z-50 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 py-1 min-w-[200px]"
+      className="fixed z-50 bg-white dark:bg-secondary-800 shadow-level-3 rounded-md border border-secondary-200 dark:border-secondary-700 py-1 min-w-[180px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] overflow-y-auto"
       style={{
         left: constrainedPosition.x,
         top: constrainedPosition.y,
@@ -95,7 +95,7 @@ export function NavContextMenu({ toolPath, position, onClose }: NavContextMenuPr
       <button
         role="menuitem"
         onClick={handleToggleFavorite}
-        className="w-full text-left px-3 py-2 text-sm min-h-[44px] flex items-center gap-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
+        className="w-full text-left px-3 py-2 text-sm min-h-[44px] flex items-center gap-2 cursor-pointer hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-700 dark:text-secondary-300 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
       >
         <Icon name="star" size={16} aria-hidden={true} />
         <span>{isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}</span>
@@ -103,7 +103,7 @@ export function NavContextMenu({ toolPath, position, onClose }: NavContextMenuPr
       <button
         role="menuitem"
         onClick={handleOpenInNewTab}
-        className="w-full text-left px-3 py-2 text-sm min-h-[44px] flex items-center gap-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
+        className="w-full text-left px-3 py-2 text-sm min-h-[44px] flex items-center gap-2 cursor-pointer hover:bg-secondary-100 dark:hover:bg-secondary-700 text-secondary-700 dark:text-secondary-300 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
       >
         <Icon name="external-link" size={16} aria-hidden={true} />
         <span>Open in New Tab</span>
@@ -115,11 +115,12 @@ export function NavContextMenu({ toolPath, position, onClose }: NavContextMenuPr
 /**
  * Constrain menu position so it doesn't overflow the viewport.
  * Assumes a menu width of ~200px and height of ~96px (2 items × 44px + padding).
+ * Uses 16px margin from viewport edges on mobile for comfortable touch interaction.
  */
 function getConstrainedPosition(position: { x: number; y: number }): { x: number; y: number } {
   const MENU_WIDTH = 200;
   const MENU_HEIGHT = 96;
-  const VIEWPORT_PADDING = 8;
+  const VIEWPORT_PADDING = 16;
 
   let { x, y } = position;
 

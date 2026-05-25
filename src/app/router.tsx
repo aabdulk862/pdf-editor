@@ -205,7 +205,7 @@ function RootLayout() {
     <GlobalDropZone>
       <AppShell sidebar={<CategorizedNavBar />}>
         <TabBar />
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 overflow-x-hidden">
           <TabContent>
             <div className="motion-safe:animate-page-enter">
               <Suspense fallback={<PageLoadingFallback />}>

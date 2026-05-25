@@ -103,7 +103,7 @@ export function RecentFilesSection() {
               'cursor-pointer text-left',
               // Animation
               !prefersReducedMotion &&
-                'transition-all duration-normal ease-out hover:-translate-y-0.5',
+                'transition-[transform,opacity,box-shadow,border-color] duration-normal ease-out hover:-translate-y-0.5',
               prefersReducedMotion && 'transition-colors duration-normal ease-in-out',
             ]
               .filter(Boolean)
@@ -134,7 +134,7 @@ export function RecentFilesSection() {
             </div>
 
             {/* File info */}
-            <div className="px-2.5 py-2 flex flex-col gap-0.5 min-w-0">
+            <div className="px-3 py-2 flex flex-col gap-0.5 min-w-0">
               <p className="text-xs font-medium text-text-light dark:text-text-dark truncate">
                 {truncateFileName(entry.fileName)}
               </p>

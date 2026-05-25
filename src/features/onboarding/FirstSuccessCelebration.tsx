@@ -102,6 +102,8 @@ export function FirstSuccessCelebration({ visible }: FirstSuccessCelebrationProp
         'flex items-center gap-3',
         // Spacing
         'px-4 py-3',
+        // Max width to prevent overflow on narrow viewports
+        'max-w-[calc(100vw-32px)]',
         // Colors (light)
         'bg-success-50 border border-success-200',
         // Colors (dark)

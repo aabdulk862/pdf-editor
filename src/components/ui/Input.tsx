@@ -15,7 +15,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 
 const sizeClasses: Record<NonNullable<InputProps['size']>, string> = {
   sm: 'min-h-[44px] px-3 py-2 text-sm',
-  md: 'min-h-[44px] px-4 py-2.5 text-base',
+  md: 'min-h-[44px] px-4 py-3 text-base',
   lg: 'min-h-[48px] px-4 py-3 text-lg',
 };
 
@@ -46,7 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="mb-1.5 block text-sm font-medium text-text-light dark:text-text-dark"
+            className="mb-2 block text-sm font-medium text-text-light dark:text-text-dark"
           >
             {label}
           </label>
@@ -75,16 +75,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p
-            id={errorId}
-            role="alert"
-            className="mt-1.5 text-sm text-error-600 dark:text-error-400"
-          >
+          <p id={errorId} role="alert" className="mt-2 text-sm text-error-600 dark:text-error-400">
             {error}
           </p>
         )}
         {helperText && !error && (
-          <p id={helperId} className="mt-1.5 text-sm text-text-muted dark:text-secondary-400">
+          <p id={helperId} className="mt-2 text-sm text-text-muted dark:text-secondary-400">
             {helperText}
           </p>
         )}

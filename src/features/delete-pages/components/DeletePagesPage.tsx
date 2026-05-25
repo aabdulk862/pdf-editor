@@ -455,13 +455,13 @@ function PageThumbnailItem({
         }
       }}
       className={[
-        'relative cursor-pointer rounded-lg border-2 p-2 transition-all duration-normal ease-in-out',
+        'relative cursor-pointer rounded-lg border-2 p-2 transition-[border-color,background-color,box-shadow] duration-normal ease-in-out',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:focus-visible:ring-offset-background-dark',
         'min-h-[44px] min-w-[44px]',
         isSelected
-          ? 'border-error-500 bg-error-50 shadow-md dark:border-error-400 dark:bg-error-900/20'
-          : 'border-secondary-200 bg-white hover:border-primary-300 hover:shadow-sm dark:border-secondary-700 dark:bg-secondary-800 dark:hover:border-primary-600',
+          ? 'border-error-500 bg-error-50 shadow-level-2 dark:border-error-400 dark:bg-error-900/20'
+          : 'border-secondary-200 bg-white hover:border-primary-300 hover:shadow-level-1 dark:border-secondary-700 dark:bg-secondary-800 dark:hover:border-primary-600',
       ].join(' ')}
     >
       {/* Selection indicator */}

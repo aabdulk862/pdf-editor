@@ -219,7 +219,10 @@ export const tokens: DesignTokens = {
   },
 
   // ---------------------------------------------------------------------------
-  // Shadows — single top-left light source (offset-x negative, offset-y positive)
+  // Shadows — single top-left light source
+  //
+  // Light comes from the top-left, so shadows fall down (positive y) and
+  // slightly to the right (positive x). Offsets increase with elevation.
   //
   // level-0: flat (no shadow)
   // level-1: subtle lift (cards at rest)
@@ -229,10 +232,10 @@ export const tokens: DesignTokens = {
   // ---------------------------------------------------------------------------
   shadows: {
     'level-0': 'none',
-    'level-1': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-    'level-2': '0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
-    'level-3': '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04)',
-    'level-4': '0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.05)',
+    'level-1': '1px 1px 2px 0 rgb(0 0 0 / 0.05)',
+    'level-2': '2px 4px 6px -1px rgb(0 0 0 / 0.07), 1px 2px 4px -2px rgb(0 0 0 / 0.05)',
+    'level-3': '4px 10px 15px -3px rgb(0 0 0 / 0.08), 2px 4px 6px -4px rgb(0 0 0 / 0.04)',
+    'level-4': '6px 20px 25px -5px rgb(0 0 0 / 0.10), 3px 8px 10px -6px rgb(0 0 0 / 0.05)',
   },
 
   // ---------------------------------------------------------------------------

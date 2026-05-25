@@ -180,7 +180,7 @@ export function LetterheadTemplateList({
 
             {/* Delete confirmation */}
             {isDeleting && (
-              <div className="flex items-center gap-2 rounded bg-error-50 px-2 py-1.5 dark:bg-error-900/30">
+              <div className="flex items-center gap-2 rounded bg-error-50 px-2 py-2 dark:bg-error-900/30">
                 <span className="flex-1 text-xs text-error-700 dark:text-error-300">
                   Are you sure?
                 </span>

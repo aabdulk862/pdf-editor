@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
+import { getDevicePixelRatio } from '@/core/render-engine/hidpi';
+import { Icon } from '../../design-system/primitives/Icon';
 
 // Configure the PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -167,16 +169,24 @@ export function PreviewPanel({
       try {
         const page = await pdfDoc.getPage(pageNum);
         const viewport = page.getViewport({ scale });
+        const dpr = getDevicePixelRatio();
 
         const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        // Set buffer to physical pixel dimensions for HiDPI sharpness
+        canvas.width = Math.round(viewport.width * dpr);
+        canvas.height = Math.round(viewport.height * dpr);
+        // Set CSS dimensions to logical size
+        canvas.style.width = `${viewport.width}px`;
+        canvas.style.height = `${viewport.height}px`;
 
         const context = canvas.getContext('2d');
         if (!context) {
           setPageState({ canvas: null, loading: false, error: 'Failed to get canvas context' });
           return;
         }
+
+        // Scale context so pdf.js renders at physical pixel resolution
+        context.scale(dpr, dpr);
 
         await page.render({ canvasContext: context, viewport }).promise;
 
@@ -306,15 +316,11 @@ export function PreviewPanel({
             className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Zoom out"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 12H4" />
-            </svg>
+            <Icon size={20}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+              </svg>
+            </Icon>
           </button>
           <span
             className="text-sm font-medium text-text-light dark:text-text-dark min-w-[48px] text-center"
@@ -330,20 +336,11 @@ export function PreviewPanel({
             className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Zoom in"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
+            <Icon size={20}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+            </Icon>
           </button>
         </div>
 
@@ -356,20 +353,11 @@ export function PreviewPanel({
             className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Previous page"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+            <Icon size={20}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </Icon>
           </button>
           <span
             className="text-sm font-medium text-text-light dark:text-text-dark min-w-[80px] text-center"
@@ -385,20 +373,11 @@ export function PreviewPanel({
             className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Next page"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <Icon size={20}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </Icon>
           </button>
         </div>
 
@@ -465,6 +444,8 @@ function PageLoadingPlaceholder(): JSX.Element {
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
+        width={24}
+        height={24}
         aria-hidden="true"
       >
         <circle
@@ -494,20 +475,15 @@ function PageErrorPlaceholder({ error }: { error: string }): JSX.Element {
       role="alert"
       aria-live="assertive"
     >
-      <svg
-        className="w-6 h-6 text-error-500"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.5}
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-        />
-      </svg>
+      <Icon size={24} className="text-error-500">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+          />
+        </svg>
+      </Icon>
       <div className="space-y-1">
         <p className="text-sm font-medium text-error-600 dark:text-error-400">
           Page could not be rendered

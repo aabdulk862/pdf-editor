@@ -116,10 +116,10 @@
 
   /* shadows */
   --shadow-level-0: none;
-  --shadow-level-1: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-level-2: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-level-3: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
-  --shadow-level-4: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+  --shadow-level-1: 1px 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-level-2: 2px 4px 6px -1px rgb(0 0 0 / 0.07), 1px 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-level-3: 4px 10px 15px -3px rgb(0 0 0 / 0.08), 2px 4px 6px -4px rgb(0 0 0 / 0.04);
+  --shadow-level-4: 6px 20px 25px -5px rgb(0 0 0 / 0.1), 3px 8px 10px -6px rgb(0 0 0 / 0.05);
 
   /* border-width */
   --border-thin: 1px;

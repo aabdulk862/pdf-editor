@@ -126,7 +126,7 @@ export function ShortcutReferencePanel() {
         role="dialog"
         aria-label="Keyboard Shortcuts Reference"
         aria-modal="true"
-        className="mx-4 flex max-h-[80vh] w-full max-w-xl flex-col overflow-hidden rounded-lg border border-secondary-200 bg-white shadow-xl dark:border-secondary-700 dark:bg-secondary-800"
+        className="mx-4 flex max-h-[calc(100vh-32px)] w-full max-w-[min(36rem,calc(100vw-32px))] flex-col overflow-hidden rounded-lg border border-secondary-200 bg-white shadow-level-4 dark:border-secondary-700 dark:bg-secondary-800"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-secondary-200 px-6 py-4 dark:border-secondary-700">

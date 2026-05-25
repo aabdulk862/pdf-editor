@@ -98,7 +98,7 @@ function AppLevelFallback({ onReload }: { onReload: () => void }): ReactNode {
         </p>
         <button
           onClick={onReload}
-          className="inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors duration-normal ease-in-out hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
+          className="inline-flex items-center rounded-lg bg-primary-600 px-6 py-3 text-sm font-medium text-white transition-colors duration-normal ease-in-out hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
         >
           Reload Page
         </button>
@@ -116,7 +116,7 @@ function FeatureLevelFallback({
 }): ReactNode {
   return (
     <div
-      className="flex flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-8 dark:border-red-800 dark:bg-red-950"
+      className="flex flex-col items-center justify-center rounded-lg border border-error-200 bg-error-50 p-8 dark:border-error-800 dark:bg-error-900/30"
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
@@ -124,11 +124,11 @@ function FeatureLevelFallback({
       <div className="mb-4 text-4xl" aria-hidden="true">
         ❌
       </div>
-      <h2 className="mb-2 text-lg font-semibold text-red-800 dark:text-red-200">
+      <h2 className="mb-2 text-lg font-semibold text-error-800 dark:text-error-200">
         This section encountered an error
       </h2>
       {error && (
-        <p className="mb-4 max-w-md text-center text-sm text-red-600 dark:text-red-400">
+        <p className="mb-4 max-w-md text-center text-sm text-error-600 dark:text-error-400">
           {error.message}
         </p>
       )}
@@ -137,7 +137,7 @@ function FeatureLevelFallback({
       </p>
       <button
         onClick={onRetry}
-        className="inline-flex items-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white transition-colors duration-normal ease-in-out hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
+        className="inline-flex items-center rounded-lg bg-error-600 px-5 py-3 text-sm font-medium text-white transition-colors duration-normal ease-in-out hover:bg-error-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
       >
         Retry
       </button>

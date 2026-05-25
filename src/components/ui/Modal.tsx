@@ -1,4 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useRef } from 'react';
+import { Icon } from '../../design-system/primitives/Icon';
 
 export interface ModalProps {
   /** Whether the modal is open */
@@ -78,17 +79,17 @@ export function Modal({
       onClick={handleBackdropClick}
       aria-labelledby="modal-title"
       className={[
-        'fixed inset-0 m-auto rounded-lg border-none p-0 shadow-xl',
+        'fixed inset-0 m-auto rounded-lg border-none p-0 shadow-level-4',
         'backdrop:bg-black/50 backdrop:backdrop-blur-sm',
         'bg-white dark:bg-secondary-800',
-        'w-[calc(100%-2rem)]',
+        'w-[calc(100vw-32px)] max-h-[calc(100vh-32px)]',
         sizeClasses[size],
         'animate-in fade-in duration-normal motion-reduce:animate-none',
       ].join(' ')}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col max-h-[inherit] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-secondary-200 px-6 py-4 dark:border-secondary-700">
+        <div className="flex items-center justify-between border-b border-secondary-200 px-6 py-4 dark:border-secondary-700 shrink-0">
           <h2
             id="modal-title"
             className="text-lg font-semibold text-text-light dark:text-text-dark"
@@ -101,27 +102,18 @@ export function Modal({
             aria-label="Close dialog"
             className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-secondary-500 transition-colors duration-normal ease-in-out hover:bg-secondary-100 hover:text-secondary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-200"
           >
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 5l10 10M15 5L5 15" />
-            </svg>
+            <Icon name="close" size={20} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="px-6 py-4 text-text-light dark:text-text-dark">{children}</div>
+        <div className="px-6 py-4 text-text-light dark:text-text-dark overflow-y-auto">
+          {children}
+        </div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 border-t border-secondary-200 px-6 py-4 dark:border-secondary-700">
+          <div className="flex items-center justify-end gap-3 border-t border-secondary-200 px-6 py-4 dark:border-secondary-700 shrink-0">
             {footer}
           </div>
         )}

@@ -133,7 +133,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
 
       {/* Panel */}
       <div
-        className="relative w-full max-w-lg max-h-[80vh] mx-4 bg-white dark:bg-secondary-800 rounded-xl shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-[min(32rem,calc(100vw-32px))] max-h-[calc(100vh-32px)] mx-4 bg-white dark:bg-secondary-800 rounded-xl shadow-level-4 overflow-hidden flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-label="Keyboard shortcuts"
@@ -172,7 +172,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
               </h3>
               <div className="space-y-1">
                 {category.shortcuts.map((shortcut) => (
-                  <div key={shortcut.keys} className="flex items-center justify-between py-1.5">
+                  <div key={shortcut.keys} className="flex items-center justify-between py-2">
                     <span className="text-sm text-secondary-700 dark:text-secondary-200">
                       {shortcut.description}
                     </span>
@@ -188,7 +188,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
 
         {/* Footer */}
         <div className="px-6 py-3 border-t border-secondary-100 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900 flex items-center justify-between">
-          <p className="text-xs text-secondary-500 dark:text-secondary-400">
+          <p className="hidden sm:block text-xs text-secondary-500 dark:text-secondary-400">
             Press{' '}
             <kbd className="px-1 py-0.5 rounded bg-secondary-200 dark:bg-secondary-700 text-secondary-600 dark:text-secondary-300 font-mono">
               ?
@@ -197,7 +197,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
           </p>
           <button
             type="button"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             onClick={() => {
               useOnboardingStore.getState().resetTour();
               onClose();

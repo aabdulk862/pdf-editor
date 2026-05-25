@@ -94,7 +94,7 @@ export function MergeFileList({ files, onReorder, onRemove }: MergeFileListProps
             onDragEnd={handleDragEnd}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={[
-              'flex items-center gap-3 rounded-md border px-3 py-2 transition-all duration-normal ease-in-out cursor-grab active:cursor-grabbing',
+              'flex items-center gap-3 rounded-md border px-3 py-2 transition-[border-color,background-color,opacity] duration-normal ease-in-out cursor-grab active:cursor-grabbing',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
               dragIndex === index
                 ? 'opacity-50 border-primary-300 dark:border-primary-600'

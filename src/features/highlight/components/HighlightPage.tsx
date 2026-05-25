@@ -4,6 +4,7 @@ import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/hooks/useToast';
+import { getDevicePixelRatio } from '@/core/render-engine/hidpi';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import {
   annotationEngine,
@@ -134,9 +135,10 @@ export function HighlightPage(): JSX.Element {
         container.innerHTML = '';
 
         // Create page render canvas
+        const dpr = getDevicePixelRatio();
         const renderCanvas = document.createElement('canvas');
-        renderCanvas.width = viewport.width;
-        renderCanvas.height = viewport.height;
+        renderCanvas.width = Math.round(viewport.width * dpr);
+        renderCanvas.height = Math.round(viewport.height * dpr);
         renderCanvas.style.width = '100%';
         renderCanvas.style.height = 'auto';
         renderCanvas.style.display = 'block';
@@ -146,6 +148,7 @@ export function HighlightPage(): JSX.Element {
         const ctx = renderCanvas.getContext('2d');
         if (!ctx) return;
 
+        ctx.scale(dpr, dpr);
         await page.render({ canvasContext: ctx, viewport }).promise;
         if (cancelled) return;
 
@@ -425,7 +428,7 @@ export function HighlightPage(): JSX.Element {
 
       {/* Drawing area with page navigation */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-medium text-text-light dark:text-text-dark">
             Draw Highlights — Page {currentPage} of {pageCount}
           </h2>
@@ -497,7 +500,7 @@ export function HighlightPage(): JSX.Element {
       {/* Highlights list for current page */}
       {currentPageHighlights.length > 0 && (
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-sm font-medium text-text-light dark:text-text-dark">
               Highlights on Page {currentPage} ({currentPageHighlights.length})
             </h2>
@@ -513,7 +516,7 @@ export function HighlightPage(): JSX.Element {
             {currentPageHighlights.map((h, index) => (
               <div
                 key={h.id}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-secondary-200 dark:border-secondary-600 bg-white dark:bg-secondary-800 text-sm"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-secondary-200 dark:border-secondary-600 bg-white dark:bg-secondary-800 text-sm"
               >
                 <span
                   className="w-4 h-4 rounded-sm border border-secondary-300 dark:border-secondary-500"

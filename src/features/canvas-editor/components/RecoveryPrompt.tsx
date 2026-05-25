@@ -60,12 +60,12 @@ export function RecoveryPrompt({
       aria-modal="true"
       aria-labelledby="recovery-prompt-title"
     >
-      <div className="w-[calc(100%-2rem)] max-w-md bg-white dark:bg-secondary-800 rounded-lg shadow-xl animate-in fade-in duration-normal motion-reduce:animate-none">
+      <div className="w-[calc(100vw-32px)] max-w-md max-h-[calc(100vh-32px)] bg-white dark:bg-secondary-800 rounded-lg shadow-level-4 animate-in fade-in duration-normal motion-reduce:animate-none overflow-y-auto">
         {/* Header */}
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center gap-3 mb-3">
             {/* Recovery icon */}
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-900/30">
               <svg
                 width="20"
                 height="20"
@@ -75,7 +75,7 @@ export function RecoveryPrompt({
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-blue-600"
+                className="text-primary-600 dark:text-primary-400"
                 aria-hidden="true"
               >
                 <path d="M3 10a7 7 0 0 1 7-7 7 7 0 0 1 5.5 2.7" />
@@ -109,14 +109,14 @@ export function RecoveryPrompt({
           <button
             type="button"
             onClick={onDiscard}
-            className="min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="min-h-[44px] px-4 py-3 rounded-lg text-sm font-medium text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           >
             Discard
           </button>
           <button
             type="button"
             onClick={onRestore}
-            className="min-h-[44px] px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="min-h-[44px] px-5 py-3 rounded-lg text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 active:bg-primary-800 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
             autoFocus
           >
             Restore

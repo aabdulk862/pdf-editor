@@ -22,7 +22,7 @@ export interface SegmentedControlProps<T extends string> {
 // ---------------------------------------------------------------------------
 
 const sizeClasses: Record<'sm' | 'md', string> = {
-  sm: 'text-sm px-3 py-1.5',
+  sm: 'text-sm px-3 py-2',
   md: 'text-base px-4 py-2',
 };
 

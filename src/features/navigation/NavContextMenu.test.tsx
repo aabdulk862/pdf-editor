@@ -143,8 +143,8 @@ describe('NavContextMenu', () => {
 
     const menu = screen.getByRole('menu');
     expect(menu.className).toContain('bg-white');
-    expect(menu.className).toContain('dark:bg-gray-800');
-    expect(menu.className).toContain('shadow-lg');
+    expect(menu.className).toContain('dark:bg-secondary-800');
+    expect(menu.className).toContain('shadow-level-3');
     expect(menu.className).toContain('rounded-md');
   });
 

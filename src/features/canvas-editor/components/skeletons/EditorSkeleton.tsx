@@ -29,7 +29,7 @@ export function EditorSkeleton() {
       {/* Main canvas area */}
       <div className="flex-1 flex flex-col relative bg-[#1a1a2e]">
         {/* Floating toolbar skeleton */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-2 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-xl shadow-md">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-3 py-2 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-xl shadow-level-2">
           {Array.from({ length: 8 }, (_, i) => (
             <div
               key={i}
@@ -41,7 +41,7 @@ export function EditorSkeleton() {
 
         {/* Canvas page skeleton */}
         <div className="flex-1 flex items-center justify-center p-8">
-          <div className="w-[60%] max-w-[500px] aspect-[210/297] bg-white rounded-sm shadow-xl animate-pulse motion-reduce:animate-none" />
+          <div className="w-[60%] max-w-[500px] aspect-[210/297] bg-white rounded-sm shadow-level-4 animate-pulse motion-reduce:animate-none" />
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export function EditorSkeleton() {
 
         {/* Property groups */}
         {Array.from({ length: 3 }, (_, groupIdx) => (
-          <div key={groupIdx} className="flex flex-col gap-2.5">
+          <div key={groupIdx} className="flex flex-col gap-3">
             <div
               className="h-3 w-16 rounded bg-secondary-200 dark:bg-secondary-700 animate-pulse motion-reduce:animate-none"
               style={{ animationDelay: `${groupIdx * 100}ms` }}

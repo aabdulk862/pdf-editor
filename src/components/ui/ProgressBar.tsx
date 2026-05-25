@@ -100,7 +100,7 @@ export function ProgressBar({ progress, label, ariaLabel }: ProgressBarProps): J
       >
         {isDeterminate ? (
           <div
-            className="h-full rounded-full bg-primary-500 dark:bg-primary-400 transition-all duration-moderate ease-out motion-reduce:transition-none"
+            className="h-full rounded-full bg-primary-500 dark:bg-primary-400 transition-[width] duration-moderate ease-out motion-reduce:transition-none"
             style={{ width: `${clampedProgress}%` }}
           />
         ) : (

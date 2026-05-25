@@ -11,6 +11,7 @@ import { TemplateConfigScreen } from '../../features/templates/TemplateConfigScr
 import { TemplateProgress } from '../../features/templates/TemplateProgress';
 import { InstallPrompt } from '../../features/canvas-editor/components/InstallPrompt';
 import { useNavStore } from '../../features/navigation/store/nav-store';
+import { Icon } from '../../design-system/primitives/Icon';
 
 /** Navigation link item for the sidebar/mobile nav */
 export interface NavItem {
@@ -67,35 +68,35 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
                     aria-expanded={sidebarOpen}
                   >
                     {sidebarOpen ? (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
+                      <Icon size={24}>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </Icon>
                     ) : (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      </svg>
+                      <Icon size={24}>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4 6h16M4 12h16M4 18h16"
+                          />
+                        </svg>
+                      </Icon>
                     )}
                   </button>
                 </div>
@@ -117,35 +118,35 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
                     aria-expanded={sidebarOpen}
                   >
                     {sidebarOpen ? (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
+                      <Icon size={24}>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </Icon>
                     ) : (
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      </svg>
+                      <Icon size={24}>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4 6h16M4 12h16M4 18h16"
+                          />
+                        </svg>
+                      </Icon>
                     )}
                   </button>
                 </div>
@@ -155,7 +156,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
 
           {/* Mobile navigation drawer */}
           <nav
-            className={`overflow-hidden transition-all duration-moderate ease-in-out motion-reduce:transition-none ${
+            className={`overflow-hidden transition-[max-height,opacity] duration-moderate ease-in-out motion-reduce:transition-none ${
               sidebarOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0'
             }`}
             aria-label="Mobile navigation"
@@ -168,7 +169,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
 
         {/* Desktop sidebar */}
         <aside
-          className={`hidden md:flex md:flex-col md:flex-shrink-0 border-r border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900 sticky top-0 h-screen overflow-y-auto transition-all duration-moderate ease-in-out motion-reduce:transition-none ${
+          className={`hidden md:flex md:flex-col md:flex-shrink-0 border-r border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900 sticky top-0 h-screen overflow-y-auto transition-[width] duration-moderate ease-in-out motion-reduce:transition-none ${
             sidebarCollapsed ? 'md:w-12' : 'md:w-64 lg:w-72'
           }`}
           aria-label="Desktop navigation"
@@ -191,7 +192,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
         </aside>
 
         {/* Main content area */}
-        <main className="flex-1 min-w-0 transition-all duration-moderate ease-in-out motion-reduce:transition-none">
+        <main className="flex-1 min-w-0 transition-[margin] duration-moderate ease-in-out motion-reduce:transition-none">
           {/* Tab bar above main content */}
           <TabBar />
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -250,23 +251,17 @@ export function ExpandableSection({
           aria-expanded={isOpen}
         >
           <span>{title}</span>
-          <svg
-            className={`w-4 h-4 transition-transform duration-moderate ease-in-out motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+          <Icon
+            size={16}
+            className={`transition-transform duration-moderate ease-in-out motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </Icon>
         </button>
         <div
-          className={`transition-all duration-moderate ease-in-out motion-reduce:transition-none overflow-hidden ${
+          className={`transition-[max-height,opacity] duration-moderate ease-in-out motion-reduce:transition-none overflow-hidden ${
             isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
@@ -279,7 +274,7 @@ export function ExpandableSection({
 
 /**
  * Wrapper for modals/dropdowns that ensures they render within viewport bounds on mobile.
- * Uses fixed positioning with viewport-aware constraints.
+ * Uses fixed positioning with viewport-aware constraints (16px margin on all sides).
  *
  * Requirements: 27.9
  */
@@ -291,7 +286,7 @@ export function ViewportConstrained({
   className?: string;
 }) {
   return (
-    <div className={`max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] overflow-auto ${className}`}>
+    <div className={`max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] overflow-auto ${className}`}>
       {children}
     </div>
   );

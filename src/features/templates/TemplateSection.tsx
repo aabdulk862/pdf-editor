@@ -30,7 +30,7 @@ export function TemplateSection() {
             <button
               key={template.id}
               onClick={() => selectTemplate(template.id)}
-              className="flex flex-col items-start p-4 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-md transition-all duration-normal ease-in-out text-left min-h-[44px]"
+              className="flex flex-col items-start p-4 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-level-2 transition-[border-color,box-shadow] duration-normal ease-in-out text-left min-h-[44px]"
               aria-label={`Use template: ${template.name}`}
             >
               <div className="flex items-center gap-2 mb-2">

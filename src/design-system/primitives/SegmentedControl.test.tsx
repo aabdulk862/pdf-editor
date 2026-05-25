@@ -108,7 +108,7 @@ describe('SegmentedControl', () => {
     const segment = screen.getAllByRole('radio')[0];
     expect(segment.className).toContain('text-sm');
     expect(segment.className).toContain('px-3');
-    expect(segment.className).toContain('py-1.5');
+    expect(segment.className).toContain('py-2');
   });
 
   it('applies md size classes by default', () => {

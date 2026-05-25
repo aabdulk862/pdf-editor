@@ -235,7 +235,7 @@ export function OnboardingTour() {
     >
       {/* Dark overlay with spotlight cutout */}
       <div
-        className="absolute inset-0 bg-black/60 transition-all duration-slow ease-in-out motion-reduce:transition-none"
+        className="absolute inset-0 bg-black/60 transition-[clip-path,opacity] duration-slow ease-in-out motion-reduce:transition-none"
         style={overlayMask ? { clipPath: overlayMask } : undefined}
         aria-hidden="true"
       />
@@ -243,7 +243,7 @@ export function OnboardingTour() {
       {/* Spotlight glow border */}
       {spotlightRect && (
         <div
-          className="absolute rounded-lg pointer-events-none transition-all duration-slow ease-in-out motion-reduce:transition-none"
+          className="absolute rounded-lg pointer-events-none transition-[top,left,width,height] duration-slow ease-in-out motion-reduce:transition-none"
           style={{
             top: spotlightRect.top,
             left: spotlightRect.left,
@@ -258,7 +258,7 @@ export function OnboardingTour() {
       {/* Tooltip card */}
       <div
         ref={tooltipRef}
-        className="absolute w-80 bg-white dark:bg-secondary-800 rounded-xl shadow-2xl border border-secondary-200 dark:border-secondary-700 p-5 transition-all duration-slow ease-in-out motion-reduce:transition-none"
+        className="absolute w-80 max-w-[calc(100vw-32px)] bg-white dark:bg-secondary-800 rounded-xl shadow-level-4 border border-secondary-200 dark:border-secondary-700 p-5 transition-[top,left,opacity] duration-slow ease-in-out motion-reduce:transition-none"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
@@ -295,7 +295,7 @@ export function OnboardingTour() {
         {/* Step title */}
         <p
           id="onboarding-step-title"
-          className="text-base font-semibold text-secondary-900 dark:text-secondary-100 mb-1.5"
+          className="text-base font-semibold text-secondary-900 dark:text-secondary-100 mb-2"
         >
           {step.title}
         </p>
@@ -328,7 +328,7 @@ export function OnboardingTour() {
         </div>
 
         {/* Step dots */}
-        <div className="flex items-center justify-center gap-1.5 mt-4" aria-hidden="true">
+        <div className="flex items-center justify-center gap-2 mt-4" aria-hidden="true">
           {Array.from({ length: totalSteps }, (_, i) => (
             <div
               key={i}

@@ -140,7 +140,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
       onClick={handleBackdropClick}
       aria-labelledby="export-dialog-title"
       className={[
-        'fixed inset-0 m-auto rounded-lg border-none p-0 shadow-xl',
+        'fixed inset-0 m-auto rounded-lg border-none p-0 shadow-level-4',
         'backdrop:bg-black/50 backdrop:backdrop-blur-sm',
         'bg-white dark:bg-secondary-800',
         'w-[calc(100%-2rem)] max-w-lg',
@@ -195,7 +195,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
                     'flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-normal ease-in-out',
                     'min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                     format === opt.value
-                      ? 'bg-white text-primary-700 shadow-sm dark:bg-secondary-600 dark:text-primary-300'
+                      ? 'bg-white text-primary-700 shadow-level-1 dark:bg-secondary-600 dark:text-primary-300'
                       : 'text-secondary-600 hover:text-secondary-800 dark:text-secondary-300 dark:hover:text-secondary-100',
                   ].join(' ')}
                 >
@@ -294,7 +294,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
               <span
                 aria-hidden="true"
                 className={[
-                  'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-moderate ease-in-out motion-reduce:transition-none',
+                  'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-level-1 ring-0 transition-transform duration-moderate ease-in-out motion-reduce:transition-none',
                   batch ? 'translate-x-5' : 'translate-x-0',
                 ].join(' ')}
               />
@@ -323,7 +323,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
                 <span
                   aria-hidden="true"
                   className={[
-                    'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-moderate ease-in-out motion-reduce:transition-none',
+                    'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-level-1 ring-0 transition-transform duration-moderate ease-in-out motion-reduce:transition-none',
                     insertIntoPdf ? 'translate-x-5' : 'translate-x-0',
                   ].join(' ')}
                 />
@@ -343,7 +343,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
               </p>
               <div className="h-2 w-full overflow-hidden rounded-full bg-primary-100 dark:bg-primary-800">
                 <div
-                  className="h-full rounded-full bg-primary-500 transition-all duration-moderate ease-out motion-reduce:transition-none dark:bg-primary-400"
+                  className="h-full rounded-full bg-primary-500 transition-[width] duration-moderate ease-out motion-reduce:transition-none dark:bg-primary-400"
                   style={{ width: `${progressPercent}%` }}
                   role="progressbar"
                   aria-valuenow={progressPercent}

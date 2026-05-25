@@ -293,7 +293,7 @@ function Tooltip({ label, shortcut, visible, anchorRef }: TooltipProps) {
 
   return (
     <div
-      className="fixed z-[9999] pointer-events-none px-2 py-1 rounded bg-secondary-900 dark:bg-secondary-700 text-white text-xs whitespace-nowrap shadow-lg"
+      className="fixed z-[9999] pointer-events-none px-2 py-1 rounded bg-secondary-900 dark:bg-secondary-700 text-white text-xs whitespace-nowrap shadow-level-3"
       style={{ left: position.left, top: position.top, transform: 'translateX(-50%)' }}
       role="tooltip"
     >
@@ -347,10 +347,10 @@ function ToolButton({ tool, isActive, onClick }: ToolButtonProps) {
           flex items-center justify-center min-w-[44px] min-h-[44px] md:min-w-[36px] md:min-h-[36px] rounded-lg transition-colors duration-normal ease-in-out
           ${
             isActive
-              ? 'bg-blue-500/20 text-blue-500'
+              ? 'bg-primary-500/20 text-primary-500'
               : 'text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 hover:text-secondary-900 dark:hover:text-secondary-100'
           }
-          active:bg-secondary-200 dark:active:bg-secondary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
+          active:bg-secondary-200 dark:active:bg-secondary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500
         `}
         onClick={onClick}
         onMouseEnter={handleMouseEnter}
@@ -404,7 +404,7 @@ export function FloatingToolbar() {
 
   return (
     <div
-      className="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-1 md:py-1.5 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-xl shadow-md border border-secondary-200/60 dark:border-secondary-700/60 max-w-[calc(100vw-2rem)] overflow-x-auto"
+      className="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-1 md:py-2 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-xl shadow-level-2 border border-secondary-200/60 dark:border-secondary-700/60 max-w-[calc(100vw-2rem)] overflow-x-auto"
       role="toolbar"
       aria-label="Canvas tools"
     >

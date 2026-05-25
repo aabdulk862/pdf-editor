@@ -189,25 +189,10 @@ const config: Config = {
           '0%': { transform: 'translateY(100%)' },
           '100%': { transform: 'translateY(0)' },
         },
-        shimmer: {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' },
-        },
-        'page-enter': {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        'celebration-enter': {
-          '0%': { opacity: '0', transform: 'translateX(-50%) scale(0.8)' },
-          '100%': { opacity: '1', transform: 'translateX(-50%) scale(1)' },
-        },
       },
       animation: {
         indeterminate: 'indeterminate 1.5s ease-in-out infinite',
         'slide-up': 'slide-up 200ms ease',
-        shimmer: 'shimmer 1.5s ease-in-out infinite',
-        'page-enter': 'page-enter 200ms ease-out forwards',
-        'celebration-enter': 'celebration-enter 200ms ease-out forwards',
       },
     },
   },

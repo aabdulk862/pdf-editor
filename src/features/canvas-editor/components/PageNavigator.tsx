@@ -52,9 +52,9 @@ export function PageNavigator() {
             <button
               type="button"
               onClick={() => setActivePage(index)}
-              className={`relative w-full rounded-md overflow-hidden transition-all duration-normal ease-in-out motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-blue-400 outline-none ${
+              className={`relative w-full rounded-md overflow-hidden transition-[box-shadow,ring-color] duration-normal ease-in-out motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-primary-400 outline-none ${
                 isActive
-                  ? 'ring-2 ring-blue-500 shadow-md'
+                  ? 'ring-2 ring-primary-500 shadow-level-2'
                   : 'ring-1 ring-secondary-600 hover:ring-secondary-400'
               }`}
               style={{ height: `${Math.min(thumbHeight, 160)}px` }}
@@ -83,11 +83,11 @@ export function PageNavigator() {
                           key={el.id}
                           className={`absolute rounded-sm ${
                             el.type === 'text'
-                              ? 'bg-blue-400/40'
+                              ? 'bg-primary-400/40'
                               : el.type === 'image'
-                                ? 'bg-green-400/40'
+                                ? 'bg-success-400/40'
                                 : el.type === 'shape'
-                                  ? 'bg-purple-400/40'
+                                  ? 'bg-accent-400/40'
                                   : 'bg-secondary-400/40'
                           }`}
                           style={{
@@ -117,7 +117,7 @@ export function PageNavigator() {
                 className="absolute -top-1 -right-1 min-w-[44px] min-h-[44px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-normal ease-out focus-visible:opacity-100 outline-none"
                 aria-label={`Delete page ${index + 1}`}
               >
-                <span className="w-5 h-5 rounded-full bg-red-600 text-white text-[10px] flex items-center justify-center hover:bg-red-500">
+                <span className="w-5 h-5 rounded-full bg-error-600 text-white text-[10px] flex items-center justify-center hover:bg-error-500">
                   ✕
                 </span>
               </button>
@@ -131,10 +131,10 @@ export function PageNavigator() {
         type="button"
         onClick={() => addPage()}
         disabled={pages.length >= MAX_PAGES}
-        className={`mt-2 w-full min-h-[44px] rounded-md border border-dashed text-sm flex items-center justify-center transition-colors duration-normal ease-in-out focus-visible:ring-2 focus-visible:ring-blue-400 outline-none ${
+        className={`mt-2 w-full min-h-[44px] rounded-md border border-dashed text-sm flex items-center justify-center transition-colors duration-normal ease-in-out focus-visible:ring-2 focus-visible:ring-primary-400 outline-none ${
           pages.length >= MAX_PAGES
             ? 'border-secondary-700 text-secondary-600 cursor-not-allowed'
-            : 'border-secondary-500 text-secondary-400 hover:border-blue-400 hover:text-blue-400'
+            : 'border-secondary-500 text-secondary-400 hover:border-primary-400 hover:text-primary-400'
         }`}
         aria-label={
           pages.length >= MAX_PAGES
