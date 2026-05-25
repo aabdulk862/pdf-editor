@@ -446,7 +446,12 @@ function PageThumbnailCard({
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         </div>
       )}
@@ -508,7 +513,7 @@ function RotationIcon({ angle }: { angle: RotationAngle }): JSX.Element {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={2}
+        strokeWidth={1.5}
         d={
           angle === 180
             ? 'M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0116 0M20 15a9 9 0 01-16 0'

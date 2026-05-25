@@ -500,7 +500,7 @@ function BookmarkTree({
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2}
+              strokeWidth={1.5}
               aria-hidden="true"
             >
               <path
@@ -541,7 +541,8 @@ function BookmarkTree({
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
+                    aria-hidden="true"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
@@ -557,7 +558,8 @@ function BookmarkTree({
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
+                    aria-hidden="true"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -585,7 +587,8 @@ function BookmarkTree({
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth={2}
+                      strokeWidth={1.5}
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -605,7 +608,8 @@ function BookmarkTree({
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth={2}
+                      strokeWidth={1.5}
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"

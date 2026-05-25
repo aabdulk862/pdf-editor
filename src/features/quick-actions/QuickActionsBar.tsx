@@ -19,7 +19,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M19 14l-7 7m0 0l-7-7m7 7V3"
           />
         </svg>
@@ -36,7 +36,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
           />
         </svg>
@@ -53,7 +53,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
           />
         </svg>
@@ -70,7 +70,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M13 10V3L4 14h7v7l9-11h-7z"
           />
         </svg>
@@ -87,7 +87,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
           />
         </svg>
@@ -104,7 +104,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z"
           />
         </svg>
@@ -121,7 +121,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M4 6h16M4 10h16M4 14h16M4 18h16"
           />
         </svg>
@@ -138,7 +138,7 @@ function ActionIcon({ icon }: { icon: string }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M13 7l5 5m0 0l-5 5m5-5H6"
           />
         </svg>
@@ -268,7 +268,7 @@ export function QuickActionsBar(): JSX.Element | null {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M6 18L18 6M6 6l12 12"
           />
         </svg>

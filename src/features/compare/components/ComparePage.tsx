@@ -394,7 +394,7 @@ export function ComparePage(): JSX.Element {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
@@ -432,7 +432,7 @@ export function ComparePage(): JSX.Element {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
@@ -566,7 +566,7 @@ export function ComparePage(): JSX.Element {
               viewBox="0 0 24 24"
               aria-hidden="true"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 12H4" />
             </svg>
           </Button>
           <span
@@ -592,7 +592,7 @@ export function ComparePage(): JSX.Element {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 d="M12 4v16m8-8H4"
               />
             </svg>
@@ -618,7 +618,7 @@ export function ComparePage(): JSX.Element {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 d="M15 19l-7-7 7-7"
               />
             </svg>
@@ -644,7 +644,12 @@ export function ComparePage(): JSX.Element {
               viewBox="0 0 24 24"
               aria-hidden="true"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </Button>
         </div>

@@ -7,8 +7,10 @@ describe('useVirtualScroll', () => {
   let mockContainer: {
     scrollTop: number;
     clientHeight: number;
-    addEventListener: ReturnType<typeof vi.fn>;
-    removeEventListener: ReturnType<typeof vi.fn>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    addEventListener: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    removeEventListener: any;
   };
   let containerRef: RefObject<HTMLElement | null>;
   let scrollListeners: Array<() => void>;

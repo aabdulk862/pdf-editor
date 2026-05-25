@@ -85,7 +85,10 @@ async function handleRecognize(pageNumber: number, imageData: ImageBitmap): Prom
       }, RECOGNITION_TIMEOUT_MS);
     });
 
-    const result = await Promise.race([tesseractWorker.recognize(imageData), timeoutPromise]);
+    const result = await Promise.race([
+      tesseractWorker.recognize(imageData as unknown as string),
+      timeoutPromise,
+    ]);
 
     if (timeoutId !== null) {
       clearTimeout(timeoutId);

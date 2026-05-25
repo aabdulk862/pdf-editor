@@ -75,7 +75,7 @@ const suggestionMap: SuggestionMap = {
  * operation types.
  */
 export function getSuggestions(operationType: string): QuickAction[] {
-  if (Object.hasOwn(suggestionMap, operationType)) {
+  if (Object.prototype.hasOwnProperty.call(suggestionMap, operationType)) {
     return suggestionMap[operationType];
   }
   return [];

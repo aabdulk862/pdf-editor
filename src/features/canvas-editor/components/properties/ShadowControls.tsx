@@ -61,7 +61,7 @@ export const ShadowControls: React.FC<ShadowControlsProps> = ({ shadow, onChange
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={1.5}
               d="M20 12H4M12 4v16"
             />
           </svg>

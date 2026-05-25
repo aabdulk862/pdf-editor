@@ -1,6 +1,6 @@
 import { test } from '@fast-check/vitest';
 import fc from 'fast-check';
-import { describe, beforeEach } from 'vitest';
+import { describe, beforeEach, expect } from 'vitest';
 import { useShortcutStore, buildKeyString, buildKeyStringFromEvent } from '../../store/shortcuts';
 import type { ShortcutBinding, ShortcutKeys, ShortcutScope, FocusContext } from './types';
 

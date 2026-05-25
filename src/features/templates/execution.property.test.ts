@@ -240,16 +240,6 @@ const inputBufferArb = fc.uint8Array({ minLength: 1, maxLength: 20 }).map((arr) 
  */
 const operationTypes = ['compress', 'flatten', 'linearize', 'page-numbers', 'headers-footers'];
 
-/**
- * Arbitrary for generating a list of operation type strings.
- */
-function _stepsArb(numSteps: number): fc.Arbitrary<string[]> {
-  return fc.array(fc.constantFrom(...operationTypes), {
-    minLength: numSteps,
-    maxLength: numSteps,
-  });
-}
-
 // ============================================================================
 // Property 14: Template sequential execution piping
 // ============================================================================

@@ -165,7 +165,8 @@ describe('render', () => {
     const state = createRenderState(page);
 
     let callCount = 0;
-    (ctx.beginPath as ReturnType<typeof vi.fn>) = vi.fn(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (ctx as any).beginPath = vi.fn(() => {
       callCount++;
     });
 

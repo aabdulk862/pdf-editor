@@ -77,9 +77,6 @@ const TAILWIND_SIZE_MAP: Record<string, number> = {
   'h-6': 24,
 };
 
-/** Tailwind classes that represent allowed icon sizes */
-const ALLOWED_TAILWIND_CLASSES = new Set(Object.keys(TAILWIND_SIZE_MAP));
-
 interface SvgIconInfo {
   line: number;
   text: string;
@@ -93,7 +90,7 @@ interface SvgIconInfo {
  * Determines if an SVG is an icon (small, UI-purpose) vs a decorative illustration
  * or utility graphic (spinner, large illustration).
  */
-function isIconSvg(line: string, context: string[]): boolean {
+function isIconSvg(line: string, _context: string[]): boolean {
   // Skip spinner/loading SVGs
   if (line.includes('animate-spin')) return false;
 

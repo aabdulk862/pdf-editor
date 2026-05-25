@@ -59,7 +59,8 @@ export class OcrEngine {
   private loadedLanguages: Set<string> = new Set();
   private initPromise: Promise<void> | null = null;
   private isCancelled: boolean = false;
-  private listeners: Map<OcrEngineEventType, Set<(...args: unknown[]) => void>> = new Map();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private listeners: Map<OcrEngineEventType, Set<(...args: any[]) => void>> = new Map();
 
   private constructor() {
     // Initialize listener sets for each event type
@@ -143,13 +144,15 @@ export class OcrEngine {
   on<T extends OcrEngineEventType>(event: T, callback: OcrEngineEvents[T]): () => void {
     const listeners = this.listeners.get(event);
     if (listeners) {
-      listeners.add(callback);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      listeners.add(callback as (...args: any[]) => void);
     }
 
     return () => {
       const set = this.listeners.get(event);
       if (set) {
-        set.delete(callback);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        set.delete(callback as (...args: any[]) => void);
       }
     };
   }
@@ -593,7 +596,7 @@ export class OcrEngine {
     if (listeners) {
       for (const listener of listeners) {
         try {
-          (listener as (...a: unknown[]) => void)(...args);
+          listener(...args);
         } catch {
           // Don't let listener errors break the engine
         }
