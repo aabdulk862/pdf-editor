@@ -71,7 +71,7 @@ describe('NavToolLink', () => {
 
     const link = screen.getByRole('link');
     expect(link.className).toContain('border-transparent');
-    expect(link.className).toContain('hover:bg-gray-100');
+    expect(link.className).toContain('hover:bg-secondary-100');
   });
 
   it('has minimum 44px height for touch target', () => {

@@ -904,7 +904,7 @@ function HeroDropZone() {
       <div
         role="button"
         tabIndex={0}
-        aria-label="Upload PDF file. Drag and drop a PDF here or click to browse."
+        aria-labelledby="hero-drop-zone-heading"
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}

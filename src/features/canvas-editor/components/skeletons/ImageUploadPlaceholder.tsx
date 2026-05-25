@@ -40,7 +40,7 @@ export function ImageUploadPlaceholder({
       aria-label="Loading image"
       aria-busy="true"
     >
-      <div className="w-full h-full rounded-md border-2 border-dashed border-blue-300 bg-blue-50/50 animate-pulse motion-reduce:animate-none flex flex-col items-center justify-center gap-2">
+      <div className="w-full h-full rounded-md border-2 border-dashed border-primary-300 bg-primary-50/50 animate-pulse motion-reduce:animate-none flex flex-col items-center justify-center gap-2">
         {/* Image icon */}
         <svg
           width="24"
@@ -51,7 +51,7 @@ export function ImageUploadPlaceholder({
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-blue-400"
+          className="text-primary-400"
           aria-hidden="true"
         >
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -60,11 +60,11 @@ export function ImageUploadPlaceholder({
         </svg>
 
         {/* Loading text */}
-        <span className="text-xs font-medium text-blue-500">Loading image...</span>
+        <span className="text-xs font-medium text-primary-500">Loading image...</span>
 
         {/* Extended message */}
         {showExtendedMessage && (
-          <span className="text-[10px] text-blue-400">Large file — this may take a moment</span>
+          <span className="text-[10px] text-primary-400">Large file — this may take a moment</span>
         )}
       </div>
     </div>

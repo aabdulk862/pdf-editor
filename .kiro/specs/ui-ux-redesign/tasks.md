@@ -104,20 +104,20 @@ This implementation plan covers the remaining tasks for the comprehensive UI/UX 
   - [x] 10.6 Test and fix overlapping or clipped content on 320px viewport width
   - [x] 10.7 Write property-based test: all button/link variants at mobile breakpoint have min 44px dimensions
 
-- [ ] 11. Visual QA & Final Validation
+- [x] 11. Visual QA & Final Validation
   - [x] 11.1 Audit all components for 4px sub-grid alignment
   - [x] 11.2 Verify shadow tokens simulate single top-left light source consistently
   - [x] 11.3 Ensure PDF page previews render at `window.devicePixelRatio` for Retina/HiDPI sharpness
   - [x] 11.4 Add `-webkit-font-smoothing: antialiased` and `-moz-osx-font-smoothing: grayscale` to global styles
   - [x] 11.5 Verify all animations use GPU-accelerated properties (transform, opacity)
-  - [ ] 11.6 Run full Lighthouse audit on mobile and desktop — target score 90+ on Performance, Accessibility, Best Practices
+  - [x] 11.6 Run full Lighthouse audit on mobile and desktop — target score 90+ on Performance, Accessibility, Best Practices
     - Run Lighthouse CI or Chrome DevTools audit against the built application
     - Address any performance issues (render-blocking resources, unused JS, image optimization)
     - Address any accessibility findings (missing labels, contrast issues, focus order)
     - Verify scores meet threshold: Performance ≥ 90, Accessibility ≥ 90, Best Practices ≥ 90
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
   - [x] 11.7 Run `tsc --noEmit` and `eslint` — verify zero errors and zero warnings
-  - [ ] 11.8 Final visual review: verify color harmony, consistent spacing, and professional polish across all pages in both light and dark themes
+  - [x] 11.8 Final visual review: verify color harmony, consistent spacing, and professional polish across all pages in both light and dark themes
     - Review all pages (Home, each tool workspace, canvas editor) in light theme for visual consistency
     - Review all pages in dark theme for proper token usage and contrast
     - Verify spacing consistency: all gaps, paddings, and margins align to 4px grid
@@ -126,7 +126,7 @@ This implementation plan covers the remaining tasks for the comprehensive UI/UX 
     - Fix any visual inconsistencies found during review
     - _Requirements: 3.1, 3.2, 3.4, 3.7, 12.3, 12.8, 12.9_
 
-- [ ] 12. Final checkpoint
+- [-] 12. Final checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

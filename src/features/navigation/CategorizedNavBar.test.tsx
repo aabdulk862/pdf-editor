@@ -18,7 +18,7 @@ import { CategorizedNavBar } from './CategorizedNavBar';
  *
  * Note: CategorizedNavBar renders both desktop and mobile versions simultaneously.
  * In jsdom, both are in the DOM. The useRovingTabindex hook's refs get registered
- * by the last-rendered version (mobile), so we test against the mobile listbox
+ * by the last-rendered version (mobile), so we test against the mobile tool group
  * for focus assertions. The tabindex attributes are shared via the same hook state.
  */
 
@@ -31,13 +31,13 @@ function renderNavBar() {
 }
 
 /**
- * Get the mobile listbox (last rendered, has active refs) and its tool links.
+ * Get the mobile tool group (last rendered, has active refs) and its tool links.
  * Both desktop and mobile share the same hook state, so tabindex values are consistent.
  */
 function getListboxAndLinks() {
-  const listboxes = screen.getAllByRole('listbox', { name: 'PDF Tools' });
-  // Use the last listbox (mobile version) since it has the active refs
-  const listbox = listboxes[listboxes.length - 1];
+  const groups = screen.getAllByRole('group', { name: 'PDF Tools' });
+  // Use the last group (mobile version) since it has the active refs
+  const listbox = groups[groups.length - 1];
   const links = Array.from(listbox.querySelectorAll('a[tabindex]')) as HTMLElement[];
   return { listbox, links };
 }
@@ -55,11 +55,11 @@ describe('CategorizedNavBar - Roving Tabindex Keyboard Navigation', () => {
     });
   });
 
-  it('renders the tool list with role="listbox" and aria-label', () => {
+  it('renders the tool list with role="group" and aria-label', () => {
     renderNavBar();
 
-    const listboxes = screen.getAllByRole('listbox', { name: 'PDF Tools' });
-    expect(listboxes.length).toBeGreaterThanOrEqual(1);
+    const groups = screen.getAllByRole('group', { name: 'PDF Tools' });
+    expect(groups.length).toBeGreaterThanOrEqual(1);
   });
 
   it('sets tabindex="0" on the first tool link and tabindex="-1" on others', () => {

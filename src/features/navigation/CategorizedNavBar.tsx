@@ -345,7 +345,7 @@ export function CategorizedNavBar() {
       {/* Scrollable content */}
       <div
         className="flex-1 overflow-y-auto px-3 space-y-3"
-        role="listbox"
+        role="group"
         aria-label="PDF Tools"
         onKeyDown={handleKeyDown}
       >

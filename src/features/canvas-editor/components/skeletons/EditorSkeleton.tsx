@@ -27,7 +27,7 @@ export function EditorSkeleton() {
       </div>
 
       {/* Main canvas area */}
-      <div className="flex-1 flex flex-col relative bg-[#1a1a2e]">
+      <div className="flex-1 flex flex-col relative bg-secondary-900">
         {/* Floating toolbar skeleton */}
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-3 py-2 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-xl shadow-level-2">
           {Array.from({ length: 8 }, (_, i) => (

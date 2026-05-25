@@ -92,8 +92,8 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
             className="flex-1 h-2 rounded-full appearance-none bg-secondary-200 dark:bg-secondary-700 cursor-pointer
               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4
               [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full
-              [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:cursor-pointer
-              focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [&::-webkit-slider-thumb]:bg-primary-500 [&::-webkit-slider-thumb]:cursor-pointer
+              focus:outline-none focus:ring-2 focus:ring-primary-500"
             aria-label="Stroke width slider"
           />
           <input
@@ -104,7 +104,7 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
             value={element.strokeWidth}
             onChange={handleStrokeWidthChange}
             className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-              focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
+              focus:outline-none focus:ring-2 focus:ring-primary-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
             aria-label="Stroke width value"
           />
         </div>
@@ -123,7 +123,7 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
           value={element.borderStyle}
           onChange={handleBorderStyleChange}
           className="min-h-[44px] px-3 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
             hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out cursor-pointer"
         >
           {BORDER_STYLES.map((style) => (
@@ -154,8 +154,8 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
               className="flex-1 h-2 rounded-full appearance-none bg-secondary-200 dark:bg-secondary-700 cursor-pointer
                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4
                 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:cursor-pointer
-                focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [&::-webkit-slider-thumb]:bg-primary-500 [&::-webkit-slider-thumb]:cursor-pointer
+                focus:outline-none focus:ring-2 focus:ring-primary-500"
               aria-label="Polygon sides slider"
             />
             <input
@@ -166,7 +166,7 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
               value={element.polygonSides ?? POLYGON_SIDES_MIN}
               onChange={handlePolygonSidesChange}
               className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
+                focus:outline-none focus:ring-2 focus:ring-primary-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Polygon sides value"
             />
           </div>

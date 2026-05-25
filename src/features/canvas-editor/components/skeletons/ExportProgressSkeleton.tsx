@@ -54,7 +54,7 @@ export function ExportProgressSkeleton({
       {/* Determinate progress bar */}
       <div className="w-full max-w-xs h-2 bg-secondary-200 dark:bg-secondary-700 rounded-full overflow-hidden">
         <div
-          className="h-full bg-blue-500 rounded-full transition-[width] duration-slow ease-out motion-reduce:transition-none"
+          className="h-full bg-primary-500 rounded-full transition-[width] duration-slow ease-out motion-reduce:transition-none"
           style={{ width: `${progress}%` }}
           role="progressbar"
           aria-valuenow={currentPage}

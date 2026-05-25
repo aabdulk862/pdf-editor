@@ -143,7 +143,7 @@ describe('PageNavigator', () => {
     // Should not show "Empty" for the page with elements
     expect(screen.queryByText('Empty')).not.toBeInTheDocument();
     // Should have element indicator divs
-    const indicators = container.querySelectorAll('.bg-purple-400\\/40');
+    const indicators = container.querySelectorAll('.bg-accent-400\\/40');
     expect(indicators.length).toBe(3);
   });
 });

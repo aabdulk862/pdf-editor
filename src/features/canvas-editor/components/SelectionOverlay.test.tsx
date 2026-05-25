@@ -117,7 +117,7 @@ describe('SelectionOverlay', () => {
     render(<SelectionOverlay />);
 
     const overlay = screen.getByTestId('selection-overlay');
-    const box = overlay.querySelector('.border-blue-500') as HTMLElement;
+    const box = overlay.querySelector('.border-primary-500') as HTMLElement;
     expect(box).toBeTruthy();
 
     // screenX = (50 * MM_TO_PX - 10) * 2

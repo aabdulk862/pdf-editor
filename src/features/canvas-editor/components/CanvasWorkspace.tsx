@@ -10,7 +10,7 @@ import { TextEditOverlayConnected } from './TextEditOverlay';
 /**
  * CanvasWorkspace is the main canvas container with the dark background.
  *
- * It provides the visual "desk" metaphor: a dark surface (#1a1a2e) on which
+ * It provides the visual "desk" metaphor: a dark surface (secondary-900) on which
  * the white page surface is rendered by the canvas. The workspace fills all
  * available space and contains the CanvasViewport along with selection,
  * snap guide, and text editing overlays.
@@ -38,8 +38,7 @@ export function CanvasWorkspace() {
   return (
     <div
       ref={containerRef}
-      className="flex-1 flex flex-col relative overflow-hidden"
-      style={{ backgroundColor: '#1a1a2e' }}
+      className="flex-1 flex flex-col relative overflow-hidden bg-secondary-900"
       data-testid="canvas-workspace"
     >
       <CanvasViewport />

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
 
 import { useSidebarStore } from '../store/sidebar';
@@ -91,6 +91,18 @@ export function AppShell({ sidebar, children, rightPanel }: AppShellProps) {
     };
   }, [mobileOpen]);
 
+  // Use inert attribute to prevent focus on hidden mobile sidebar
+  const mobileSidebarRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = mobileSidebarRef.current;
+    if (!el) return;
+    if (mobileOpen) {
+      el.removeAttribute('inert');
+    } else {
+      el.setAttribute('inert', '');
+    }
+  }, [mobileOpen]);
+
   return (
     <div
       className="grid h-screen overflow-hidden bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
@@ -145,6 +157,7 @@ export function AppShell({ sidebar, children, rightPanel }: AppShellProps) {
 
       {/* Mobile Sidebar Overlay */}
       <div
+        ref={mobileSidebarRef}
         className={`fixed inset-0 z-50 md:hidden ${mobileOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
         aria-hidden={!mobileOpen}
       >

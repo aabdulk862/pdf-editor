@@ -215,7 +215,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
             onClick={onClose}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
               text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600
-              focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-normal ease-in-out"
+              focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-normal ease-in-out"
             aria-label="Close properties panel"
           >
             <svg
@@ -277,7 +277,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
               onClick={onClose}
               className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
                 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700
-                focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-normal ease-in-out"
+                focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-normal ease-in-out"
               aria-label="Close properties panel"
             >
               <svg

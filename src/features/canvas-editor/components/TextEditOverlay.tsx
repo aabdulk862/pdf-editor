@@ -122,7 +122,7 @@ export const TextEditOverlay: React.FC<TextEditOverlayProps> = ({
     >
       <div
         ref={editableRef}
-        className="pointer-events-auto absolute outline-none ring-2 ring-blue-500 rounded-sm"
+        className="pointer-events-auto absolute outline-none ring-2 ring-primary-500 rounded-sm"
         contentEditable
         suppressContentEditableWarning
         role="textbox"

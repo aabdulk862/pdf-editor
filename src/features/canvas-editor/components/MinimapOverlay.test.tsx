@@ -111,25 +111,25 @@ describe('MinimapOverlay', () => {
 
   it('renders visible elements as indicators', () => {
     const { container } = render(<MinimapOverlay />);
-    // el-1 is a shape (purple), el-2 is text (blue), el-hidden is not visible
-    const purpleIndicators = container.querySelectorAll('.bg-purple-400\\/50');
-    const blueIndicators = container.querySelectorAll('.bg-blue-400\\/50');
-    expect(purpleIndicators.length).toBe(1);
-    expect(blueIndicators.length).toBe(1);
+    // el-1 is a shape (accent), el-2 is text (primary), el-hidden is not visible
+    const accentIndicators = container.querySelectorAll('.bg-accent-400\\/50');
+    const primaryIndicators = container.querySelectorAll('.bg-primary-400\\/50');
+    expect(accentIndicators.length).toBe(1);
+    expect(primaryIndicators.length).toBe(1);
   });
 
   it('does not render hidden elements', () => {
     const { container } = render(<MinimapOverlay />);
     // el-hidden has visible: false, so only 2 elements should be rendered
     const allIndicators = container.querySelectorAll(
-      '.bg-purple-400\\/50, .bg-blue-400\\/50, .bg-green-400\\/50, .bg-gray-400\\/50',
+      '.bg-accent-400\\/50, .bg-primary-400\\/50, .bg-success-400\\/50, .bg-secondary-400\\/50',
     );
     expect(allIndicators.length).toBe(2);
   });
 
   it('renders viewport indicator rectangle', () => {
     const { container } = render(<MinimapOverlay />);
-    const indicator = container.querySelector('.border-blue-500');
+    const indicator = container.querySelector('.border-primary-500');
     expect(indicator).toBeInTheDocument();
   });
 

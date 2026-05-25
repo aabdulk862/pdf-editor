@@ -168,7 +168,7 @@ export function FileUploadZone({
       <div
         role="button"
         tabIndex={0}
-        aria-label="Upload files. Drag and drop files here or click to browse."
+        aria-label="Click to browse or drag and drop files"
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}

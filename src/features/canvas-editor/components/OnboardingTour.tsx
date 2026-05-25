@@ -271,7 +271,7 @@ export function OnboardingTour() {
         <button
           type="button"
           onClick={skipTour}
-          className="absolute top-3 right-3 flex items-center justify-center min-w-[44px] min-h-[44px] md:w-6 md:h-6 md:min-w-0 md:min-h-0 rounded-md text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="absolute top-3 right-3 flex items-center justify-center min-w-[44px] min-h-[44px] md:w-6 md:h-6 md:min-w-0 md:min-h-0 rounded-md text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
           aria-label="Close tour"
         >
           <svg
@@ -313,7 +313,7 @@ export function OnboardingTour() {
           <button
             type="button"
             onClick={skipTour}
-            className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-2 py-1"
+            className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded px-2 py-1"
           >
             Skip
           </button>
@@ -321,7 +321,7 @@ export function OnboardingTour() {
           <button
             type="button"
             onClick={isLastStep ? completeTour : nextStep}
-            className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 active:bg-primary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           >
             {isLastStep ? 'Done' : 'Next'}
           </button>
@@ -333,7 +333,7 @@ export function OnboardingTour() {
             <div
               key={i}
               className={`w-1.5 h-1.5 rounded-full transition-colors duration-moderate ease-in-out ${
-                i === currentStep ? 'bg-blue-500' : 'bg-secondary-300 dark:bg-secondary-600'
+                i === currentStep ? 'bg-primary-500' : 'bg-secondary-300 dark:bg-secondary-600'
               }`}
             />
           ))}

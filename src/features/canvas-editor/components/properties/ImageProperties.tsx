@@ -52,8 +52,8 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
           type="button"
           onClick={handleAspectRatioToggle}
           className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
-            transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500
-            ${element.aspectRatioLocked ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-500 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
+            transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500
+            ${element.aspectRatioLocked ? 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-500 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
           aria-label={element.aspectRatioLocked ? 'Unlock aspect ratio' : 'Lock aspect ratio'}
           aria-pressed={element.aspectRatioLocked}
         >
@@ -99,8 +99,8 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
             <button
               type="button"
               onClick={handleResetCrop}
-              className="min-h-[44px] px-3 text-xs text-blue-600 dark:text-blue-400 rounded-md border border-transparent
-                hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-normal ease-in-out"
+              className="min-h-[44px] px-3 text-xs text-primary-600 dark:text-primary-400 rounded-md border border-transparent
+                hover:bg-primary-50 dark:hover:bg-primary-900/20 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-normal ease-in-out"
               aria-label="Reset crop"
             >
               Reset
@@ -125,7 +125,7 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               value={element.cropRect?.x ?? 0}
               onChange={(e) => handleCropChange('x', Number(e.target.value))}
               className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
+                focus:outline-none focus:ring-2 focus:ring-primary-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Crop X position (0-1)"
             />
           </div>
@@ -145,7 +145,7 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               value={element.cropRect?.y ?? 0}
               onChange={(e) => handleCropChange('y', Number(e.target.value))}
               className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
+                focus:outline-none focus:ring-2 focus:ring-primary-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Crop Y position (0-1)"
             />
           </div>
@@ -165,7 +165,7 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               value={element.cropRect?.width ?? 1}
               onChange={(e) => handleCropChange('width', Number(e.target.value))}
               className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
+                focus:outline-none focus:ring-2 focus:ring-primary-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Crop width (0-1)"
             />
           </div>
@@ -185,7 +185,7 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               value={element.cropRect?.height ?? 1}
               onChange={(e) => handleCropChange('height', Number(e.target.value))}
               className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
+                focus:outline-none focus:ring-2 focus:ring-primary-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Crop height (0-1)"
             />
           </div>

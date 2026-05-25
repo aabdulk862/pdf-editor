@@ -175,7 +175,7 @@ export function EmptyState({ onOpenTemplatePicker }: EmptyStateProps) {
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
       <div className="flex flex-col items-center gap-6 pointer-events-auto">
         {/* Large canvas icon */}
-        <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-secondary-100 dark:bg-secondary-800 text-secondary-400 dark:text-secondary-500">
+        <div className="flex items-center justify-center w-20 h-20 rounded-xl bg-secondary-100 dark:bg-secondary-800 text-secondary-400 dark:text-secondary-500">
           <svg
             width="40"
             height="40"
@@ -212,7 +212,7 @@ export function EmptyState({ onOpenTemplatePicker }: EmptyStateProps) {
             <button
               key={action.label}
               type="button"
-              className="flex items-center gap-2 px-4 min-h-[44px] border border-secondary-200 dark:border-secondary-600 rounded-lg text-sm font-medium text-secondary-700 dark:text-secondary-200 bg-white dark:bg-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-700 hover:border-secondary-300 dark:hover:border-secondary-500 hover:text-secondary-900 dark:hover:text-secondary-100 active:bg-secondary-100 dark:active:bg-secondary-600 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              className="flex items-center gap-2 px-4 min-h-[44px] border border-secondary-200 dark:border-secondary-600 rounded-lg text-sm font-medium text-secondary-700 dark:text-secondary-200 bg-white dark:bg-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-700 hover:border-secondary-300 dark:hover:border-secondary-500 hover:text-secondary-900 dark:hover:text-secondary-100 active:bg-secondary-100 dark:active:bg-secondary-600 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
               onClick={() => handleAction(action)}
               aria-label={action.label}
             >
