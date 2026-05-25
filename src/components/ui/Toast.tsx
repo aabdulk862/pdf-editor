@@ -117,11 +117,15 @@ function ToastItem({
     setIsPaused(false);
   };
 
+  // Mobile: slide-up (from bottom), Desktop: slide-down (from top)
   const handleDismiss = (): void => {
     startExitAnimation();
   };
 
   // Compute inline transform style for GPU-accelerated animation
+  // Mobile slides up from bottom, desktop slides down from top
+  const offscreenTranslate = isMobile ? 'translateY(100%)' : 'translateY(-100%)';
+
   const getTransformStyle = (): React.CSSProperties => {
     if (reducedMotion) {
       return { opacity: 1 };
@@ -130,7 +134,7 @@ function ToastItem({
     switch (phase) {
       case 'entering':
         return {
-          transform: 'translateY(100%)',
+          transform: offscreenTranslate,
           opacity: 0,
           transition: 'none',
         };
@@ -142,13 +146,13 @@ function ToastItem({
         };
       case 'exiting':
         return {
-          transform: 'translateY(100%)',
+          transform: offscreenTranslate,
           opacity: 0,
           transition: `transform ${EXIT_DURATION}ms cubic-bezier(0.32, 0, 0.67, 0), opacity ${EXIT_DURATION}ms cubic-bezier(0.32, 0, 0.67, 0)`,
         };
       case 'exited':
         return {
-          transform: 'translateY(100%)',
+          transform: offscreenTranslate,
           opacity: 0,
         };
     }
