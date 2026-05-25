@@ -401,7 +401,7 @@ function ImageCard({
           e.stopPropagation();
           onRemove(image.id);
         }}
-        className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-error-500 text-white opacity-0 transition-opacity duration-normal ease-out group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-error-500"
+        className="absolute right-1 top-1 flex min-h-[44px] min-w-[44px] md:h-6 md:w-6 md:min-h-0 md:min-w-0 items-center justify-center rounded-full bg-error-500 text-white opacity-0 transition-opacity duration-normal ease-out group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-error-500"
         aria-label={`Remove ${image.name}`}
       >
         <svg

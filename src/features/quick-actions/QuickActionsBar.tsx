@@ -235,7 +235,7 @@ export function QuickActionsBar(): JSX.Element | null {
               'dark:hover:bg-primary-900/20 dark:hover:border-primary-600 dark:hover:text-primary-300',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
               'transition-colors duration-normal ease-in-out',
-              'min-h-[36px]',
+              'min-h-[44px] md:min-h-[36px]',
             ].join(' ')}
           >
             <ActionIcon icon={action.icon} />
@@ -255,7 +255,7 @@ export function QuickActionsBar(): JSX.Element | null {
           'hover:bg-secondary-200 dark:hover:bg-secondary-700',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
           'transition-colors duration-normal ease-in-out',
-          'min-h-[36px] min-w-[36px] flex items-center justify-center',
+          'min-h-[44px] min-w-[44px] md:min-h-[36px] md:min-w-[36px] flex items-center justify-center',
         ].join(' ')}
       >
         <svg

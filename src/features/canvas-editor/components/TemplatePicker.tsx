@@ -191,7 +191,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
               aria-pressed={activeCategory === 'all'}
               className={[
                 'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-normal ease-in-out',
-                'min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+                'min-h-[44px] md:min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                 activeCategory === 'all'
                   ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
                   : 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-800 dark:text-secondary-300 dark:hover:bg-secondary-700 dark:hover:text-secondary-100',
@@ -207,7 +207,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
                 aria-pressed={activeCategory === cat}
                 className={[
                   'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-normal ease-in-out',
-                  'min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+                  'min-h-[44px] md:min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                   activeCategory === cat
                     ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
                     : 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-800 dark:text-secondary-300 dark:hover:bg-secondary-700 dark:hover:text-secondary-100',

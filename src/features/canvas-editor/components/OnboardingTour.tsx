@@ -271,7 +271,7 @@ export function OnboardingTour() {
         <button
           type="button"
           onClick={skipTour}
-          className="absolute top-3 right-3 flex items-center justify-center w-6 h-6 rounded-md text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="absolute top-3 right-3 flex items-center justify-center min-w-[44px] min-h-[44px] md:w-6 md:h-6 md:min-w-0 md:min-h-0 rounded-md text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           aria-label="Close tour"
         >
           <svg

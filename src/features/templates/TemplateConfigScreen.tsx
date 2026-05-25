@@ -174,7 +174,7 @@ export function TemplateConfigScreen() {
                 type="file"
                 accept="application/pdf"
                 onChange={handleFileChange}
-                className="block w-full text-sm text-secondary-600 dark:text-secondary-400 file:mr-3 file:rounded-md file:border-0 file:bg-primary-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary-700 dark:file:bg-primary-900/30 dark:file:text-primary-300 hover:file:bg-primary-100 dark:hover:file:bg-primary-900/50 file:cursor-pointer file:min-h-[36px]"
+                className="block w-full text-sm text-secondary-600 dark:text-secondary-400 file:mr-3 file:rounded-md file:border-0 file:bg-primary-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary-700 dark:file:bg-primary-900/30 dark:file:text-primary-300 hover:file:bg-primary-100 dark:hover:file:bg-primary-900/50 file:cursor-pointer file:min-h-[44px] md:file:min-h-[36px]"
               />
             </div>
             {file && (

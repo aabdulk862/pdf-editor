@@ -145,7 +145,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
           </h2>
           <button
             type="button"
-            className="flex items-center justify-center w-8 h-8 rounded-lg text-secondary-400 dark:text-secondary-500 hover:text-secondary-700 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="flex items-center justify-center min-w-[44px] min-h-[44px] md:w-8 md:h-8 md:min-w-0 md:min-h-0 rounded-lg text-secondary-400 dark:text-secondary-500 hover:text-secondary-700 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             onClick={onClose}
             aria-label="Close shortcuts panel"
           >

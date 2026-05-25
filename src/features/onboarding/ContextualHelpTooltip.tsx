@@ -123,7 +123,7 @@ export function ContextualHelpTooltip({
               aria-label={`Dismiss ${title} tooltip`}
               className={[
                 'flex items-center justify-center',
-                'w-5 h-5 rounded-sm shrink-0',
+                'min-w-[44px] min-h-[44px] md:w-5 md:h-5 md:min-w-0 md:min-h-0 rounded-sm shrink-0',
                 'text-secondary-400 dark:text-secondary-500',
                 'hover:text-secondary-700 dark:hover:text-secondary-300',
                 'hover:bg-secondary-100 dark:hover:bg-secondary-700',
@@ -162,12 +162,14 @@ export function ContextualHelpTooltip({
             className={[
               'self-start mt-1',
               'text-xs font-medium',
+              'min-h-[44px] md:min-h-0',
               'text-primary-600 dark:text-primary-400',
               'hover:text-primary-800 dark:hover:text-primary-300',
               'transition-colors duration-fast ease-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-primary-500',
               'dark:focus-visible:ring-offset-secondary-900',
               'rounded-sm px-1 py-0.5 -ml-1',
+              'inline-flex items-center',
             ].join(' ')}
           >
             Don&apos;t show again

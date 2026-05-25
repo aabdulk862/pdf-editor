@@ -35,7 +35,7 @@ export function NavCategoryGroup({
         onClick={onToggle}
         aria-expanded={!isCollapsed}
         aria-controls={`nav-category-${category.id}`}
-        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-secondary-700 hover:bg-secondary-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900 dark:text-secondary-200 dark:hover:bg-secondary-800"
+        className="flex w-full items-center gap-2 rounded-md px-2 min-h-[44px] text-sm font-medium text-secondary-700 hover:bg-secondary-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900 dark:text-secondary-200 dark:hover:bg-secondary-800"
       >
         {/* Chevron — rotates 90° when expanded, 0° when collapsed */}
         <svg

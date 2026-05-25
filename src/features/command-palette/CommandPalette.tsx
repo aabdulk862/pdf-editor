@@ -238,7 +238,7 @@ export function CommandPalette() {
                   tabIndex={getTabIndex(index)}
                   onClick={() => handleNavigate(item.route)}
                   className={[
-                    'flex cursor-pointer items-center gap-3 px-4 py-3 text-sm transition-colors duration-normal ease-in-out outline-none',
+                    'flex cursor-pointer items-center gap-3 px-4 py-3 min-h-[44px] text-sm transition-colors duration-normal ease-in-out outline-none',
                     index === activeIndex
                       ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
                       : 'text-text-light hover:bg-secondary-50 dark:text-text-dark dark:hover:bg-secondary-700/50',

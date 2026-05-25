@@ -108,7 +108,7 @@ export function CmdKHint() {
         aria-label="Dismiss command palette hint"
         className={[
           'flex items-center justify-center',
-          'w-5 h-5 rounded-sm',
+          'min-w-[44px] min-h-[44px] md:w-5 md:h-5 md:min-w-0 md:min-h-0 rounded-sm',
           'text-primary-500 dark:text-primary-400',
           'hover:text-primary-700 dark:hover:text-primary-200',
           'hover:bg-primary-100 dark:hover:bg-primary-800/40',
