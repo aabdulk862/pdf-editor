@@ -7,6 +7,7 @@ export interface LetterheadTemplateListProps {
   onSelect: (id: string) => void;
   onEdit: (id: string) => void;
   onCreate: () => void;
+  onSetDefault?: (id: string) => void;
 }
 
 function formatUpdatedDate(timestamp: number): string {
@@ -29,9 +30,16 @@ export function LetterheadTemplateList({
   onSelect,
   onEdit,
   onCreate,
+  onSetDefault,
 }: LetterheadTemplateListProps) {
-  const { templates, activeTemplateId, deleteTemplate, duplicateTemplate, renameTemplate } =
-    useLetterheadStore();
+  const {
+    templates,
+    activeTemplateId,
+    lastUsedTemplateId,
+    deleteTemplate,
+    duplicateTemplate,
+    renameTemplate,
+  } = useLetterheadStore();
 
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -252,6 +260,42 @@ export function LetterheadTemplateList({
                     <path d="M14 6V4.5A1.5 1.5 0 0012.5 3H4.5A1.5 1.5 0 003 4.5v8A1.5 1.5 0 004.5 14H6" />
                   </svg>
                 </button>
+
+                {/* Use as Default button */}
+                {onSetDefault && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSetDefault(template.id);
+                    }}
+                    className={[
+                      'inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2',
+                      template.id === lastUsedTemplateId
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-100',
+                    ].join(' ')}
+                    aria-label={
+                      template.id === lastUsedTemplateId
+                        ? `${template.name} is the default template`
+                        : `Set ${template.name} as default`
+                    }
+                    title={
+                      template.id === lastUsedTemplateId ? 'Default template' : 'Use as Default'
+                    }
+                  >
+                    <svg
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill={template.id === lastUsedTemplateId ? 'currentColor' : 'none'}
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M10 2l2.4 4.8 5.3.8-3.8 3.7.9 5.3L10 14.1l-4.8 2.5.9-5.3L2.3 7.6l5.3-.8L10 2z" />
+                    </svg>
+                  </button>
+                )}
 
                 {/* Rename button */}
                 <button

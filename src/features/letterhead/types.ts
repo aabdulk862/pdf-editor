@@ -99,6 +99,16 @@ export interface LetterheadTemplate {
    * No specific character limit defined.
    */
   tagline: LetterheadTextField | null;
+  /**
+   * Whether to show a horizontal separator line between the header and body area.
+   * Defaults to false for backward compatibility.
+   */
+  showSeparator?: boolean;
+  /**
+   * Color of the separator line as a hex string.
+   * Defaults to '#E5E7EB' (light gray).
+   */
+  separatorColor?: string;
 }
 
 /**

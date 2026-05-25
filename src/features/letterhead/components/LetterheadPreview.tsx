@@ -6,24 +6,58 @@ export interface LetterheadPreviewProps {
   template: LetterheadTemplate;
 }
 
-/** A4 proportions: 210mm x 297mm, scaled to fit a reasonable preview size */
-const CANVAS_WIDTH = 420;
-const CANVAS_HEIGHT = 594;
+/**
+ * US Letter proportions (8.5 × 11 inches) scaled for a crisp preview.
+ * We use a logical canvas size and scale by devicePixelRatio for HiDPI.
+ */
+const CANVAS_WIDTH = 408;
+const CANVAS_HEIGHT = 528; // US Letter ratio (8.5:11 = 0.773)
 
-/** Header area height in canvas pixels (maps to ~100px at page scale) */
-const HEADER_HEIGHT = 200;
-
-/** Margins for content within the header */
-const MARGIN_X = 30;
+/** Page margins */
+const MARGIN_X = 32;
 const MARGIN_TOP = 20;
 
-/** Spacing between text lines */
-const LINE_SPACING = 4;
+/** Zone boundaries (percentage of canvas height) */
+const HEADER_MAX_HEIGHT = 0.13; // Header uses max 13% of page
+const FOOTER_Y = 0.94; // Footer at 94% of page height
+
+/** Placeholder body text to simulate a real letter */
+const BODY_PLACEHOLDER_LINES = [
+  'Date: September 22, 2025',
+  '',
+  'Subject: Support Our Mission',
+  '',
+  'Dear Brothers and Sisters,',
+  '',
+  'We are writing to inform you about our upcoming initiative and to',
+  'request your valued support. Our organization has been working',
+  'diligently to serve our community and we believe that together',
+  'we can achieve even greater impact.',
+  '',
+  'Your contribution, whether large or small, will directly support:',
+  '',
+  '  • Educational and Cultural Programs',
+  '  • Community Support Services',
+  '  • Media and Outreach Programs',
+  '',
+  'We invite all who believe in our mission to join hands with us.',
+  'You are not only supporting our organization, but investing in',
+  'the growth, unity, and future of our communities everywhere.',
+  '',
+  'May your generosity be a source of ongoing benefit.',
+  '',
+  'With gratitude,',
+  '',
+  '',
+  'Executive Committee',
+];
 
 /**
  * LetterheadPreview renders a live canvas-based preview of a letterhead template.
- * Updates within 200ms of field changes using debounced rendering.
- * Displays a white background with shadow-level-3 styling matching PreviewPanel.
+ * Produces a realistic US Letter page with compact header, contact bar, generous body,
+ * HiDPI rendering, and professional typography matching organizational letterhead style.
+ *
+ * Layout: [Header with logo center + text sides] → [Contact bar] → [Separator] → [Body] → [Footer]
  *
  * Requirements: 12.2, 13.7
  */
@@ -67,125 +101,300 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
   }, []);
 
   /**
-   * Calculate a scaled font size for the canvas preview.
-   * The template font sizes are in pt (8-24), we scale them for the canvas.
+   * Scale font size from template points to canvas pixels.
+   * Template sizes are 8-24pt; we scale proportionally for the preview.
    */
   const getScaledFontSize = useCallback((fontSize: number): number => {
-    // Scale factor: canvas is 420px wide representing ~210mm (A4 width)
-    // At 72 DPI, 1pt = 1px, but our canvas is roughly 2x the "real" size
-    return Math.round(fontSize * 2);
+    return Math.round(fontSize * 1.5);
   }, []);
 
   /**
-   * Draw a text field on the canvas at the given y position.
+   * Draw a single text field on the canvas at the given y position.
    * Returns the new y position after drawing.
    */
   const drawTextField = useCallback(
-    (ctx: CanvasRenderingContext2D, field: LetterheadTextField, y: number): number => {
+    (
+      ctx: CanvasRenderingContext2D,
+      field: LetterheadTextField,
+      y: number,
+      options?: { bold?: boolean; italic?: boolean; letterSpacing?: number },
+    ): number => {
       if (!field.content.trim()) return y;
 
       const scaledSize = getScaledFontSize(field.fontSize);
-      ctx.font = `${scaledSize}px ${field.fontFamily || 'sans-serif'}`;
+      const weight = options?.bold ? 'bold ' : '';
+      const style = options?.italic ? 'italic ' : '';
+      ctx.font = `${style}${weight}${scaledSize}px ${field.fontFamily || 'Helvetica'}`;
       ctx.fillStyle = field.color || '#000000';
       ctx.textAlign = getCanvasTextAlign(field.alignment);
 
       const x = getAlignmentX(field.alignment);
-      ctx.fillText(field.content, x, y);
 
-      return y + scaledSize + LINE_SPACING;
+      // Letter-spacing simulation for ALL CAPS text
+      if (options?.letterSpacing && options.letterSpacing > 0) {
+        const chars = field.content.split('');
+        let currentX = x;
+        if (field.alignment === 'center') {
+          const totalWidth = chars.reduce(
+            (w, char) => {
+              return w + ctx.measureText(char).width + (options.letterSpacing ?? 0);
+            },
+            -(options.letterSpacing ?? 0),
+          );
+          currentX = x - totalWidth / 2;
+        }
+        ctx.textAlign = 'left';
+        for (const char of chars) {
+          ctx.fillText(char, currentX, y);
+          currentX += ctx.measureText(char).width + (options.letterSpacing ?? 0);
+        }
+        ctx.textAlign = getCanvasTextAlign(field.alignment);
+      } else {
+        ctx.fillText(field.content, x, y);
+      }
+
+      return y + scaledSize + 3;
     },
     [getScaledFontSize, getCanvasTextAlign, getAlignmentX],
   );
 
   /**
+   * Draw a thin horizontal separator line across the page.
+   */
+  const drawSeparatorLine = useCallback(
+    (ctx: CanvasRenderingContext2D, y: number, color: string, width?: number): void => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width ?? 0.75;
+      ctx.beginPath();
+      ctx.moveTo(MARGIN_X, y);
+      ctx.lineTo(CANVAS_WIDTH - MARGIN_X, y);
+      ctx.stroke();
+    },
+    [],
+  );
+
+  /**
+   * Render footer with minimal address info at the very bottom of the page.
+   */
+  const drawFooter = useCallback(
+    (ctx: CanvasRenderingContext2D): void => {
+      const footerY = CANVAS_HEIGHT * FOOTER_Y;
+
+      if (template.addressLines.length === 0) return;
+
+      const addressParts = template.addressLines.map((line) => line.content.trim()).filter(Boolean);
+      if (addressParts.length === 0) return;
+
+      const alignment = template.addressLines[0].alignment;
+      const color = template.addressLines[0].color || '#6b7280';
+      const fontSize = getScaledFontSize(template.addressLines[0].fontSize || 9);
+
+      // Thin footer separator
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(MARGIN_X, footerY);
+      ctx.lineTo(CANVAS_WIDTH - MARGIN_X, footerY);
+      ctx.stroke();
+
+      // Address line
+      ctx.font = `${fontSize}px Helvetica`;
+      ctx.fillStyle = color;
+      ctx.textAlign = getCanvasTextAlign(alignment);
+
+      const x = getAlignmentX(alignment);
+      ctx.fillText(addressParts.join(', '), x, footerY + 14);
+    },
+    [template, getScaledFontSize, getCanvasTextAlign, getAlignmentX],
+  );
+
+  /**
    * Render the full letterhead preview onto the canvas.
+   * Layout: compact header (≤13%) → contact bar → separator → body (70%+) → footer (5%)
    */
   const renderPreview = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const dpr = window.devicePixelRatio || 1;
+
+    // Set actual canvas size for HiDPI
+    canvas.width = CANVAS_WIDTH * dpr;
+    canvas.height = CANVAS_HEIGHT * dpr;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear canvas with white background
+    // Scale context for HiDPI
+    ctx.scale(dpr, dpr);
+
+    // White page background
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Draw a subtle header area separator line
-    ctx.strokeStyle = '#E5E7EB';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(MARGIN_X, HEADER_HEIGHT);
-    ctx.lineTo(CANVAS_WIDTH - MARGIN_X, HEADER_HEIGHT);
-    ctx.stroke();
+    // Determine the brand/accent color from template
+    const accentColor = template.separatorColor || '#1a2332';
 
     let currentY = MARGIN_TOP;
 
-    // Draw logo if present
-    if (template.logo && logoImageRef.current && logoImageRef.current.complete) {
-      const img = logoImageRef.current;
-      const logoWidth = Math.min(template.logo.width, CANVAS_WIDTH - MARGIN_X * 2);
+    // --- HEADER ZONE (compact, max 13% of page) ---
+
+    const hasLogo = template.logo && logoImageRef.current && logoImageRef.current.complete;
+    const logoIsCentered = template.logo?.alignment === 'center';
+
+    if (hasLogo && logoIsCentered) {
+      // THREE-COLUMN LAYOUT: [tagline LEFT] [LOGO CENTER] [company name RIGHT]
+      const img = logoImageRef.current!;
+      const maxLogoHeight = 56;
+      const logoWidth = Math.min(template.logo!.width * 0.6, 80);
       const aspectRatio = img.naturalHeight / img.naturalWidth;
-      const logoHeight = logoWidth * aspectRatio;
+      const logoHeight = Math.min(logoWidth * aspectRatio, maxLogoHeight);
+      const actualLogoWidth = logoHeight / aspectRatio;
+
+      // Draw logo centered
+      const logoX = (CANVAS_WIDTH - actualLogoWidth) / 2;
+      ctx.drawImage(img, logoX, currentY, actualLogoWidth, logoHeight);
+
+      // Calculate safe text zones (don't overlap the logo)
+      const leftZoneEnd = logoX - 8; // 8px gap before logo
+      const rightZoneStart = logoX + actualLogoWidth + 8; // 8px gap after logo
+
+      // Draw company name on the right side of the logo (vertically centered with logo)
+      const nameSize = getScaledFontSize(template.companyName.fontSize);
+      ctx.font = `bold ${nameSize}px ${template.companyName.fontFamily || 'Helvetica'}`;
+      ctx.fillStyle = template.companyName.color || '#000000';
+      ctx.textAlign = 'left';
+      const nameCenterY = currentY + logoHeight / 2 + nameSize / 3;
+      ctx.fillText(template.companyName.content, rightZoneStart, nameCenterY);
+
+      // Draw tagline on the left side (if present), right-aligned to not overlap logo
+      if (template.tagline && template.tagline.content.trim()) {
+        const tagSize = getScaledFontSize(template.tagline.fontSize);
+        ctx.font = `italic ${tagSize}px ${template.tagline.fontFamily || 'Helvetica'}`;
+        ctx.fillStyle = template.tagline.color || '#6b7280';
+        ctx.textAlign = 'right';
+        ctx.fillText(template.tagline.content, leftZoneEnd, nameCenterY);
+      }
+
+      currentY += logoHeight + 8;
+    } else if (hasLogo) {
+      // Logo with non-center alignment: logo first, then company name BELOW
+      const img = logoImageRef.current!;
+      const maxLogoHeight = 48;
+      const logoWidth = Math.min(template.logo!.width * 0.6, 120);
+      const aspectRatio = img.naturalHeight / img.naturalWidth;
+      const logoHeight = Math.min(logoWidth * aspectRatio, maxLogoHeight);
+      const actualLogoWidth = logoHeight / aspectRatio;
 
       let logoX: number;
-      switch (template.logo.alignment) {
+      switch (template.logo!.alignment) {
         case 'left':
           logoX = MARGIN_X;
           break;
-        case 'center':
-          logoX = (CANVAS_WIDTH - logoWidth) / 2;
-          break;
         case 'right':
-          logoX = CANVAS_WIDTH - MARGIN_X - logoWidth;
+          logoX = CANVAS_WIDTH - MARGIN_X - actualLogoWidth;
+          break;
+        default:
+          logoX = (CANVAS_WIDTH - actualLogoWidth) / 2;
           break;
       }
 
-      ctx.drawImage(img, logoX, currentY, logoWidth, logoHeight);
-      currentY += logoHeight + 10;
+      ctx.drawImage(img, logoX, currentY, actualLogoWidth, logoHeight);
+      currentY += logoHeight + 6;
+
+      // Company name below logo with clear separation
+      const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
+      currentY = drawTextField(ctx, template.companyName, currentY, {
+        bold: true,
+        letterSpacing: isAllCaps ? 2 : 0,
+      });
     } else if (template.logo) {
-      // Logo data exists but image not loaded yet, reserve space
-      currentY += 50;
+      // Logo data exists but image not loaded yet — reserve minimal space
+      currentY += 30;
+      const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
+      currentY = drawTextField(ctx, template.companyName, currentY, {
+        bold: true,
+        letterSpacing: isAllCaps ? 2 : 0,
+      });
+    } else {
+      // NO LOGO: company name centered/aligned as configured
+      const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
+      currentY = drawTextField(ctx, template.companyName, currentY + 4, {
+        bold: true,
+        letterSpacing: isAllCaps ? 2.5 : 0,
+      });
+
+      // Tagline right after company name (for styles like Modern Tech)
+      if (template.tagline && template.tagline.content.trim()) {
+        currentY += 1;
+        currentY = drawTextField(ctx, template.tagline, currentY, { italic: true });
+      }
     }
 
-    // Draw company name
-    currentY = drawTextField(ctx, template.companyName, currentY + 8);
+    // --- CONTACT BAR (single centered line: phone • email • website) ---
+    const contactParts: string[] = [];
+    if (template.phone.content.trim()) contactParts.push(template.phone.content.trim());
+    if (template.email.content.trim()) contactParts.push(template.email.content.trim());
+    if (template.website.content.trim()) contactParts.push(template.website.content.trim());
 
-    // Draw address lines
-    for (const addressLine of template.addressLines) {
-      currentY = drawTextField(ctx, addressLine, currentY);
-    }
+    if (contactParts.length > 0) {
+      currentY += 5;
+      const contactFontSize = getScaledFontSize(template.phone.fontSize || 9);
+      const contactColor = template.phone.color || '#6b7280';
+      const contactLine = contactParts.join('   •   ');
 
-    // Add spacing before contact info
-    currentY += 4;
-
-    // Draw contact info (phone, email, website)
-    if (template.phone.content.trim()) {
-      currentY = drawTextField(ctx, template.phone, currentY);
-    }
-    if (template.email.content.trim()) {
-      currentY = drawTextField(ctx, template.email, currentY);
-    }
-    if (template.website.content.trim()) {
-      currentY = drawTextField(ctx, template.website, currentY);
+      ctx.font = `${contactFontSize}px Helvetica`;
+      ctx.fillStyle = contactColor;
+      ctx.textAlign = 'center';
+      ctx.fillText(contactLine, CANVAS_WIDTH / 2, currentY);
+      currentY += contactFontSize + 4;
     }
 
-    // Draw tagline if present
-    if (template.tagline && template.tagline.content.trim()) {
-      currentY += 6;
-      drawTextField(ctx, template.tagline, currentY);
+    // --- SEPARATOR LINE ---
+    if (template.showSeparator) {
+      currentY += 4;
+      drawSeparatorLine(ctx, currentY, accentColor, 1);
+      currentY += 2;
     }
 
-    // Draw faint page body lines to indicate document area
-    ctx.strokeStyle = '#F3F4F6';
-    ctx.lineWidth = 1;
-    for (let lineY = HEADER_HEIGHT + 40; lineY < CANVAS_HEIGHT - 40; lineY += 24) {
-      ctx.beginPath();
-      ctx.moveTo(MARGIN_X, lineY);
-      ctx.lineTo(CANVAS_WIDTH - MARGIN_X, lineY);
-      ctx.stroke();
+    // --- BODY ZONE ---
+    // Body starts right after separator with minimal gap
+    const bodyStartY = Math.max(currentY + 16, CANVAS_HEIGHT * HEADER_MAX_HEIGHT + 8);
+
+    ctx.font = '12px Helvetica';
+    ctx.fillStyle = '#374151';
+    ctx.textAlign = 'left';
+
+    let bodyY = bodyStartY;
+    const bodyLineHeight = 16;
+    const maxBodyY = CANVAS_HEIGHT * FOOTER_Y - 16;
+
+    for (const line of BODY_PLACEHOLDER_LINES) {
+      if (bodyY > maxBodyY) break;
+      if (line === '') {
+        bodyY += 9;
+        continue;
+      }
+      ctx.fillText(line, MARGIN_X, bodyY);
+      bodyY += bodyLineHeight;
     }
-  }, [template, drawTextField]);
+
+    // --- FOOTER ZONE (minimal, last 6% of page) ---
+    drawFooter(ctx);
+
+    // Page border (subtle paper edge)
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }, [
+    template,
+    drawTextField,
+    drawSeparatorLine,
+    drawFooter,
+    getScaledFontSize,
+    getCanvasTextAlign,
+    getAlignmentX,
+  ]);
 
   // Load logo image when template.logo changes
   useEffect(() => {
@@ -206,7 +415,6 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
     const img = new Image();
     img.onload = () => {
       logoImageRef.current = img;
-      // Trigger a re-render after logo loads
       renderPreview();
     };
     img.onerror = () => {
@@ -215,7 +423,7 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
     img.src = dataUrl;
   }, [template.logo, arrayBufferToDataUrl, renderPreview]);
 
-  // Debounced re-render on template changes (200ms)
+  // Debounced re-render on template changes (150ms for snappy feedback)
   useEffect(() => {
     if (renderTimeoutRef.current) {
       clearTimeout(renderTimeoutRef.current);
@@ -223,7 +431,7 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
 
     renderTimeoutRef.current = setTimeout(() => {
       renderPreview();
-    }, 200);
+    }, 150);
 
     return () => {
       if (renderTimeoutRef.current) {
@@ -233,16 +441,24 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
   }, [renderPreview]);
 
   return (
-    <div className="flex items-center justify-center p-4">
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_WIDTH}
-        height={CANVAS_HEIGHT}
-        className="bg-white shadow-level-3 rounded-sm max-w-full h-auto"
-        style={{ aspectRatio: `${CANVAS_WIDTH} / ${CANVAS_HEIGHT}` }}
-        role="img"
-        aria-label="Letterhead preview"
-      />
+    <div className="flex flex-col items-center justify-center p-6">
+      <p className="mb-3 text-xs font-medium tracking-wide text-secondary-400 uppercase dark:text-secondary-500">
+        US Letter Preview
+      </p>
+      <div className="relative rounded-sm shadow-level-3 ring-1 ring-black/5">
+        <canvas
+          ref={canvasRef}
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
+          className="block rounded-sm bg-white max-w-full h-auto"
+          style={{
+            width: `${CANVAS_WIDTH}px`,
+            height: `${CANVAS_HEIGHT}px`,
+          }}
+          role="img"
+          aria-label="Letterhead preview showing template applied to a US Letter page with sample body text"
+        />
+      </div>
     </div>
   );
 }

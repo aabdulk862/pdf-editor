@@ -56,6 +56,11 @@ export function LetterheadEditor({ template, onChange }: LetterheadEditorProps):
         onChange={(field) => onChange({ website: field })}
       />
       <TaglineSection tagline={template.tagline} onChange={(tagline) => onChange({ tagline })} />
+      <SeparatorSection
+        showSeparator={template.showSeparator ?? false}
+        separatorColor={template.separatorColor ?? '#E5E7EB'}
+        onChange={onChange}
+      />
     </div>
   );
 }
@@ -711,6 +716,60 @@ function AlignmentToggles({ value, onChange, label }: AlignmentTogglesProps): JS
         ))}
       </div>
     </div>
+  );
+}
+
+// ─── Separator Section ───────────────────────────────────────────────────────
+
+interface SeparatorSectionProps {
+  showSeparator: boolean;
+  separatorColor: string;
+  onChange: (updates: Partial<LetterheadTemplate>) => void;
+}
+
+function SeparatorSection({
+  showSeparator,
+  separatorColor,
+  onChange,
+}: SeparatorSectionProps): JSX.Element {
+  return (
+    <fieldset className="rounded-lg border border-secondary-200 p-4 dark:border-secondary-700">
+      <legend className="px-2 text-sm font-medium text-text-light dark:text-text-dark">
+        Separator Line
+      </legend>
+
+      <div className="space-y-3">
+        <label className="flex cursor-pointer items-center gap-3">
+          <input
+            type="checkbox"
+            checked={showSeparator}
+            onChange={(e) => onChange({ showSeparator: e.target.checked })}
+            className="h-4 w-4 rounded border-secondary-300 text-primary-600 focus:ring-primary-500 dark:border-secondary-600"
+          />
+          <span className="text-sm text-text-light dark:text-text-dark">
+            Show horizontal line between header and body
+          </span>
+        </label>
+
+        {showSeparator && (
+          <div className="flex items-center gap-3">
+            <label className="text-xs font-medium text-text-light dark:text-text-dark">
+              Line Color
+            </label>
+            <input
+              type="color"
+              value={separatorColor}
+              onChange={(e) => onChange({ separatorColor: e.target.value })}
+              className="h-[36px] w-[36px] cursor-pointer rounded border border-secondary-300 p-0.5 dark:border-secondary-600"
+              aria-label="Separator line color"
+            />
+            <span className="text-xs text-secondary-500 dark:text-secondary-400">
+              {separatorColor}
+            </span>
+          </div>
+        )}
+      </div>
+    </fieldset>
   );
 }
 

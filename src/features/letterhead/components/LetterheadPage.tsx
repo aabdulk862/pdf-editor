@@ -5,11 +5,13 @@ import { FileUploadZone } from '../../../components/ui/FileUploadZone';
 import { useToastStore } from '../../../store/toast';
 import { getPdfWorkerClient } from '../../../workers/pdf-worker-client';
 import type { LetterheadPageTarget, LetterheadTemplate } from '../types';
+import type { StarterTemplateData } from '../starter-templates';
 import { useLetterheadStore } from '../store/letterhead-store';
 import { LetterheadApplyModal } from './LetterheadApplyModal';
 import { LetterheadEditor } from './LetterheadEditor';
 import { LetterheadPreview } from './LetterheadPreview';
 import { LetterheadTemplateList } from './LetterheadTemplateList';
+import { StarterTemplatePicker } from './StarterTemplatePicker';
 
 /**
  * Default text field values for a new template.
@@ -58,6 +60,9 @@ export function LetterheadPage(): JSX.Element {
   // Apply modal state
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
+  // Starter picker state
+  const [showStarterPicker, setShowStarterPicker] = useState(false);
+
   // Loading states
   const [isApplying, setIsApplying] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -73,6 +78,21 @@ export function LetterheadPage(): JSX.Element {
   // ─── Handlers ──────────────────────────────────────────────────────────────
 
   const handleCreateTemplate = useCallback(() => {
+    setShowStarterPicker(true);
+  }, []);
+
+  const handleStarterSelect = useCallback(
+    (data: StarterTemplateData) => {
+      const id = createTemplate(data);
+      if (id) {
+        setEditorState('editing');
+      }
+      setShowStarterPicker(false);
+    },
+    [createTemplate, setEditorState],
+  );
+
+  const handleStarterBlank = useCallback(() => {
     const id = createTemplate({
       name: 'Untitled Template',
       logo: null,
@@ -82,11 +102,26 @@ export function LetterheadPage(): JSX.Element {
       email: createDefaultTextField(),
       website: createDefaultTextField(),
       tagline: null,
+      showSeparator: false,
+      separatorColor: '#E5E7EB',
     });
     if (id) {
       setEditorState('editing');
     }
+    setShowStarterPicker(false);
   }, [createTemplate, setEditorState]);
+
+  const handleStarterCancel = useCallback(() => {
+    setShowStarterPicker(false);
+  }, []);
+
+  const handleSetDefault = useCallback(
+    (id: string) => {
+      selectTemplate(id);
+      addToast('Template set as default for Quick Apply.', 'success');
+    },
+    [selectTemplate, addToast],
+  );
 
   const handleSelectTemplate = useCallback(
     (id: string) => {
@@ -153,7 +188,12 @@ export function LetterheadPage(): JSX.Element {
     try {
       const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
       const result = await client.applyLetterhead(pdfData, lastUsedTemplate, { type: 'first' });
-      downloadPdf(result, pdfFileName, '_letterhead');
+      downloadBlob(
+        new Blob([result], { type: 'application/pdf' }),
+        pdfFileName,
+        '_letterhead',
+        'pdf',
+      );
       addToast('Letterhead applied to first page successfully.', 'success');
     } catch {
       addToast('Failed to apply letterhead. Please try again.', 'error');
@@ -171,7 +211,12 @@ export function LetterheadPage(): JSX.Element {
       try {
         const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
         const result = await client.applyLetterhead(pdfData, activeTemplate, target);
-        downloadPdf(result, pdfFileName, '_letterhead');
+        downloadBlob(
+          new Blob([result], { type: 'application/pdf' }),
+          pdfFileName,
+          '_letterhead',
+          'pdf',
+        );
         addToast('Letterhead applied successfully.', 'success');
       } catch {
         addToast('Failed to apply letterhead. Please try again.', 'error');
@@ -189,10 +234,31 @@ export function LetterheadPage(): JSX.Element {
     try {
       const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
       const result = await client.exportLetterheadAsPdf(activeTemplate);
-      downloadPdf(result, activeTemplate.name, '_letterhead');
+      downloadBlob(
+        new Blob([result], { type: 'application/pdf' }),
+        activeTemplate.name,
+        '_letterhead',
+        'pdf',
+      );
       addToast('Letterhead exported as PDF.', 'success');
     } catch {
       addToast('Failed to export letterhead as PDF.', 'error');
+    } finally {
+      setIsExporting(false);
+    }
+  }, [activeTemplate, addToast]);
+
+  const handleExportAsDocx = useCallback(async () => {
+    if (!activeTemplate) return;
+
+    setIsExporting(true);
+    try {
+      const { exportLetterheadAsDocx } = await import('../export/docx-export');
+      const blob = await exportLetterheadAsDocx(activeTemplate);
+      downloadBlob(blob, activeTemplate.name, '_letterhead', 'docx');
+      addToast('Letterhead exported as Word document.', 'success');
+    } catch {
+      addToast('Failed to export as Word document.', 'error');
     } finally {
       setIsExporting(false);
     }
@@ -313,6 +379,15 @@ export function LetterheadPage(): JSX.Element {
         </div>
       )}
 
+      {/* Starter Template Picker */}
+      {showStarterPicker && (
+        <StarterTemplatePicker
+          onSelect={handleStarterSelect}
+          onSelectBlank={handleStarterBlank}
+          onCancel={handleStarterCancel}
+        />
+      )}
+
       {/* Two-column layout: template list left, editor/preview right */}
       <div className="flex flex-col gap-4 md:flex-row">
         {/* Left sidebar — Template list */}
@@ -338,6 +413,7 @@ export function LetterheadPage(): JSX.Element {
               onSelect={handleSelectTemplate}
               onEdit={handleEditTemplate}
               onCreate={handleCreateTemplate}
+              onSetDefault={handleSetDefault}
             />
           </div>
         </aside>
@@ -394,17 +470,58 @@ export function LetterheadPage(): JSX.Element {
                   </h2>
                 </div>
 
-                {editorState !== 'editing' && (
-                  <Button variant="outline" size="sm" onClick={() => setEditorState('editing')}>
+                {/* Edit/Preview toggle */}
+                <div className="inline-flex rounded-md border border-secondary-300 dark:border-secondary-600">
+                  <button
+                    type="button"
+                    onClick={() => setEditorState('editing')}
+                    aria-pressed={editorState === 'editing'}
+                    className={[
+                      'inline-flex min-h-[36px] items-center gap-1.5 rounded-l-md px-3 py-1.5 text-sm font-medium transition-colors duration-fast',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
+                      editorState === 'editing'
+                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                        : 'bg-white text-secondary-600 hover:bg-secondary-50 dark:bg-secondary-800 dark:text-secondary-300 dark:hover:bg-secondary-700',
+                    ].join(' ')}
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M14.5 2.5l3 3L6 17H3v-3L14.5 2.5z" />
+                    </svg>
                     Edit
-                  </Button>
-                )}
-
-                {editorState === 'editing' && (
-                  <Button variant="outline" size="sm" onClick={() => setEditorState('previewing')}>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditorState('previewing')}
+                    aria-pressed={editorState === 'previewing'}
+                    className={[
+                      'inline-flex min-h-[36px] items-center gap-1.5 rounded-r-md px-3 py-1.5 text-sm font-medium transition-colors duration-fast',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
+                      editorState === 'previewing'
+                        ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
+                        : 'bg-white text-secondary-600 hover:bg-secondary-50 dark:bg-secondary-800 dark:text-secondary-300 dark:hover:bg-secondary-700',
+                    ].join(' ')}
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M10 4.5C5.5 4.5 2 10 2 10s3.5 5.5 8 5.5 8-5.5 8-5.5-3.5-5.5-8-5.5z" />
+                      <circle cx="10" cy="10" r="2.5" />
+                    </svg>
                     Preview
-                  </Button>
-                )}
+                  </button>
+                </div>
 
                 <Button
                   variant="outline"
@@ -424,6 +541,26 @@ export function LetterheadPage(): JSX.Element {
                     <path d="M3 14v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v11M10 14l-3-3M10 14l3-3" />
                   </svg>
                   Export PDF
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleExportAsDocx}
+                  loading={isExporting}
+                  disabled={isExporting}
+                >
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    aria-hidden="true"
+                  >
+                    <path d="M3 14v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v11M10 14l-3-3M10 14l3-3" />
+                  </svg>
+                  Export Word
                 </Button>
 
                 <Button
@@ -486,17 +623,16 @@ export function LetterheadPage(): JSX.Element {
 // ─── Utility ─────────────────────────────────────────────────────────────────
 
 /**
- * Trigger a browser download for a PDF ArrayBuffer.
+ * Trigger a browser download for a Blob with the given file extension.
  */
-function downloadPdf(data: ArrayBuffer, baseName: string, suffix: string): void {
-  const blob = new Blob([data], { type: 'application/pdf' });
+function downloadBlob(blob: Blob, baseName: string, suffix: string, extension: string): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
 
-  // Clean up the base name and add suffix
-  const cleanName = baseName.replace(/\.pdf$/i, '');
-  link.download = `${cleanName}${suffix}.pdf`;
+  // Clean up the base name (remove common extensions) and add suffix + extension
+  const cleanName = baseName.replace(/\.(pdf|docx?)$/i, '');
+  link.download = `${cleanName}${suffix}.${extension}`;
 
   document.body.appendChild(link);
   link.click();
