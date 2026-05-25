@@ -851,6 +851,14 @@ export const useCanvasStore = create<CanvasStoreState & CanvasStoreActions>()(
         if (!element) return;
         Object.assign(element, updates);
         state.document!.updatedAt = Date.now();
+
+        // Recompute selection bounds if the updated element is currently selected
+        if (state.selection.selectedIds.includes(id)) {
+          state.selection.selectionBounds = computeSelectionBounds(
+            state.selection.selectedIds,
+            page.elements,
+          );
+        }
       });
     },
 

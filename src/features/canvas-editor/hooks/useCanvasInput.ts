@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { ZOOM_STEP, DEFAULT_TEXT_WIDTH, MM_TO_PX } from '../constants';
 import { computeCursor, type CursorStyle } from '../engine/cursor';
@@ -20,11 +20,23 @@ import type {
 
 type DragMode = 'move' | 'resize' | 'create' | 'pan' | 'none';
 
+/** Minimum pixels the pointer must move before a drag starts (prevents accidental micro-drags) */
+const DRAG_THRESHOLD_PX = 3;
+
+/** Minimum element dimension in mm (prevents elements from becoming unselectable) */
+const MIN_ELEMENT_SIZE_MM = 5;
+
 interface DragState {
   isDragging: boolean;
   dragMode: DragMode;
+  /** Document-space position at drag start */
   dragStart: { x: number; y: number };
+  /** Document-space position of current pointer */
   dragCurrent: { x: number; y: number };
+  /** Screen-space position at pointer down (used for threshold check) */
+  pointerDownScreen: { x: number; y: number };
+  /** Whether the drag threshold has been exceeded and drag is "committed" */
+  dragCommitted: boolean;
   /** Element being created during drag-create */
   creatingElement: CanvasElement | null;
   /** Handle being dragged during resize */
@@ -33,6 +45,8 @@ interface DragState {
   originalPositions: Map<string, { x: number; y: number }>;
   /** Original size of element at drag start (for resize) */
   originalSize: { width: number; height: number } | null;
+  /** Original position of element at drag start (for resize) */
+  originalPosition: { x: number; y: number } | null;
   /** Pan start viewport offset */
   panStart: { panX: number; panY: number } | null;
 }
@@ -66,6 +80,7 @@ function isShapeTool(tool: CanvasTool): tool is ShapeType {
 export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   const [cursorStyle, setCursorStyle] = useState<CursorStyle>('default');
   const [renderTick, setRenderTick] = useState(0);
+  const [activeSnapGuides, setActiveSnapGuides] = useState<import('../types').SnapGuide[]>([]);
 
   /** Ref exposing the ghost element (shape being drag-created) to the renderer */
   const ghostElementRef = useRef<CanvasElement | null>(null);
@@ -84,10 +99,13 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
     dragMode: 'none',
     dragStart: { x: 0, y: 0 },
     dragCurrent: { x: 0, y: 0 },
+    pointerDownScreen: { x: 0, y: 0 },
+    dragCommitted: false,
     creatingElement: null,
     activeHandle: null,
     originalPositions: new Map(),
     originalSize: null,
+    originalPosition: null,
     panStart: null,
   });
 
@@ -123,6 +141,8 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
       const state = dragState.current;
       state.dragStart = docPoint;
       state.dragCurrent = docPoint;
+      state.pointerDownScreen = screenPoint;
+      state.dragCommitted = false;
 
       switch (activeTool) {
         case 'select': {
@@ -138,6 +158,7 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
             const selectedEl = page.elements.find((el) => el.id === selection.selectedIds[0]);
             if (selectedEl) {
               state.originalSize = { width: selectedEl.width, height: selectedEl.height };
+              state.originalPosition = { x: selectedEl.x, y: selectedEl.y };
               state.originalPositions = new Map();
               state.originalPositions.set(selectedEl.id, { x: selectedEl.x, y: selectedEl.y });
             }
@@ -175,6 +196,9 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
                 store.select([hitElement.id]);
               }
             }
+
+            // Prevent move drag on locked elements
+            if (hitElement.locked) break;
 
             // Start move drag
             state.isDragging = true;
@@ -332,9 +356,34 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
         return;
       }
 
+      // --- Drag threshold check ---
+      // For move and resize, require the pointer to move at least DRAG_THRESHOLD_PX
+      // before committing the drag. This prevents accidental micro-drags on click.
+      if (!state.dragCommitted && (state.dragMode === 'move' || state.dragMode === 'resize')) {
+        const dx = screenPoint.x - state.pointerDownScreen.x;
+        const dy = screenPoint.y - state.pointerDownScreen.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < DRAG_THRESHOLD_PX) {
+          return; // Not yet past threshold — don't start visual drag
+        }
+        state.dragCommitted = true;
+      }
+
       // Update cursor during drag operations
-      if (state.dragMode === 'pan') {
+      if (state.dragMode === 'move') {
         setCursorStyle('grabbing');
+      } else if (state.dragMode === 'pan') {
+        setCursorStyle('grabbing');
+      } else if (state.dragMode === 'resize' && state.activeHandle) {
+        // Keep the resize cursor during resize drag
+        const resizeCursor = computeCursor({
+          activeTool: 'select',
+          hoverElement: null,
+          hoverHandle: state.activeHandle,
+          isDragging: true,
+          dragMode: 'resize',
+        });
+        setCursorStyle(resizeCursor);
       }
 
       switch (state.dragMode) {
@@ -347,6 +396,7 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
 
           // Move each selected element with snap
           const selectedIds = store.selection.selectedIds;
+          let allGuides: import('../types').SnapGuide[] = [];
           for (const id of selectedIds) {
             const originalPos = state.originalPositions.get(id);
             if (!originalPos) continue;
@@ -366,12 +416,18 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
               snapEnabled,
             );
 
+            // Collect snap guides
+            if (snapResult.guides.length > 0) {
+              allGuides = snapResult.guides;
+            }
+
             // Use silent update to avoid flooding history during drag
             store.updateElementSilent(id, {
               x: snapResult.snappedX,
               y: snapResult.snappedY,
             } as Partial<CanvasElement>);
           }
+          setActiveSnapGuides(allGuides);
           break;
         }
 
@@ -388,13 +444,15 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
           const deltaX = docPoint.x - state.dragStart.x;
           const deltaY = docPoint.y - state.dragStart.y;
 
+          const handle = state.activeHandle;
+          const shiftHeld = e.shiftKey;
+          const altHeld = e.altKey;
+
           // Calculate new size based on handle direction
           let newWidth = state.originalSize.width;
           let newHeight = state.originalSize.height;
           let newX = originalPos.x;
           let newY = originalPos.y;
-
-          const handle = state.activeHandle;
 
           // East handles: width increases with positive deltaX
           if (handle.includes('e')) newWidth += deltaX;
@@ -411,14 +469,85 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
             newY += deltaY;
           }
 
-          // Clamp minimum size and adjust position accordingly
-          if (newWidth < 1) {
-            if (handle.includes('w')) newX += newWidth - 1;
-            newWidth = 1;
+          // --- Aspect ratio lock ---
+          // For images: lock aspect ratio by default, Shift UNLOCKS it.
+          // For shapes/text: Shift LOCKS aspect ratio (original behavior).
+          // If the image has aspectRatioLocked: true, always lock regardless of Shift.
+          const selectedElement = page.elements.find((el) => el.id === selectedId);
+          const isImage = selectedElement?.type === 'image';
+          const imageAlwaysLocked =
+            isImage && (selectedElement as import('../types').ImageElement).aspectRatioLocked;
+          const shouldLockAspect = imageAlwaysLocked ? true : isImage ? !shiftHeld : shiftHeld;
+
+          if (shouldLockAspect && state.originalSize.width > 0 && state.originalSize.height > 0) {
+            const aspectRatio = state.originalSize.width / state.originalSize.height;
+
+            if (handle === 'n' || handle === 's') {
+              // Vertical-only handle: derive width from height
+              newWidth = newHeight * aspectRatio;
+              // Center horizontally relative to original center
+              const originalCenterX = originalPos.x + state.originalSize.width / 2;
+              newX = originalCenterX - newWidth / 2;
+            } else if (handle === 'e' || handle === 'w') {
+              // Horizontal-only handle: derive height from width
+              newHeight = newWidth / aspectRatio;
+              // Center vertically relative to original center
+              const originalCenterY = originalPos.y + state.originalSize.height / 2;
+              newY = originalCenterY - newHeight / 2;
+            } else {
+              // Corner handle: use dominant axis
+              const absDeltaX = Math.abs(deltaX);
+              const absDeltaY = Math.abs(deltaY);
+
+              if (absDeltaX >= absDeltaY) {
+                // Width is dominant — derive height
+                newHeight = newWidth / aspectRatio;
+              } else {
+                // Height is dominant — derive width
+                newWidth = newHeight * aspectRatio;
+              }
+
+              // Recalculate position for handles that affect position
+              if (handle === 'nw') {
+                newX = originalPos.x + state.originalSize.width - newWidth;
+                newY = originalPos.y + state.originalSize.height - newHeight;
+              } else if (handle === 'ne') {
+                newY = originalPos.y + state.originalSize.height - newHeight;
+              } else if (handle === 'sw') {
+                newX = originalPos.x + state.originalSize.width - newWidth;
+              }
+              // 'se' doesn't change position
+            }
           }
-          if (newHeight < 1) {
-            if (handle.includes('n')) newY += newHeight - 1;
-            newHeight = 1;
+
+          // --- Alt/Option: Resize from center ---
+          if (altHeld) {
+            const originalCenterX = originalPos.x + state.originalSize.width / 2;
+            const originalCenterY = originalPos.y + state.originalSize.height / 2;
+            newX = originalCenterX - newWidth / 2;
+            newY = originalCenterY - newHeight / 2;
+          }
+
+          // --- Enforce minimum size (5mm) ---
+          if (newWidth < MIN_ELEMENT_SIZE_MM) {
+            if (handle.includes('w') && !altHeld) {
+              newX += newWidth - MIN_ELEMENT_SIZE_MM;
+            }
+            newWidth = MIN_ELEMENT_SIZE_MM;
+            if (altHeld) {
+              const originalCenterX = originalPos.x + state.originalSize.width / 2;
+              newX = originalCenterX - newWidth / 2;
+            }
+          }
+          if (newHeight < MIN_ELEMENT_SIZE_MM) {
+            if (handle.includes('n') && !altHeld) {
+              newY += newHeight - MIN_ELEMENT_SIZE_MM;
+            }
+            newHeight = MIN_ELEMENT_SIZE_MM;
+            if (altHeld) {
+              const originalCenterY = originalPos.y + state.originalSize.height / 2;
+              newY = originalCenterY - newHeight / 2;
+            }
           }
 
           // Use silent update to avoid flooding history during drag
@@ -493,16 +622,47 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
 
     const store = useCanvasStore.getState();
 
+    // If drag threshold was never exceeded, treat as a click (no-op for drag)
+    const wasCommitted =
+      state.dragCommitted || state.dragMode === 'pan' || state.dragMode === 'create';
+
     switch (state.dragMode) {
       case 'move': {
-        // Finalize move — commit single history entry for the entire drag
-        store.endDrag();
+        if (wasCommitted) {
+          // Finalize move — commit single history entry for the entire drag
+          store.endDrag();
+        } else {
+          // Threshold not met — cancel the drag, no history entry
+          // Restore original positions
+          const page = store.document?.pages[store.document.activePageIndex];
+          if (page) {
+            for (const [id, pos] of state.originalPositions) {
+              store.updateElementSilent(id, { x: pos.x, y: pos.y } as Partial<CanvasElement>);
+            }
+          }
+          // Discard the drag snapshot without pushing to history
+          useCanvasStore.setState({ dragSnapshot: null, isDragging: false });
+        }
         break;
       }
 
       case 'resize': {
-        // Finalize resize — commit single history entry for the entire drag
-        store.endDrag();
+        if (wasCommitted) {
+          // Finalize resize — commit single history entry for the entire drag
+          store.endDrag();
+        } else {
+          // Threshold not met — restore original size/position
+          const selectedId = store.selection.selectedIds[0];
+          if (selectedId && state.originalSize && state.originalPosition) {
+            store.updateElementSilent(selectedId, {
+              width: state.originalSize.width,
+              height: state.originalSize.height,
+              x: state.originalPosition.x,
+              y: state.originalPosition.y,
+            } as Partial<CanvasElement>);
+          }
+          useCanvasStore.setState({ dragSnapshot: null, isDragging: false });
+        }
         break;
       }
 
@@ -534,7 +694,12 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
     state.activeHandle = null;
     state.originalPositions = new Map();
     state.originalSize = null;
+    state.originalPosition = null;
     state.panStart = null;
+    state.dragCommitted = false;
+
+    // Clear snap guides
+    setActiveSnapGuides([]);
 
     // Reset cursor to reflect current tool state
     const currentStore = useCanvasStore.getState();
@@ -579,6 +744,104 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
     }
   }, []);
 
+  // === Escape key to cancel drag ===
+
+  const cancelDrag = useCallback(() => {
+    const state = dragState.current;
+    if (!state.isDragging) return;
+
+    const store = useCanvasStore.getState();
+
+    switch (state.dragMode) {
+      case 'move': {
+        // Restore original positions of all selected elements
+        for (const [id, pos] of state.originalPositions) {
+          store.updateElementSilent(id, { x: pos.x, y: pos.y } as Partial<CanvasElement>);
+        }
+        // Discard drag snapshot without pushing to history
+        useCanvasStore.setState({ dragSnapshot: null, isDragging: false });
+        break;
+      }
+
+      case 'resize': {
+        // Restore original size and position
+        const selectedId = store.selection.selectedIds[0];
+        if (selectedId && state.originalSize) {
+          const originalPos = state.originalPositions.get(selectedId);
+          if (originalPos) {
+            store.updateElementSilent(selectedId, {
+              width: state.originalSize.width,
+              height: state.originalSize.height,
+              x: originalPos.x,
+              y: originalPos.y,
+            } as Partial<CanvasElement>);
+          }
+        }
+        useCanvasStore.setState({ dragSnapshot: null, isDragging: false });
+        break;
+      }
+
+      case 'create': {
+        // Discard the element being created
+        state.creatingElement = null;
+        ghostElementRef.current = null;
+        setRenderTick((t) => t + 1);
+        break;
+      }
+
+      case 'pan': {
+        // Restore original pan position
+        if (state.panStart) {
+          const currentStore = useCanvasStore.getState();
+          const panDeltaX = state.panStart.panX - currentStore.viewport.panX;
+          const panDeltaY = state.panStart.panY - currentStore.viewport.panY;
+          if (panDeltaX !== 0 || panDeltaY !== 0) {
+            store.pan(panDeltaX, panDeltaY);
+          }
+        }
+        break;
+      }
+    }
+
+    // Reset drag state
+    state.isDragging = false;
+    state.dragMode = 'none';
+    state.activeHandle = null;
+    state.originalPositions = new Map();
+    state.originalSize = null;
+    state.originalPosition = null;
+    state.panStart = null;
+    state.dragCommitted = false;
+
+    // Clear snap guides
+    setActiveSnapGuides([]);
+
+    // Reset cursor
+    const currentStore = useCanvasStore.getState();
+    setCursorStyle(
+      computeCursor({
+        activeTool: currentStore.activeTool,
+        hoverElement: null,
+        hoverHandle: null,
+        isDragging: false,
+        dragMode: 'none',
+      }),
+    );
+  }, []);
+
+  // Listen for Escape key to cancel active drag operations
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && dragState.current.isDragging) {
+        e.preventDefault();
+        cancelDrag();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [cancelDrag]);
+
   return {
     onPointerDown,
     onPointerMove,
@@ -588,6 +851,7 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
     ghostElementRef,
     renderTick,
     onDoubleClickTextRef,
+    activeSnapGuides,
   };
 }
 

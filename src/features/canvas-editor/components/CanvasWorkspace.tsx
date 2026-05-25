@@ -21,8 +21,8 @@ export function CanvasWorkspace() {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewport = useCanvasStore((state) => state.viewport);
 
-  // Snap guides state — populated during drag operations via input handler
-  const [snapGuides] = useState<SnapGuide[]>([]);
+  // Snap guides state — populated during drag operations via useCanvasInput
+  const [snapGuides, setSnapGuides] = useState<SnapGuide[]>([]);
 
   // Text editing state
   const [editingElementId, setEditingElementId] = useState<string | null>(null);
@@ -35,6 +35,10 @@ export function CanvasWorkspace() {
     setEditingElementId(null);
   }, []);
 
+  const handleSnapGuidesChange = useCallback((guides: SnapGuide[]) => {
+    setSnapGuides(guides);
+  }, []);
+
   // Get container dimensions for snap guide overlay
   const containerWidth = containerRef.current?.clientWidth ?? 0;
   const containerHeight = containerRef.current?.clientHeight ?? 0;
@@ -45,7 +49,7 @@ export function CanvasWorkspace() {
       className="flex-1 flex flex-col relative overflow-hidden bg-secondary-900"
       data-testid="canvas-workspace"
     >
-      <CanvasViewport onEditText={handleEditText} />
+      <CanvasViewport onEditText={handleEditText} onSnapGuidesChange={handleSnapGuidesChange} />
 
       {/* Selection overlay with resize/rotate handles */}
       <SelectionOverlay />

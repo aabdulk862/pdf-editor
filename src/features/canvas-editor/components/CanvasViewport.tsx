@@ -17,9 +17,11 @@ import { useCanvasRenderer } from '../hooks/useCanvasRenderer';
 export interface CanvasViewportProps {
   /** Callback when a text element should enter inline editing mode */
   onEditText?: (elementId: string) => void;
+  /** Callback to report active snap guides during drag */
+  onSnapGuidesChange?: (guides: import('../types').SnapGuide[]) => void;
 }
 
-export function CanvasViewport({ onEditText }: CanvasViewportProps) {
+export function CanvasViewport({ onEditText, onSnapGuidesChange }: CanvasViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Set up input handling (pointer events, wheel zoom/pan)
@@ -32,10 +34,18 @@ export function CanvasViewport({ onEditText }: CanvasViewportProps) {
     ghostElementRef,
     renderTick,
     onDoubleClickTextRef,
+    activeSnapGuides,
   } = useCanvasInput(canvasRef);
 
   // Wire up the double-click text editing callback
   onDoubleClickTextRef.current = onEditText ?? null;
+
+  // Report snap guides to parent
+  const prevGuidesRef = useRef(activeSnapGuides);
+  if (prevGuidesRef.current !== activeSnapGuides) {
+    prevGuidesRef.current = activeSnapGuides;
+    onSnapGuidesChange?.(activeSnapGuides);
+  }
 
   // Set up rendering loop (subscribes to store, handles DPR, requestAnimationFrame)
   // Pass ghostElementRef so the renderer can include the ghost element in the render state
