@@ -55,17 +55,17 @@ export function UndoRedoControls() {
         title="Undo (Ctrl+Z)"
       >
         <svg
-          xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5"
           viewBox="0 0 20 20"
-          fill="currentColor"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path
-            fillRule="evenodd"
-            d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-            clipRule="evenodd"
-          />
+          <path d="M4 7h8a5 5 0 010 10H9" />
+          <path d="M7 4L4 7l3 3" />
         </svg>
       </button>
 
@@ -78,17 +78,17 @@ export function UndoRedoControls() {
         title="Redo (Ctrl+Y)"
       >
         <svg
-          xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5"
           viewBox="0 0 20 20"
-          fill="currentColor"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path
-            fillRule="evenodd"
-            d="M12.293 3.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 9H9a5 5 0 00-5 5v2a1 1 0 11-2 0v-2a7 7 0 017-7h5.586l-2.293-2.293a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
+          <path d="M16 7H8a5 5 0 000 10h3" />
+          <path d="M13 4l3 3-3 3" />
         </svg>
       </button>
     </div>

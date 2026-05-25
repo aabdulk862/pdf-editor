@@ -219,7 +219,7 @@ export function CanvasEditorPage() {
                   viewBox="0 0 16 16"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   strokeLinecap="round"
                 >
                   <path d="M8 3v10M3 8h10" />

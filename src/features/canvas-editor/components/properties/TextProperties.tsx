@@ -27,8 +27,16 @@ const ALIGNMENT_OPTIONS: { value: TextAlignment; label: string; icon: React.Reac
     value: 'left',
     label: 'Align left',
     icon: (
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M2 4h16v1H2V4zm0 4h10v1H2V8zm0 4h14v1H2v-1zm0 4h8v1H2v-1z" />
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M2 4.5h16M2 8.5h10M2 12.5h14M2 16.5h8" />
       </svg>
     ),
   },
@@ -36,8 +44,16 @@ const ALIGNMENT_OPTIONS: { value: TextAlignment; label: string; icon: React.Reac
     value: 'center',
     label: 'Align center',
     icon: (
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M2 4h16v1H2V4zm3 4h10v1H5V8zm1 4h8v1H6v-1zm2 4h4v1H8v-1z" />
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M2 4.5h16M5 8.5h10M4 12.5h12M6 16.5h8" />
       </svg>
     ),
   },
@@ -45,8 +61,16 @@ const ALIGNMENT_OPTIONS: { value: TextAlignment; label: string; icon: React.Reac
     value: 'right',
     label: 'Align right',
     icon: (
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M2 4h16v1H2V4zm6 4h10v1H8V8zm4 4h6v1h-6v-1zm-2 4h8v1h-8v-1z" />
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M2 4.5h16M8 8.5h10M6 12.5h12M10 16.5h8" />
       </svg>
     ),
   },
@@ -54,8 +78,16 @@ const ALIGNMENT_OPTIONS: { value: TextAlignment; label: string; icon: React.Reac
     value: 'justify',
     label: 'Justify',
     icon: (
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M2 4h16v1H2V4zm0 4h16v1H2V8zm0 4h16v1H2v-1zm0 4h16v1H2v-1z" />
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M2 4.5h16M2 8.5h16M2 12.5h16M2 16.5h16" />
       </svg>
     ),
   },

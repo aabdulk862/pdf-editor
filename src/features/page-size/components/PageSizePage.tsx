@@ -445,7 +445,7 @@ export function PageSizePage(): JSX.Element {
                     stroke="currentColor"
                     aria-hidden="true"
                   >
-                    <rect x="2" y="2" width="20" height="28" rx="2" strokeWidth="2" />
+                    <rect x="2" y="2" width="20" height="28" rx="2" strokeWidth="1.5" />
                   </svg>
                 ),
               },
@@ -460,7 +460,7 @@ export function PageSizePage(): JSX.Element {
                     stroke="currentColor"
                     aria-hidden="true"
                   >
-                    <rect x="2" y="2" width="28" height="20" rx="2" strokeWidth="2" />
+                    <rect x="2" y="2" width="28" height="20" rx="2" strokeWidth="1.5" />
                   </svg>
                 ),
               },
