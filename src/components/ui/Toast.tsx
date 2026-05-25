@@ -199,12 +199,14 @@ function ToastItem({
 
 /**
  * Toast container with responsive positioning:
- * - Mobile (< md): bottom-center, thumb-reachable
+ * - Mobile (< md): bottom-center, thumb-reachable with padding from bottom edge
  * - Desktop (>= md): top-right
  *
  * Toasts animate with:
- * - Entrance: slide-up (translateY 100% → 0) over 200ms ease-out
- * - Exit: slide-down (translateY 0 → 100%) over 150ms ease-in
+ * - Mobile entrance: slide-up (translateY 100% → 0) over 200ms ease-out
+ * - Desktop entrance: slide-down (translateY -100% → 0) over 200ms ease-out
+ * - Mobile exit: slide-down (translateY 0 → 100%) over 150ms ease-in
+ * - Desktop exit: slide-up (translateY 0 → -100%) over 150ms ease-in
  *
  * Respects prefers-reduced-motion by disabling transform animations.
  */
@@ -212,6 +214,7 @@ export function ToastContainer(): JSX.Element {
   const toasts = useToastStore((state) => state.toasts);
   const removeToast = useToastStore((state) => state.removeToast);
   const reducedMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   const visibleToasts = toasts.slice(-MAX_VISIBLE);
 
@@ -221,11 +224,11 @@ export function ToastContainer(): JSX.Element {
   return (
     <div
       className={[
-        'pointer-events-none fixed z-50 flex flex-col gap-2 p-4',
-        // Mobile: bottom-center (thumb-reachable)
-        'inset-x-0 bottom-0 items-center',
-        // Desktop (md+): top-right
-        'md:inset-x-auto md:bottom-auto md:right-0 md:top-0 md:items-end md:p-6',
+        'pointer-events-none fixed z-50 flex flex-col gap-2',
+        // Mobile: bottom-center with padding for thumb reach
+        'inset-x-0 bottom-4 items-center px-4',
+        // Desktop (md+): top-right with appropriate padding
+        'md:inset-x-auto md:bottom-auto md:right-4 md:top-4 md:items-end md:px-0',
       ].join(' ')}
     >
       {/* Assertive region for error toasts - announced immediately */}
@@ -240,6 +243,7 @@ export function ToastContainer(): JSX.Element {
             toast={toast}
             onDismiss={removeToast}
             reducedMotion={reducedMotion}
+            isMobile={isMobile}
           />
         ))}
       </div>
@@ -256,6 +260,7 @@ export function ToastContainer(): JSX.Element {
             toast={toast}
             onDismiss={removeToast}
             reducedMotion={reducedMotion}
+            isMobile={isMobile}
           />
         ))}
       </div>

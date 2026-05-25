@@ -226,11 +226,11 @@ This implementation plan covers the comprehensive UI/UX redesign of the PDF Edit
 - [x] 9.5 Add loading/processing state transitions with skeleton placeholders to tool pages that currently jump between states
 - [x] 9.6 Standardize icon sizing across all components to use the Icon wrapper (16/20/24px, 1.5px stroke)
 - [x] 9.7 Add error recovery (retry buttons, preserved file state) to all tool pages that currently show generic errors
-- [-] 9.8 Fix toast positioning: bottom-center on mobile (within thumb reach), top-right on desktop
+- [x] 9.8 Fix toast positioning: bottom-center on mobile (within thumb reach), top-right on desktop
 
 ## Phase 10: Mobile Responsiveness Polish
 
-- [ ] 10.1 Ensure all interactive elements have min 44x44px touch targets on viewports below md breakpoint
+- [-] 10.1 Ensure all interactive elements have min 44x44px touch targets on viewports below md breakpoint
 - [ ] 10.2 Implement toolbar overflow: reflow controls into scrollable horizontal strip with "more" menu on narrow viewports
 - [ ] 10.3 Convert Tool Card grid to single-column layout below sm breakpoint
 - [ ] 10.4 Hide non-essential UI (keyboard shortcut hints, secondary labels) below sm breakpoint using `hidden sm:block`

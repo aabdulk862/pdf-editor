@@ -8,14 +8,22 @@ vi.mock('../../hooks/useReducedMotion', () => ({
   useReducedMotion: vi.fn(() => false),
 }));
 
+// Mock useIsMobile hook
+vi.mock('../../hooks/useIsMobile', () => ({
+  useIsMobile: vi.fn(() => true),
+}));
+
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useIsMobile } from '../../hooks/useIsMobile';
 const mockUseReducedMotion = vi.mocked(useReducedMotion);
+const mockUseIsMobile = vi.mocked(useIsMobile);
 
 describe('ToastContainer', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     useToastStore.setState({ toasts: [] });
     mockUseReducedMotion.mockReturnValue(false);
+    mockUseIsMobile.mockReturnValue(true);
   });
 
   afterEach(() => {
@@ -38,15 +46,15 @@ describe('ToastContainer', () => {
     const { container } = render(<ToastContainer />);
     const wrapper = container.firstElementChild as HTMLElement;
 
-    // Mobile: bottom-center
-    expect(wrapper.className).toContain('bottom-0');
+    // Mobile: bottom-center with thumb-reach padding
+    expect(wrapper.className).toContain('bottom-4');
     expect(wrapper.className).toContain('inset-x-0');
     expect(wrapper.className).toContain('items-center');
 
     // Desktop (md+): top-right
     expect(wrapper.className).toContain('md:bottom-auto');
-    expect(wrapper.className).toContain('md:top-0');
-    expect(wrapper.className).toContain('md:right-0');
+    expect(wrapper.className).toContain('md:top-4');
+    expect(wrapper.className).toContain('md:right-4');
     expect(wrapper.className).toContain('md:items-end');
   });
 
@@ -127,6 +135,40 @@ describe('ToastContainer', () => {
     });
 
     expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('uses slide-down animation (translateY -100%) on desktop', () => {
+    mockUseIsMobile.mockReturnValue(false);
+    useToastStore.getState().addToast('Desktop toast', 'success');
+    render(<ToastContainer />);
+
+    const alert = screen.getByRole('alert');
+    // Desktop: enters from top (translateY -100%)
+    expect(alert.style.transform).toBe('translateY(-100%)');
+
+    // Transition to visible
+    act(() => {
+      vi.advanceTimersByTime(16);
+    });
+
+    expect(alert.style.transform).toBe('translateY(0)');
+  });
+
+  it('uses slide-up animation (translateY 100%) on mobile', () => {
+    mockUseIsMobile.mockReturnValue(true);
+    useToastStore.getState().addToast('Mobile toast', 'success');
+    render(<ToastContainer />);
+
+    const alert = screen.getByRole('alert');
+    // Mobile: enters from bottom (translateY 100%)
+    expect(alert.style.transform).toBe('translateY(100%)');
+
+    // Transition to visible
+    act(() => {
+      vi.advanceTimersByTime(16);
+    });
+
+    expect(alert.style.transform).toBe('translateY(0)');
   });
 
   it('auto-dismisses toast after its duration expires', () => {
