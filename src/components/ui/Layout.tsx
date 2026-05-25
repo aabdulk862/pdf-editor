@@ -62,7 +62,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
                   <button
                     type="button"
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="inline-flex items-center justify-center w-11 h-11 rounded-md text-secondary-500 hover:text-secondary-700 dark:text-secondary-400 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="inline-flex items-center justify-center w-11 h-11 rounded-md text-secondary-500 hover:text-secondary-700 dark:text-secondary-400 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
                     aria-label={sidebarOpen ? 'Close navigation menu' : 'Open navigation menu'}
                     aria-expanded={sidebarOpen}
                   >
@@ -112,7 +112,7 @@ export function Layout({ children, sidebar, topBar }: LayoutProps) {
                   <button
                     type="button"
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="inline-flex items-center justify-center w-11 h-11 rounded-md text-secondary-500 hover:text-secondary-700 dark:text-secondary-400 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="inline-flex items-center justify-center w-11 h-11 rounded-md text-secondary-500 hover:text-secondary-700 dark:text-secondary-400 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
                     aria-label={sidebarOpen ? 'Close navigation menu' : 'Open navigation menu'}
                     aria-expanded={sidebarOpen}
                   >
@@ -246,7 +246,7 @@ export function ExpandableSection({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-text-light dark:text-text-dark bg-secondary-50 dark:bg-secondary-800 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150 min-h-[44px]"
+          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-text-light dark:text-text-dark bg-secondary-50 dark:bg-secondary-800 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
           aria-expanded={isOpen}
         >
           <span>{title}</span>

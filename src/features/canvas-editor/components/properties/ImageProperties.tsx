@@ -27,13 +27,17 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
 
   return (
     <div className="flex flex-col gap-4" role="group" aria-label="Image properties">
-      <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Image</h3>
+      <h3 className="text-xs font-semibold text-secondary-700 dark:text-secondary-200 uppercase tracking-wide">
+        Image
+      </h3>
 
       {/* Original Dimensions (read-only) */}
       <div className="flex flex-col gap-1">
-        <span className="text-xs text-gray-500">Original Dimensions</span>
-        <div className="flex items-center gap-2 text-sm text-gray-700">
-          <span className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md">
+        <span className="text-xs text-secondary-500 dark:text-secondary-400">
+          Original Dimensions
+        </span>
+        <div className="flex items-center gap-2 text-sm text-secondary-700 dark:text-secondary-200">
+          <span className="px-3 py-2 bg-secondary-50 dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-600 rounded-md">
             {element.originalWidth} × {element.originalHeight} px
           </span>
         </div>
@@ -41,18 +45,26 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
 
       {/* Aspect Ratio Lock */}
       <div className="flex items-center justify-between">
-        <span className="text-xs text-gray-500">Lock Aspect Ratio</span>
+        <span className="text-xs text-secondary-500 dark:text-secondary-400">
+          Lock Aspect Ratio
+        </span>
         <button
           type="button"
           onClick={handleAspectRatioToggle}
           className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
             transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500
-            ${element.aspectRatioLocked ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-100 active:bg-gray-200'}`}
+            ${element.aspectRatioLocked ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-500 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
           aria-label={element.aspectRatioLocked ? 'Unlock aspect ratio' : 'Lock aspect ratio'}
           aria-pressed={element.aspectRatioLocked}
         >
           {element.aspectRatioLocked ? (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -61,7 +73,13 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               />
             </svg>
           ) : (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -76,13 +94,13 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
       {/* Crop Controls */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">Crop Region</span>
+          <span className="text-xs text-secondary-500 dark:text-secondary-400">Crop Region</span>
           {element.cropRect && (
             <button
               type="button"
               onClick={handleResetCrop}
-              className="min-h-[44px] px-3 text-xs text-blue-600 rounded-md border border-transparent
-                hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              className="min-h-[44px] px-3 text-xs text-blue-600 dark:text-blue-400 rounded-md border border-transparent
+                hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               aria-label="Reset crop"
             >
               Reset
@@ -92,7 +110,10 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
 
         <div className="grid grid-cols-2 gap-2">
           <div className="flex flex-col gap-0.5">
-            <label className="text-[10px] text-gray-400" htmlFor="crop-x">
+            <label
+              className="text-[10px] text-secondary-400 dark:text-secondary-500"
+              htmlFor="crop-x"
+            >
               X
             </label>
             <input
@@ -103,13 +124,16 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               step={0.01}
               value={element.cropRect?.x ?? 0}
               onChange={(e) => handleCropChange('x', Number(e.target.value))}
-              className="min-h-[44px] px-2 text-sm border border-gray-300 rounded-md
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-colors"
+              className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
               aria-label="Crop X position (0-1)"
             />
           </div>
           <div className="flex flex-col gap-0.5">
-            <label className="text-[10px] text-gray-400" htmlFor="crop-y">
+            <label
+              className="text-[10px] text-secondary-400 dark:text-secondary-500"
+              htmlFor="crop-y"
+            >
               Y
             </label>
             <input
@@ -120,13 +144,16 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               step={0.01}
               value={element.cropRect?.y ?? 0}
               onChange={(e) => handleCropChange('y', Number(e.target.value))}
-              className="min-h-[44px] px-2 text-sm border border-gray-300 rounded-md
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-colors"
+              className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
               aria-label="Crop Y position (0-1)"
             />
           </div>
           <div className="flex flex-col gap-0.5">
-            <label className="text-[10px] text-gray-400" htmlFor="crop-width">
+            <label
+              className="text-[10px] text-secondary-400 dark:text-secondary-500"
+              htmlFor="crop-width"
+            >
               Width
             </label>
             <input
@@ -137,13 +164,16 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               step={0.01}
               value={element.cropRect?.width ?? 1}
               onChange={(e) => handleCropChange('width', Number(e.target.value))}
-              className="min-h-[44px] px-2 text-sm border border-gray-300 rounded-md
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-colors"
+              className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
               aria-label="Crop width (0-1)"
             />
           </div>
           <div className="flex flex-col gap-0.5">
-            <label className="text-[10px] text-gray-400" htmlFor="crop-height">
+            <label
+              className="text-[10px] text-secondary-400 dark:text-secondary-500"
+              htmlFor="crop-height"
+            >
               Height
             </label>
             <input
@@ -154,8 +184,8 @@ export const ImageProperties: React.FC<ImagePropertiesProps> = ({ element, onCha
               step={0.01}
               value={element.cropRect?.height ?? 1}
               onChange={(e) => handleCropChange('height', Number(e.target.value))}
-              className="min-h-[44px] px-2 text-sm border border-gray-300 rounded-md
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-colors"
+              className="min-h-[44px] px-2 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
               aria-label="Crop height (0-1)"
             />
           </div>

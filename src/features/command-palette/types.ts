@@ -19,5 +19,6 @@ export interface CommandPaletteState {
   close: () => void;
   setQuery: (query: string) => void;
   moveSelection: (direction: 'up' | 'down') => void;
+  setActiveIndex: (index: number) => void;
   getActiveItem: () => CommandItem | null;
 }

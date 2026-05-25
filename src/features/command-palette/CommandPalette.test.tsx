@@ -225,5 +225,60 @@ describe('CommandPalette', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(items[0].route);
     });
+
+    it('applies roving tabindex to list items (active item has tabIndex=0, others have tabIndex=-1)', () => {
+      useCommandPaletteStore.setState({ isOpen: true, activeIndex: 0 });
+
+      renderCommandPalette();
+
+      const options = screen.getAllByRole('option');
+      expect(options[0]).toHaveAttribute('tabindex', '0');
+      expect(options[1]).toHaveAttribute('tabindex', '-1');
+      expect(options[2]).toHaveAttribute('tabindex', '-1');
+    });
+  });
+
+  describe('Home/End key navigation', () => {
+    it('moves selection to first item when Home is pressed', () => {
+      const items = useCommandPaletteStore.getState().filteredItems;
+      useCommandPaletteStore.setState({ isOpen: true, activeIndex: items.length - 1 });
+
+      renderCommandPalette();
+
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Home' });
+
+      expect(useCommandPaletteStore.getState().activeIndex).toBe(0);
+    });
+
+    it('moves selection to last item when End is pressed', () => {
+      const items = useCommandPaletteStore.getState().filteredItems;
+      useCommandPaletteStore.setState({ isOpen: true, activeIndex: 0 });
+
+      renderCommandPalette();
+
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'End' });
+
+      expect(useCommandPaletteStore.getState().activeIndex).toBe(items.length - 1);
+    });
+
+    it('does nothing when Home is pressed with empty results', () => {
+      useCommandPaletteStore.setState({ isOpen: true, filteredItems: [], activeIndex: 0 });
+
+      renderCommandPalette();
+
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Home' });
+
+      expect(useCommandPaletteStore.getState().activeIndex).toBe(0);
+    });
+
+    it('does nothing when End is pressed with empty results', () => {
+      useCommandPaletteStore.setState({ isOpen: true, filteredItems: [], activeIndex: 0 });
+
+      renderCommandPalette();
+
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'End' });
+
+      expect(useCommandPaletteStore.getState().activeIndex).toBe(0);
+    });
   });
 });

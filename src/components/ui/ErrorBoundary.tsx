@@ -80,24 +80,25 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 function AppLevelFallback({ onReload }: { onReload: () => void }): ReactNode {
   return (
     <div
-      className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 dark:bg-gray-900"
+      className="flex min-h-screen flex-col items-center justify-center bg-secondary-50 px-4 dark:bg-secondary-900"
       role="alert"
       aria-live="assertive"
+      aria-atomic="true"
     >
       <div className="w-full max-w-md text-center">
         <div className="mb-6 text-6xl" aria-hidden="true">
           ⚠️
         </div>
-        <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 className="mb-2 text-2xl font-bold text-secondary-900 dark:text-secondary-100">
           Something went wrong
         </h1>
-        <p className="mb-6 text-gray-600 dark:text-gray-400">
+        <p className="mb-6 text-secondary-600 dark:text-secondary-400">
           An unexpected error occurred. Your uploaded files and input have been preserved. Please
           reload the page to continue.
         </p>
         <button
           onClick={onReload}
-          className="inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+          className="inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
         >
           Reload Page
         </button>
@@ -118,6 +119,7 @@ function FeatureLevelFallback({
       className="flex flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-8 dark:border-red-800 dark:bg-red-950"
       role="alert"
       aria-live="assertive"
+      aria-atomic="true"
     >
       <div className="mb-4 text-4xl" aria-hidden="true">
         ❌
@@ -130,12 +132,12 @@ function FeatureLevelFallback({
           {error.message}
         </p>
       )}
-      <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+      <p className="mb-4 text-sm text-secondary-600 dark:text-secondary-400">
         Your input and uploaded files have been preserved. Click retry to try again.
       </p>
       <button
         onClick={onRetry}
-        className="inline-flex items-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-red-950"
+        className="inline-flex items-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
       >
         Retry
       </button>
@@ -149,6 +151,7 @@ function ComponentLevelFallback({ error }: { error: Error | null }): ReactNode {
       className="rounded-md border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950"
       role="alert"
       aria-live="polite"
+      aria-atomic="true"
     >
       <div className="flex items-start gap-3">
         <span className="text-xl" aria-hidden="true">

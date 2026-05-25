@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { useCommandPaletteStore } from '../../store/command-palette';
+import { useRovingTabindex } from '../../hooks/useRovingTabindex';
 
 /**
  * Command Palette — a modal overlay for keyboard-driven navigation.
@@ -28,6 +29,7 @@ export function CommandPalette() {
     close,
     setQuery,
     moveSelection,
+    setActiveIndex,
     getActiveItem,
   } = useCommandPaletteStore();
 
@@ -38,6 +40,30 @@ export function CommandPalette() {
 
   // Animation state: starts false, transitions to true after mount to trigger CSS transitions
   const [animateIn, setAnimateIn] = useState(false);
+
+  const handleNavigate = useCallback(
+    (route: string) => {
+      close();
+      navigate(route);
+    },
+    [close, navigate],
+  );
+
+  // Roving tabindex for the results list
+  const {
+    getTabIndex,
+    getItemRef,
+    handleKeyDown: handleListKeyDown,
+  } = useRovingTabindex({
+    itemCount: filteredItems.length,
+    wrap: true,
+    onActivate: (index: number) => {
+      const item = filteredItems[index];
+      if (item) {
+        handleNavigate(item.route);
+      }
+    },
+  });
 
   // Trigger entrance animation after the portal renders
   useEffect(() => {
@@ -72,14 +98,6 @@ export function CommandPalette() {
     activeElement?.scrollIntoView({ block: 'nearest' });
   }, [isOpen, activeIndex]);
 
-  const handleNavigate = useCallback(
-    (route: string) => {
-      close();
-      navigate(route);
-    },
-    [close, navigate],
-  );
-
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       switch (e.key) {
@@ -95,6 +113,18 @@ export function CommandPalette() {
           e.preventDefault();
           moveSelection('up');
           break;
+        case 'Home':
+          e.preventDefault();
+          if (filteredItems.length > 0) {
+            setActiveIndex(0);
+          }
+          break;
+        case 'End':
+          e.preventDefault();
+          if (filteredItems.length > 0) {
+            setActiveIndex(filteredItems.length - 1);
+          }
+          break;
         case 'Enter': {
           e.preventDefault();
           const activeItem = getActiveItem();
@@ -105,7 +135,7 @@ export function CommandPalette() {
         }
       }
     },
-    [close, moveSelection, getActiveItem, handleNavigate],
+    [close, moveSelection, setActiveIndex, filteredItems.length, getActiveItem, handleNavigate],
   );
 
   const handleBackdropClick = useCallback(
@@ -196,16 +226,19 @@ export function CommandPalette() {
               role="listbox"
               aria-label="Available commands"
               className="py-2"
+              onKeyDown={handleListKeyDown}
             >
               {filteredItems.map((item, index) => (
                 <li
                   key={item.id}
                   id={`command-item-${item.id}`}
+                  ref={getItemRef(index)}
                   role="option"
                   aria-selected={index === activeIndex}
+                  tabIndex={getTabIndex(index)}
                   onClick={() => handleNavigate(item.route)}
                   className={[
-                    'flex cursor-pointer items-center gap-3 px-4 py-3 text-sm transition-colors',
+                    'flex cursor-pointer items-center gap-3 px-4 py-3 text-sm transition-colors outline-none',
                     index === activeIndex
                       ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
                       : 'text-text-light hover:bg-secondary-50 dark:text-text-dark dark:hover:bg-secondary-700/50',
@@ -233,6 +266,12 @@ export function CommandPalette() {
               ↑↓
             </kbd>{' '}
             navigate
+          </span>
+          <span>
+            <kbd className="rounded border border-secondary-300 px-1.5 py-0.5 font-mono text-[10px] dark:border-secondary-600">
+              Home/End
+            </kbd>{' '}
+            first/last
           </span>
           <span>
             <kbd className="rounded border border-secondary-300 px-1.5 py-0.5 font-mono text-[10px] dark:border-secondary-600">

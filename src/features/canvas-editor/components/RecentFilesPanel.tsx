@@ -66,12 +66,14 @@ export function RecentFilesPanel() {
   if (isLoading) {
     return (
       <div className="w-full">
-        <h3 className="text-sm font-medium text-gray-500 mb-3">Recent</h3>
+        <h2 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 mb-3">
+          Recent
+        </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="animate-pulse motion-reduce:animate-none rounded-lg bg-gray-100 h-[140px]"
+              className="animate-pulse motion-reduce:animate-none rounded-lg bg-secondary-100 dark:bg-secondary-800 h-[140px]"
             />
           ))}
         </div>
@@ -85,12 +87,14 @@ export function RecentFilesPanel() {
 
   return (
     <div className="w-full">
-      <h3 className="text-sm font-medium text-gray-500 mb-3">Recent</h3>
+      <h2 className="text-sm font-medium text-secondary-500 dark:text-secondary-400 mb-3">
+        Recent
+      </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {displayedFiles.map((entry) => (
           <div
             key={entry.id}
-            className="group relative flex flex-col rounded-lg border border-gray-200 bg-white overflow-hidden hover:border-blue-300 hover:shadow-md active:scale-[0.98] transition-all duration-150 motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 text-left cursor-pointer"
+            className="group relative flex flex-col rounded-lg border border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-800 overflow-hidden hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md active:scale-[0.98] transition-all duration-150 motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 text-left cursor-pointer"
             role="button"
             tabIndex={0}
             onClick={() => handleOpenFile(entry)}
@@ -103,7 +107,7 @@ export function RecentFilesPanel() {
             aria-label={`Open ${entry.name}`}
           >
             {/* Thumbnail */}
-            <div className="w-full h-[100px] bg-gray-50 flex items-center justify-center overflow-hidden">
+            <div className="w-full h-[100px] bg-secondary-50 dark:bg-secondary-900 flex items-center justify-center overflow-hidden">
               {entry.thumbnail ? (
                 <img
                   src={entry.thumbnail}
@@ -118,7 +122,7 @@ export function RecentFilesPanel() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  className="text-gray-300"
+                  className="text-secondary-300 dark:text-secondary-600"
                 >
                   <rect x="4" y="4" width="24" height="24" rx="2" />
                   <path d="M4 22l6-6 4 4 6-6 8 8" />
@@ -128,8 +132,10 @@ export function RecentFilesPanel() {
 
             {/* Info */}
             <div className="px-2 py-2 flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-800 truncate">{entry.name}</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
+              <p className="text-xs font-medium text-secondary-800 dark:text-secondary-100 truncate">
+                {entry.name}
+              </p>
+              <p className="text-[11px] text-secondary-400 dark:text-secondary-500 mt-0.5">
                 {formatRelativeTime(entry.lastOpened)}
               </p>
             </div>
@@ -137,7 +143,7 @@ export function RecentFilesPanel() {
             {/* Delete button (visible on hover) */}
             <button
               type="button"
-              className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 transition-all duration-150 motion-reduce:transition-none focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+              className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center rounded-full bg-white/80 dark:bg-secondary-800/80 backdrop-blur-sm text-secondary-400 dark:text-secondary-500 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-150 motion-reduce:transition-none focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               onClick={(e) => handleRemoveFile(e, entry.id)}
               aria-label={`Remove ${entry.name} from recent files`}
             >

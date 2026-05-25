@@ -133,17 +133,19 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
 
       {/* Panel */}
       <div
-        className="relative w-full max-w-lg max-h-[80vh] mx-4 bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-lg max-h-[80vh] mx-4 bg-white dark:bg-secondary-800 rounded-xl shadow-2xl overflow-hidden flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-label="Keyboard shortcuts"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900">Keyboard Shortcuts</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-secondary-100 dark:border-secondary-700">
+          <h2 className="text-lg font-semibold text-secondary-900 dark:text-secondary-100">
+            Keyboard Shortcuts
+          </h2>
           <button
             type="button"
-            className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-secondary-400 dark:text-secondary-500 hover:text-secondary-700 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             onClick={onClose}
             aria-label="Close shortcuts panel"
           >
@@ -165,14 +167,16 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
           {categories.map((category) => (
             <div key={category.name}>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              <h3 className="text-xs font-semibold text-secondary-500 dark:text-secondary-400 uppercase tracking-wider mb-2">
                 {category.name}
               </h3>
               <div className="space-y-1">
                 {category.shortcuts.map((shortcut) => (
                   <div key={shortcut.keys} className="flex items-center justify-between py-1.5">
-                    <span className="text-sm text-gray-700">{shortcut.description}</span>
-                    <kbd className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 border border-gray-200 text-xs font-mono text-gray-600">
+                    <span className="text-sm text-secondary-700 dark:text-secondary-200">
+                      {shortcut.description}
+                    </span>
+                    <kbd className="inline-flex items-center px-2 py-0.5 rounded bg-secondary-100 dark:bg-secondary-700 border border-secondary-200 dark:border-secondary-600 text-xs font-mono text-secondary-600 dark:text-secondary-300">
                       {shortcut.keys}
                     </kbd>
                   </div>
@@ -183,14 +187,17 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
-          <p className="text-xs text-gray-500">
-            Press <kbd className="px-1 py-0.5 rounded bg-gray-200 text-gray-600 font-mono">?</kbd>{' '}
+        <div className="px-6 py-3 border-t border-secondary-100 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900 flex items-center justify-between">
+          <p className="text-xs text-secondary-500 dark:text-secondary-400">
+            Press{' '}
+            <kbd className="px-1 py-0.5 rounded bg-secondary-200 dark:bg-secondary-700 text-secondary-600 dark:text-secondary-300 font-mono">
+              ?
+            </kbd>{' '}
             to toggle this panel
           </p>
           <button
             type="button"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             onClick={() => {
               useOnboardingStore.getState().resetTour();
               onClose();

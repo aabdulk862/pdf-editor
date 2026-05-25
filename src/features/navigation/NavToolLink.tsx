@@ -80,7 +80,7 @@ export const NavToolLink = forwardRef<HTMLAnchorElement, NavToolLinkProps>(funct
       className={({ isActive }) =>
         [
           'flex items-center gap-2 px-3 min-h-[44px] rounded-md text-sm transition-colors duration-200',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900',
           isActive
             ? 'border-l-[3px] border-primary-600 bg-primary-50 dark:bg-primary-900 text-primary-700 dark:text-primary-200'
             : 'border-l-[3px] border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',

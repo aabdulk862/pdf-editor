@@ -15,6 +15,8 @@ export interface EmptyStateProps {
   description?: string;
   /** Optional call-to-action button */
   action?: { label: string; onClick: () => void };
+  /** Heading level for the title (defaults to 2 for proper hierarchy under page h1) */
+  headingLevel?: 2 | 3 | 4;
 }
 
 // ---------------------------------------------------------------------------
@@ -109,7 +111,14 @@ export function NoRecentFilesIllustration() {
  *     action={{ label: "Upload PDF", onClick: handleUpload }}
  *   />
  */
-export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
+export function EmptyState({
+  icon,
+  title,
+  description,
+  action,
+  headingLevel = 2,
+}: EmptyStateProps) {
+  const HeadingTag = `h${headingLevel}` as const;
   return (
     <div
       data-testid="empty-state"
@@ -121,12 +130,12 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
         </div>
       )}
 
-      <h3
+      <HeadingTag
         className="text-lg font-semibold text-secondary-800 dark:text-secondary-100"
         data-testid="empty-state-title"
       >
         {title}
-      </h3>
+      </HeadingTag>
 
       {description && (
         <p

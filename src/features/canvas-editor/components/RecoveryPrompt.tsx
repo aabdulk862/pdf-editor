@@ -60,7 +60,7 @@ export function RecoveryPrompt({
       aria-modal="true"
       aria-labelledby="recovery-prompt-title"
     >
-      <div className="w-[calc(100%-2rem)] max-w-md bg-white rounded-lg shadow-xl animate-in fade-in duration-150 motion-reduce:animate-none">
+      <div className="w-[calc(100%-2rem)] max-w-md bg-white dark:bg-secondary-800 rounded-lg shadow-xl animate-in fade-in duration-150 motion-reduce:animate-none">
         {/* Header */}
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center gap-3 mb-3">
@@ -84,24 +84,32 @@ export function RecoveryPrompt({
                 <path d="M4.5 17.3V14H7.8" />
               </svg>
             </div>
-            <h2 id="recovery-prompt-title" className="text-lg font-semibold text-gray-800">
+            <h2
+              id="recovery-prompt-title"
+              className="text-lg font-semibold text-secondary-800 dark:text-secondary-100"
+            >
               Recover unsaved work?
             </h2>
           </div>
 
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-secondary-600 dark:text-secondary-400 leading-relaxed">
             We found an auto-saved version of{' '}
-            <span className="font-medium text-gray-800">&ldquo;{documentName}&rdquo;</span>.
+            <span className="font-medium text-secondary-800 dark:text-secondary-100">
+              &ldquo;{documentName}&rdquo;
+            </span>
+            .
           </p>
-          <p className="text-sm text-gray-500 mt-1">Last saved: {relativeTime}</p>
+          <p className="text-sm text-secondary-500 dark:text-secondary-400 mt-1">
+            Last saved: {relativeTime}
+          </p>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 mt-2 border-t border-gray-100">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 mt-2 border-t border-secondary-100 dark:border-secondary-700">
           <button
             type="button"
             onClick={onDiscard}
-            className="min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 active:bg-gray-200 transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600 transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             Discard
           </button>

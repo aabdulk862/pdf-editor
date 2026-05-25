@@ -114,7 +114,7 @@ export function MinimapOverlay() {
   return (
     <div
       ref={containerRef}
-      className="absolute bottom-4 right-4 border border-gray-300 bg-white rounded-md shadow-lg cursor-crosshair overflow-hidden z-50"
+      className="absolute bottom-4 right-4 border border-secondary-300 bg-white dark:bg-secondary-800 rounded-md shadow-lg cursor-crosshair overflow-hidden z-50"
       style={{ width: `${MINIMAP_WIDTH}px`, height: `${MINIMAP_HEIGHT}px` }}
       onClick={handleMinimapClick}
       role="navigation"
@@ -151,7 +151,7 @@ export function MinimapOverlay() {
                       ? 'bg-green-400/50'
                       : el.type === 'shape'
                         ? 'bg-purple-400/50'
-                        : 'bg-gray-400/50'
+                        : 'bg-secondary-400/50'
                 }`}
                 style={{
                   left: `${elLeft}px`,

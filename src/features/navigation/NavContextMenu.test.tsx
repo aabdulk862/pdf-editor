@@ -183,7 +183,9 @@ describe('NavContextMenu', () => {
     const items = screen.getAllByRole('menuitem');
     items.forEach((item) => {
       expect(item.className).toContain('focus-visible:outline-none');
-      expect(item.className).toContain('focus-visible:bg-gray-100');
+      expect(item.className).toContain('focus-visible:ring-2');
+      expect(item.className).toContain('focus-visible:ring-offset-2');
+      expect(item.className).toContain('focus-visible:ring-primary-500');
     });
   });
 });

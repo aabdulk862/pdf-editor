@@ -23,7 +23,9 @@ export const OpacitySlider: React.FC<OpacitySliderProps> = ({ value, onChange })
 
   return (
     <div className="flex flex-col gap-2" role="group" aria-label="Opacity control">
-      <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">Opacity</label>
+      <label className="text-xs font-medium text-secondary-600 dark:text-secondary-300 uppercase tracking-wide">
+        Opacity
+      </label>
       <div className="flex items-center gap-3">
         <input
           type="range"
@@ -32,7 +34,7 @@ export const OpacitySlider: React.FC<OpacitySliderProps> = ({ value, onChange })
           step={1}
           value={value}
           onChange={handleSliderChange}
-          className="flex-1 h-2 rounded-full appearance-none bg-gray-200 cursor-pointer
+          className="flex-1 h-2 rounded-full appearance-none bg-secondary-200 dark:bg-secondary-700 cursor-pointer
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5
             [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full
             [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:cursor-pointer
@@ -49,12 +51,12 @@ export const OpacitySlider: React.FC<OpacitySliderProps> = ({ value, onChange })
             step={1}
             value={value}
             onChange={handleInputChange}
-            className="w-14 min-h-[44px] px-2 text-sm text-center border border-gray-300 rounded-md
+            className="w-14 min-h-[44px] px-2 text-sm text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              hover:border-gray-400 transition-colors"
+              hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
             aria-label="Opacity value"
           />
-          <span className="text-xs text-gray-500">%</span>
+          <span className="text-xs text-secondary-500 dark:text-secondary-400">%</span>
         </div>
       </div>
     </div>

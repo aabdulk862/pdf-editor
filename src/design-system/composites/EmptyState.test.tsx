@@ -11,8 +11,14 @@ describe('EmptyState', () => {
       expect(screen.getByTestId('empty-state-title')).toHaveTextContent('No recent files');
     });
 
-    it('renders title with correct heading level (h3)', () => {
+    it('renders title with correct default heading level (h2)', () => {
       render(<EmptyState title="No items" />);
+      const title = screen.getByTestId('empty-state-title');
+      expect(title.tagName).toBe('H2');
+    });
+
+    it('renders title with custom heading level when specified', () => {
+      render(<EmptyState title="No items" headingLevel={3} />);
       const title = screen.getByTestId('empty-state-title');
       expect(title.tagName).toBe('H3');
     });

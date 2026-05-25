@@ -297,6 +297,13 @@ export const useCommandPaletteStore = create<CommandPaletteState>((set, get) => 
     set({ activeIndex: newIndex });
   },
 
+  setActiveIndex: (index: number) => {
+    const { filteredItems } = get();
+    if (filteredItems.length === 0) return;
+    const clamped = Math.max(0, Math.min(index, filteredItems.length - 1));
+    set({ activeIndex: clamped });
+  },
+
   getActiveItem: () => {
     const { activeIndex, filteredItems } = get();
     if (filteredItems.length === 0) return null;

@@ -191,12 +191,14 @@ export function CanvasEditorPage() {
     >
       {/* Landing view when no document is open */}
       {!document && (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gray-50 overflow-auto">
+        <div className="flex-1 flex flex-col items-center justify-center p-8 bg-secondary-50 dark:bg-secondary-900 overflow-auto">
           <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8">
             {/* Header */}
             <div className="text-center">
-              <h1 className="text-2xl font-semibold text-gray-800">Canvas Editor</h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <h1 className="text-2xl font-semibold text-secondary-800 dark:text-secondary-100">
+                Canvas Editor
+              </h1>
+              <p className="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
                 Create a new design or open a recent document
               </p>
             </div>
@@ -226,7 +228,7 @@ export function CanvasEditorPage() {
               </button>
               <button
                 type="button"
-                className="flex items-center gap-2 px-5 py-3 min-h-[44px] border border-gray-200 bg-white rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 active:bg-gray-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                className="flex items-center gap-2 px-5 py-3 min-h-[44px] border border-secondary-200 dark:border-secondary-600 bg-white dark:bg-secondary-800 rounded-lg text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-50 dark:hover:bg-secondary-700 hover:border-secondary-300 dark:hover:border-secondary-500 active:bg-secondary-100 dark:active:bg-secondary-600 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                 onClick={handleOpenTemplatePicker}
                 aria-label="Browse templates"
               >
@@ -277,7 +279,7 @@ export function CanvasEditorPage() {
             <button
               type="button"
               onClick={handleOpenExportDialog}
-              className="absolute bottom-4 left-4 z-30 flex items-center gap-2 px-4 py-2.5 bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-gray-200/60 text-sm font-medium text-gray-700 hover:bg-white hover:shadow-lg active:scale-[0.98] transition-all duration-200 motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="absolute bottom-4 left-4 z-30 flex items-center gap-2 px-4 py-2.5 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-lg shadow-md border border-secondary-200/60 dark:border-secondary-700/60 text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-white dark:hover:bg-secondary-800 hover:shadow-lg active:scale-[0.98] transition-all duration-200 motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-label="Export document"
             >
               <svg

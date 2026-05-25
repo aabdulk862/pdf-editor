@@ -47,12 +47,12 @@ export function ExportProgressSkeleton({
       </span>
 
       {/* Progress text */}
-      <p className="text-sm font-medium text-gray-700">
+      <p className="text-sm font-medium text-secondary-700 dark:text-secondary-200">
         Exporting page {currentPage} of {totalPages}
       </p>
 
       {/* Determinate progress bar */}
-      <div className="w-full max-w-xs h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full max-w-xs h-2 bg-secondary-200 dark:bg-secondary-700 rounded-full overflow-hidden">
         <div
           className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none"
           style={{ width: `${progress}%` }}
@@ -65,7 +65,9 @@ export function ExportProgressSkeleton({
 
       {/* Extended message for long operations */}
       {showExtendedMessage && (
-        <p className="text-xs text-gray-500 mt-1">Large file — this may take a moment</p>
+        <p className="text-xs text-secondary-500 dark:text-secondary-400 mt-1">
+          Large file — this may take a moment
+        </p>
       )}
     </div>
   );

@@ -73,7 +73,7 @@ export function DownloadHistoryPanel() {
         <button
           type="button"
           onClick={clearDownloads}
-          className="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-secondary-600 dark:text-secondary-300 hover:text-error-600 dark:hover:text-error-400 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="min-h-[44px] min-w-[44px] px-3 py-2 text-sm font-medium text-secondary-600 dark:text-secondary-300 hover:text-error-600 dark:hover:text-error-400 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
           aria-label="Clear download history"
         >
           Clear All
@@ -92,7 +92,7 @@ export function DownloadHistoryPanel() {
                 aria-disabled={!available}
                 className={[
                   'w-full text-left px-3 py-2.5 rounded-md transition-colors duration-150 min-h-[44px]',
-                  'focus:outline-none focus:ring-2 focus:ring-primary-500',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900',
                   available
                     ? 'hover:bg-secondary-100 dark:hover:bg-secondary-800 cursor-pointer'
                     : 'opacity-50 cursor-not-allowed',

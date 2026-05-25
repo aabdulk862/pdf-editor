@@ -26,7 +26,7 @@ export function TemplateLoadSkeleton({
       aria-busy="true"
     >
       {/* Template thumbnail with shimmer overlay */}
-      <div className="relative w-[180px] h-[240px] rounded-lg overflow-hidden shadow-md bg-gray-100">
+      <div className="relative w-[180px] h-[240px] rounded-lg overflow-hidden shadow-md bg-secondary-100 dark:bg-secondary-700">
         {/* Thumbnail image (if available) */}
         {thumbnailSrc && (
           <img
@@ -42,11 +42,15 @@ export function TemplateLoadSkeleton({
       </div>
 
       {/* Loading text */}
-      <p className="text-sm font-medium text-gray-600">Loading template...</p>
+      <p className="text-sm font-medium text-secondary-600 dark:text-secondary-300">
+        Loading template...
+      </p>
 
       {/* Extended message */}
       {showExtendedMessage && (
-        <p className="text-xs text-gray-500">Large file — this may take a moment</p>
+        <p className="text-xs text-secondary-500 dark:text-secondary-400">
+          Large file — this may take a moment
+        </p>
       )}
 
       {/* Shimmer animation styles */}

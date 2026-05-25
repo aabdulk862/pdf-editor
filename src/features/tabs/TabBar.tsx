@@ -113,7 +113,7 @@ export function TabBar() {
                     closeTab(tab.id);
                   }
                 }}
-                className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-sm opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-secondary-200 dark:hover:bg-secondary-600 transition-opacity duration-normal"
+                className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-sm opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-secondary-200 dark:hover:bg-secondary-600 transition-opacity duration-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900 focus-visible:opacity-100"
               >
                 <svg
                   className="w-3 h-3"

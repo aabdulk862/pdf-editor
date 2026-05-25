@@ -41,9 +41,9 @@ export function OcrResultsPanel({
 
   return (
     <div className="w-full rounded-lg bg-white p-4 shadow-lg dark:bg-secondary-800">
-      <h3 className="text-base font-semibold text-text-dark dark:text-secondary-100">
+      <h2 className="text-base font-semibold text-text-dark dark:text-secondary-100">
         OCR Results
-      </h3>
+      </h2>
 
       <dl className="mt-3 grid grid-cols-3 gap-3">
         <div className="rounded-md bg-secondary-50 px-3 py-2 dark:bg-secondary-700">

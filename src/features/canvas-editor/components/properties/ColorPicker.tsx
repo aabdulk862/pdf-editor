@@ -246,15 +246,17 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   return (
     <div className="flex flex-col gap-3" role="group" aria-label={label ?? 'Color picker'}>
       {label && (
-        <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">{label}</label>
+        <label className="text-xs font-medium text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
+          {label}
+        </label>
       )}
 
       {/* Visual spectrum toggle */}
       <button
         type="button"
         onClick={() => setIsSpectrumOpen(!isSpectrumOpen)}
-        className="min-h-[44px] px-3 py-2 text-xs text-gray-600 border border-gray-300 rounded-md
-          hover:bg-gray-50 active:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500
+        className="min-h-[44px] px-3 py-2 text-xs text-secondary-600 dark:text-secondary-300 border border-secondary-300 dark:border-secondary-600 rounded-md
+          hover:bg-secondary-50 dark:hover:bg-secondary-700 active:bg-secondary-100 dark:active:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-blue-500
           transition-colors flex items-center justify-between"
         aria-expanded={isSpectrumOpen}
         aria-label="Toggle visual color spectrum"
@@ -276,7 +278,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           {/* Saturation/Lightness gradient */}
           <div
             ref={spectrumRef}
-            className="relative w-full h-36 rounded-md cursor-crosshair border border-gray-200 touch-none"
+            className="relative w-full h-36 rounded-md cursor-crosshair border border-secondary-200 dark:border-secondary-600 touch-none"
             style={{
               background: `
                 linear-gradient(to bottom, transparent, #000),
@@ -304,7 +306,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           {/* Hue bar */}
           <div
             ref={hueBarRef}
-            className="relative w-full h-4 rounded-full cursor-pointer border border-gray-200 touch-none"
+            className="relative w-full h-4 rounded-full cursor-pointer border border-secondary-200 dark:border-secondary-600 touch-none"
             style={{
               background:
                 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)',
@@ -336,7 +338,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           <button
             key={preset}
             type="button"
-            className="min-w-[44px] min-h-[44px] rounded-md border border-gray-200 transition-all motion-reduce:transition-none motion-reduce:transform-none
+            className="min-w-[44px] min-h-[44px] rounded-md border border-secondary-200 dark:border-secondary-600 transition-all motion-reduce:transition-none motion-reduce:transform-none
               hover:scale-110 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500
               active:scale-95"
             style={{ backgroundColor: preset }}
@@ -350,7 +352,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       {/* Current color preview + hex input */}
       <div className="flex items-center gap-2">
         <div
-          className="w-11 h-11 rounded-md border border-gray-300 shrink-0"
+          className="w-11 h-11 rounded-md border border-secondary-300 dark:border-secondary-600 shrink-0"
           style={{ backgroundColor: color }}
           aria-label={`Current color: ${color}`}
         />
@@ -359,9 +361,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           value={hexInput}
           onChange={handleHexChange}
           onBlur={handleHexBlur}
-          className="flex-1 min-h-[44px] px-3 text-sm font-mono border border-gray-300 rounded-md
+          className="flex-1 min-h-[44px] px-3 text-sm font-mono border border-secondary-300 dark:border-secondary-600 rounded-md
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-            hover:border-gray-400 transition-colors"
+            hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
           placeholder="#000000"
           aria-label="Hex color value"
           maxLength={9}
@@ -390,14 +392,16 @@ interface RgbSliderProps {
 const RgbSlider: React.FC<RgbSliderProps> = ({ label, value, onChange }) => {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs font-medium text-gray-500 w-4">{label}</span>
+      <span className="text-xs font-medium text-secondary-500 dark:text-secondary-400 w-4">
+        {label}
+      </span>
       <input
         type="range"
         min={0}
         max={255}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="flex-1 h-2 rounded-full appearance-none bg-gray-200 cursor-pointer
+        className="flex-1 h-2 rounded-full appearance-none bg-secondary-200 dark:bg-secondary-600 cursor-pointer
           [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4
           [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full
           [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:cursor-pointer
@@ -411,9 +415,9 @@ const RgbSlider: React.FC<RgbSliderProps> = ({ label, value, onChange }) => {
         max={255}
         value={value}
         onChange={(e) => onChange(Math.max(0, Math.min(255, Number(e.target.value))))}
-        className="w-14 min-h-[44px] px-2 text-xs text-center border border-gray-300 rounded-md
+        className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-          hover:border-gray-400 transition-colors"
+          hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
         aria-label={`${label} value`}
       />
     </div>

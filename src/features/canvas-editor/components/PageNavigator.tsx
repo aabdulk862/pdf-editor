@@ -25,12 +25,12 @@ export function PageNavigator() {
 
   return (
     <aside
-      className="flex flex-col w-[140px] bg-gray-900 border-r border-gray-700 overflow-y-auto py-3 px-2 gap-2"
+      className="flex flex-col w-[140px] bg-secondary-900 border-r border-secondary-700 overflow-y-auto py-3 px-2 gap-2"
       aria-label="Page navigator"
       data-testid="page-navigator"
     >
       {/* Page count header */}
-      <div className="text-xs text-gray-400 text-center pb-1 border-b border-gray-700 mb-1">
+      <div className="text-xs text-secondary-400 text-center pb-1 border-b border-secondary-700 mb-1">
         {pages.length} / {MAX_PAGES}
       </div>
       {pages.map((page, index) => {
@@ -44,7 +44,9 @@ export function PageNavigator() {
         return (
           <div key={page.id} className="relative group">
             {/* Page number label */}
-            <span className="text-[10px] text-gray-400 mb-0.5 block text-center">{index + 1}</span>
+            <span className="text-[10px] text-secondary-400 mb-0.5 block text-center">
+              {index + 1}
+            </span>
 
             {/* Thumbnail button */}
             <button
@@ -53,7 +55,7 @@ export function PageNavigator() {
               className={`relative w-full rounded-md overflow-hidden transition-all duration-150 motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-blue-400 outline-none ${
                 isActive
                   ? 'ring-2 ring-blue-500 shadow-md'
-                  : 'ring-1 ring-gray-600 hover:ring-gray-400'
+                  : 'ring-1 ring-secondary-600 hover:ring-secondary-400'
               }`}
               style={{ height: `${Math.min(thumbHeight, 160)}px` }}
               aria-label={`Page ${index + 1}${isActive ? ' (active)' : ''}`}
@@ -86,7 +88,7 @@ export function PageNavigator() {
                                 ? 'bg-green-400/40'
                                 : el.type === 'shape'
                                   ? 'bg-purple-400/40'
-                                  : 'bg-gray-400/40'
+                                  : 'bg-secondary-400/40'
                           }`}
                           style={{
                             left: `${left}px`,
@@ -99,7 +101,7 @@ export function PageNavigator() {
                     })}
                   </div>
                 ) : (
-                  <span className="text-gray-400 text-[9px]">Empty</span>
+                  <span className="text-secondary-400 text-[9px]">Empty</span>
                 )}
               </div>
             </button>
@@ -131,8 +133,8 @@ export function PageNavigator() {
         disabled={pages.length >= MAX_PAGES}
         className={`mt-2 w-full min-h-[44px] rounded-md border border-dashed text-sm flex items-center justify-center transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-blue-400 outline-none ${
           pages.length >= MAX_PAGES
-            ? 'border-gray-700 text-gray-600 cursor-not-allowed'
-            : 'border-gray-500 text-gray-400 hover:border-blue-400 hover:text-blue-400'
+            ? 'border-secondary-700 text-secondary-600 cursor-not-allowed'
+            : 'border-secondary-500 text-secondary-400 hover:border-blue-400 hover:text-blue-400'
         }`}
         aria-label={
           pages.length >= MAX_PAGES

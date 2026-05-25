@@ -152,9 +152,9 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
               element={selectedElement as TextElement}
               onChange={handleElementUpdate as (updates: Partial<TextElement>) => void}
             />
-            <hr className="border-gray-200" />
+            <hr className="border-secondary-200 dark:border-secondary-700" />
             <OpacitySlider value={selectedElement.opacity} onChange={handleOpacityChange} />
-            <hr className="border-gray-200" />
+            <hr className="border-secondary-200 dark:border-secondary-700" />
             <ShadowControls shadow={selectedElement.shadow} onChange={handleShadowChange} />
           </>
         );
@@ -166,9 +166,9 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
               element={selectedElement as ShapeElement}
               onChange={handleElementUpdate as (updates: Partial<ShapeElement>) => void}
             />
-            <hr className="border-gray-200" />
+            <hr className="border-secondary-200 dark:border-secondary-700" />
             <OpacitySlider value={selectedElement.opacity} onChange={handleOpacityChange} />
-            <hr className="border-gray-200" />
+            <hr className="border-secondary-200 dark:border-secondary-700" />
             <ShadowControls shadow={selectedElement.shadow} onChange={handleShadowChange} />
           </>
         );
@@ -180,9 +180,9 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
               element={selectedElement as ImageElement}
               onChange={handleElementUpdate as (updates: Partial<ImageElement>) => void}
             />
-            <hr className="border-gray-200" />
+            <hr className="border-secondary-200 dark:border-secondary-700" />
             <OpacitySlider value={selectedElement.opacity} onChange={handleOpacityChange} />
-            <hr className="border-gray-200" />
+            <hr className="border-secondary-200 dark:border-secondary-700" />
             <ShadowControls shadow={selectedElement.shadow} onChange={handleShadowChange} />
           </>
         );
@@ -196,7 +196,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
     <>
       {/* Desktop panel: fixed right side, 320px wide */}
       <aside
-        className={`hidden md:flex fixed right-0 top-0 h-full w-80 bg-white border-l border-gray-200
+        className={`hidden md:flex fixed right-0 top-0 h-full w-80 bg-white dark:bg-secondary-900 border-l border-secondary-200 dark:border-secondary-700
           shadow-lg flex-col z-40 transition-transform duration-200 ease-out motion-reduce:transition-none
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         aria-label="Properties panel"
@@ -204,8 +204,8 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
         data-testid="properties-panel"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-          <h2 className="text-sm font-semibold text-gray-800">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-secondary-200 dark:border-secondary-700">
+          <h2 className="text-sm font-semibold text-secondary-800 dark:text-secondary-100">
             {selectedElement
               ? `${selectedElement.type.charAt(0).toUpperCase()}${selectedElement.type.slice(1)} Properties`
               : 'Page Settings'}
@@ -214,11 +214,17 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
             type="button"
             onClick={onClose}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
-              text-gray-400 hover:text-gray-600 hover:bg-gray-100 active:bg-gray-200
+              text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600
               focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             aria-label="Close properties panel"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -238,7 +244,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
       {/* Mobile bottom sheet: viewports < 768px */}
       {isOpen && (
         <aside
-          className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-white border-t border-gray-200
+          className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-secondary-900 border-t border-secondary-200 dark:border-secondary-700
             shadow-[0_-4px_20px_rgba(0,0,0,0.1)] rounded-t-2xl transition-transform duration-200 ease-out motion-reduce:transition-none"
           style={{
             maxHeight: '50vh',
@@ -256,12 +262,12 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
             role="separator"
             aria-label="Drag to dismiss"
           >
-            <div className="w-10 h-1 bg-gray-300 rounded-full" />
+            <div className="w-10 h-1 bg-secondary-300 dark:bg-secondary-600 rounded-full" />
           </div>
 
           {/* Header */}
           <div className="flex items-center justify-between px-4 pb-2">
-            <h2 className="text-sm font-semibold text-gray-800">
+            <h2 className="text-sm font-semibold text-secondary-800 dark:text-secondary-100">
               {selectedElement
                 ? `${selectedElement.type.charAt(0).toUpperCase()}${selectedElement.type.slice(1)} Properties`
                 : 'Page Settings'}
@@ -270,11 +276,17 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
               type="button"
               onClick={onClose}
               className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
-                text-gray-400 hover:text-gray-600 hover:bg-gray-100
+                text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700
                 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               aria-label="Close properties panel"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

@@ -114,9 +114,9 @@ export function ContextualHelpTooltip({
         >
           {/* Header with title and close button */}
           <div className="flex items-start justify-between gap-2">
-            <h4 className="text-sm font-semibold text-secondary-900 dark:text-secondary-100">
+            <p className="text-sm font-semibold text-secondary-900 dark:text-secondary-100">
               {title}
-            </h4>
+            </p>
             <button
               type="button"
               onClick={handleDismiss}

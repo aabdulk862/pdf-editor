@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { DEFAULT_TEXT_WIDTH } from '../constants';
 import { useCanvasStore } from '../store/canvas-store';
-import type { CanvasElement, CanvasTool, ShapeElement, TextElement } from '../types';
+import type { CanvasTool, ShapeElement, TextElement } from '../types';
 
 interface EmptyStateProps {
   /** Callback to open the template picker modal */
@@ -175,7 +175,7 @@ export function EmptyState({ onOpenTemplatePicker }: EmptyStateProps) {
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
       <div className="flex flex-col items-center gap-6 pointer-events-auto">
         {/* Large canvas icon */}
-        <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-gray-100 text-gray-400">
+        <div className="flex items-center justify-center w-20 h-20 rounded-2xl bg-secondary-100 dark:bg-secondary-800 text-secondary-400 dark:text-secondary-500">
           <svg
             width="40"
             height="40"
@@ -198,8 +198,12 @@ export function EmptyState({ onOpenTemplatePicker }: EmptyStateProps) {
 
         {/* Heading and subtitle */}
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-800">Start designing</h2>
-          <p className="mt-1 text-sm text-gray-500">Add elements to your canvas to get started</p>
+          <h2 className="text-xl font-semibold text-secondary-800 dark:text-secondary-100">
+            Start designing
+          </h2>
+          <p className="mt-1 text-sm text-secondary-500 dark:text-secondary-400">
+            Add elements to your canvas to get started
+          </p>
         </div>
 
         {/* Quick-action buttons */}
@@ -208,11 +212,11 @@ export function EmptyState({ onOpenTemplatePicker }: EmptyStateProps) {
             <button
               key={action.label}
               type="button"
-              className="flex items-center gap-2 px-4 min-h-[44px] border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 hover:text-gray-900 active:bg-gray-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              className="flex items-center gap-2 px-4 min-h-[44px] border border-secondary-200 dark:border-secondary-600 rounded-lg text-sm font-medium text-secondary-700 dark:text-secondary-200 bg-white dark:bg-secondary-800 hover:bg-secondary-50 dark:hover:bg-secondary-700 hover:border-secondary-300 dark:hover:border-secondary-500 hover:text-secondary-900 dark:hover:text-secondary-100 active:bg-secondary-100 dark:active:bg-secondary-600 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               onClick={() => handleAction(action)}
               aria-label={action.label}
             >
-              <span className="text-gray-500">{action.icon}</span>
+              <span className="text-secondary-500 dark:text-secondary-400">{action.icon}</span>
               {action.label}
             </button>
           ))}

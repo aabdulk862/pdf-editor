@@ -319,6 +319,7 @@ export function PreviewPanel({
           <span
             className="text-sm font-medium text-text-light dark:text-text-dark min-w-[48px] text-center"
             aria-live="polite"
+            aria-atomic="true"
           >
             {Math.round(zoom * 100)}%
           </span>

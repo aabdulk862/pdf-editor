@@ -258,7 +258,7 @@ export function OnboardingTour() {
       {/* Tooltip card */}
       <div
         ref={tooltipRef}
-        className="absolute w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-5 transition-all duration-300 motion-reduce:transition-none"
+        className="absolute w-80 bg-white dark:bg-secondary-800 rounded-xl shadow-2xl border border-secondary-200 dark:border-secondary-700 p-5 transition-all duration-300 motion-reduce:transition-none"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
@@ -271,7 +271,7 @@ export function OnboardingTour() {
         <button
           type="button"
           onClick={skipTour}
-          className="absolute top-3 right-3 flex items-center justify-center w-7 h-7 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="absolute top-3 right-3 flex items-center justify-center w-7 h-7 rounded-md text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           aria-label="Close tour"
         >
           <svg
@@ -288,17 +288,23 @@ export function OnboardingTour() {
         </button>
 
         {/* Step indicator */}
-        <div className="text-xs text-gray-400 mb-2">
+        <div className="text-xs text-secondary-400 dark:text-secondary-500 mb-2">
           Step {currentStep + 1} of {totalSteps}
         </div>
 
         {/* Step title */}
-        <h3 id="onboarding-step-title" className="text-base font-semibold text-gray-900 mb-1.5">
+        <p
+          id="onboarding-step-title"
+          className="text-base font-semibold text-secondary-900 dark:text-secondary-100 mb-1.5"
+        >
           {step.title}
-        </h3>
+        </p>
 
         {/* Step description */}
-        <p id="onboarding-step-description" className="text-sm text-gray-600 leading-relaxed mb-5">
+        <p
+          id="onboarding-step-description"
+          className="text-sm text-secondary-600 dark:text-secondary-300 leading-relaxed mb-5"
+        >
           {step.description}
         </p>
 
@@ -307,7 +313,7 @@ export function OnboardingTour() {
           <button
             type="button"
             onClick={skipTour}
-            className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-2 py-1"
+            className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-2 py-1"
           >
             Skip
           </button>
@@ -327,7 +333,7 @@ export function OnboardingTour() {
             <div
               key={i}
               className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
-                i === currentStep ? 'bg-blue-500' : 'bg-gray-300'
+                i === currentStep ? 'bg-blue-500' : 'bg-secondary-300 dark:bg-secondary-600'
               }`}
             />
           ))}

@@ -332,7 +332,7 @@ function DetectionSummary({
 }): JSX.Element {
   return (
     <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
-      <h3 className="text-sm font-medium text-text-light dark:text-text-dark">Page Analysis</h3>
+      <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Page Analysis</h2>
       <div className="mt-2 grid grid-cols-3 gap-2 text-center">
         <div>
           <p className="text-lg font-semibold text-text-light dark:text-text-dark">{totalPages}</p>
