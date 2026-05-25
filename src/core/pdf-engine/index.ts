@@ -36,6 +36,7 @@ export interface TextOverlay {
 export interface IPdfEngine {
   load(data: ArrayBuffer, password?: string): Promise<PdfDocument>;
   save(doc: PdfDocument): Promise<ArrayBuffer>;
+  getPageCount(data: ArrayBuffer): Promise<number>;
   rotatePages(data: ArrayBuffer, pages: number[], angle: 90 | 180 | 270): Promise<OperationResult>;
   deletePages(data: ArrayBuffer, pages: number[]): Promise<OperationResult>;
   reorderPages(data: ArrayBuffer, newOrder: number[]): Promise<OperationResult>;

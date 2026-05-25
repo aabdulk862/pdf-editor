@@ -3,9 +3,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '../../../components/ui/Button';
 import { FileUploadZone } from '../../../components/ui/FileUploadZone';
 import { useToastStore } from '../../../store/toast';
+import { getPdfWorkerClient } from '../../../workers/pdf-worker-client';
 import type { LetterheadPageTarget, LetterheadTemplate } from '../types';
 import { useLetterheadStore } from '../store/letterhead-store';
-import { applyLetterhead, exportLetterheadAsPdf } from '../utils/letterhead-renderer';
 import { LetterheadApplyModal } from './LetterheadApplyModal';
 import { LetterheadEditor } from './LetterheadEditor';
 import { LetterheadPreview } from './LetterheadPreview';
@@ -123,11 +123,11 @@ export function LetterheadPage(): JSX.Element {
       setPdfData(data);
       setPdfFileName(file.name);
 
-      // Try to get page count from pdf-lib
+      // Get page count via the worker to keep the main thread unblocked
       try {
-        const { PDFDocument } = await import('pdf-lib');
-        const doc = await PDFDocument.load(data);
-        setPdfPageCount(doc.getPageCount());
+        const client = getPdfWorkerClient({ onError: () => {} });
+        const count = await client.getPageCount(data);
+        setPdfPageCount(count);
       } catch {
         setPdfPageCount(1);
       }
@@ -151,7 +151,8 @@ export function LetterheadPage(): JSX.Element {
 
     setIsApplying(true);
     try {
-      const result = await applyLetterhead(pdfData, lastUsedTemplate, { type: 'first' });
+      const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
+      const result = await client.applyLetterhead(pdfData, lastUsedTemplate, { type: 'first' });
       downloadPdf(result, pdfFileName, '_letterhead');
       addToast('Letterhead applied to first page successfully.', 'success');
     } catch {
@@ -168,7 +169,8 @@ export function LetterheadPage(): JSX.Element {
       setIsApplyModalOpen(false);
       setIsApplying(true);
       try {
-        const result = await applyLetterhead(pdfData, activeTemplate, target);
+        const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
+        const result = await client.applyLetterhead(pdfData, activeTemplate, target);
         downloadPdf(result, pdfFileName, '_letterhead');
         addToast('Letterhead applied successfully.', 'success');
       } catch {
@@ -185,7 +187,8 @@ export function LetterheadPage(): JSX.Element {
 
     setIsExporting(true);
     try {
-      const result = await exportLetterheadAsPdf(activeTemplate);
+      const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
+      const result = await client.exportLetterheadAsPdf(activeTemplate);
       downloadPdf(result, activeTemplate.name, '_letterhead');
       addToast('Letterhead exported as PDF.', 'success');
     } catch {

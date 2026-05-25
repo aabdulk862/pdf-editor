@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import { useDownloadStore } from '@/store/downloads';
@@ -113,9 +112,8 @@ export function useSplit(): UseSplitReturn {
       try {
         const arrayBuffer = await file.arrayBuffer();
 
-        // Load the PDF to get page count
-        const pdfDoc = await PDFDocument.load(arrayBuffer);
-        const count = pdfDoc.getPageCount();
+        // Get page count via the worker to keep the main thread unblocked
+        const count = await workerClientRef.current.getPageCount(arrayBuffer);
 
         setPdfData(arrayBuffer);
         setPdfName(file.name);

@@ -44,7 +44,10 @@ export type PdfWorkerOperation =
   | 'fillFormFields'
   | 'encrypt'
   | 'decrypt'
-  | 'redact';
+  | 'redact'
+  | 'getPageCount'
+  | 'applyLetterhead'
+  | 'exportLetterheadAsPdf';
 
 export interface PdfWorkerRequestBase {
   id: string;
@@ -181,6 +184,27 @@ export interface RedactRequest extends PdfWorkerRequestBase {
   payload: { data: ArrayBuffer; regions: RedactRegion[] };
 }
 
+export interface GetPageCountRequest extends PdfWorkerRequestBase {
+  operation: 'getPageCount';
+  payload: { data: ArrayBuffer };
+}
+
+export interface ApplyLetterheadRequest extends PdfWorkerRequestBase {
+  operation: 'applyLetterhead';
+  payload: {
+    data: ArrayBuffer;
+    template: unknown; // LetterheadTemplate (serialized)
+    target: unknown; // LetterheadPageTarget (serialized)
+  };
+}
+
+export interface ExportLetterheadAsPdfRequest extends PdfWorkerRequestBase {
+  operation: 'exportLetterheadAsPdf';
+  payload: {
+    template: unknown; // LetterheadTemplate (serialized)
+  };
+}
+
 export type PdfWorkerRequest =
   | MergeRequest
   | SplitByRangesRequest
@@ -207,14 +231,24 @@ export type PdfWorkerRequest =
   | FillFormFieldsRequest
   | EncryptRequest
   | DecryptRequest
-  | RedactRequest;
+  | RedactRequest
+  | GetPageCountRequest
+  | ApplyLetterheadRequest
+  | ExportLetterheadAsPdfRequest;
 
 // --- Response types ---
 
 export interface PdfWorkerResponseSuccess {
   id: string;
   success: true;
-  result: OperationResult | OperationResult[] | PdfMetadata | Bookmark[] | FormField[];
+  result:
+    | OperationResult
+    | OperationResult[]
+    | PdfMetadata
+    | Bookmark[]
+    | FormField[]
+    | number
+    | ArrayBuffer;
 }
 
 export interface PdfWorkerResponseError {

@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -77,9 +76,9 @@ export function BookmarksPage(): JSX.Element {
           const existingBookmarks = await client.getBookmarks(data);
           setBookmarks(existingBookmarks);
 
-          // Get page count from the PDF
-          const pdfDoc = await PDFDocument.load(data);
-          setPageCount(pdfDoc.getPageCount());
+          // Get page count via the worker to keep the main thread unblocked
+          const count = await client.getPageCount(data);
+          setPageCount(count);
         } catch {
           toast.error('Failed to read PDF bookmarks.');
         } finally {

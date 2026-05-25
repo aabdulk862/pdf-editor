@@ -582,6 +582,11 @@ export class PdfEngine implements IPdfEngine {
     }
   }
 
+  async getPageCount(data: ArrayBuffer): Promise<number> {
+    const pdfDoc = await PDFDocument.load(data);
+    return pdfDoc.getPageCount();
+  }
+
   async compress(data: ArrayBuffer): Promise<OperationResult> {
     try {
       const pdfDoc = await PDFDocument.load(data, {

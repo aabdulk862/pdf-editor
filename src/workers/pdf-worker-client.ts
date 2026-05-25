@@ -4,7 +4,7 @@
  * Handles worker errors with graceful fallback to main-thread execution.
  */
 
-import { PdfEngine } from '@/core/pdf-engine/operations';
+import type { PdfEngine } from '@/core/pdf-engine/operations';
 import type { PdfWorkerRequest, PdfWorkerResponse, PdfWorkerOperation } from './pdf-worker.types';
 import type {
   PageRange,
@@ -18,6 +18,7 @@ import type {
 import type { PdfMetadata, Bookmark, FormField } from '@/types/pdf';
 import type { AnnotationData } from '@/types/annotations';
 import type { ImageFile, RedactRegion, TextOverlay } from '@/core/pdf-engine/index';
+import type { LetterheadTemplate, LetterheadPageTarget } from '@/features/letterhead/types';
 
 type PendingRequest = {
   resolve: (value: PdfWorkerResponse) => void;
@@ -88,8 +89,9 @@ export class PdfWorkerClient {
     return crypto.randomUUID();
   }
 
-  private getFallbackEngine(): PdfEngine {
+  private async getFallbackEngine(): Promise<PdfEngine> {
     if (!this.fallbackEngine) {
+      const { PdfEngine } = await import('@/core/pdf-engine/operations');
       this.fallbackEngine = new PdfEngine();
     }
     return this.fallbackEngine;
@@ -162,14 +164,14 @@ export class PdfWorkerClient {
   // --- Public API ---
 
   async merge(documents: ArrayBuffer[]): Promise<OperationResult> {
-    return this.executeWithFallback('merge', { documents }, () =>
-      this.getFallbackEngine().merge(documents),
+    return this.executeWithFallback('merge', { documents }, async () =>
+      (await this.getFallbackEngine()).merge(documents),
     );
   }
 
   async splitByRanges(data: ArrayBuffer, ranges: PageRange[]): Promise<OperationResult[]> {
-    return this.executeWithFallback('splitByRanges', { data, ranges }, () =>
-      this.getFallbackEngine().splitByRanges(data, ranges),
+    return this.executeWithFallback('splitByRanges', { data, ranges }, async () =>
+      (await this.getFallbackEngine()).splitByRanges(data, ranges),
     );
   }
 
@@ -178,20 +180,20 @@ export class PdfWorkerClient {
     pages: number[],
     angle: 90 | 180 | 270,
   ): Promise<OperationResult> {
-    return this.executeWithFallback('rotatePages', { data, pages, angle }, () =>
-      this.getFallbackEngine().rotatePages(data, pages, angle),
+    return this.executeWithFallback('rotatePages', { data, pages, angle }, async () =>
+      (await this.getFallbackEngine()).rotatePages(data, pages, angle),
     );
   }
 
   async deletePages(data: ArrayBuffer, pages: number[]): Promise<OperationResult> {
-    return this.executeWithFallback('deletePages', { data, pages }, () =>
-      this.getFallbackEngine().deletePages(data, pages),
+    return this.executeWithFallback('deletePages', { data, pages }, async () =>
+      (await this.getFallbackEngine()).deletePages(data, pages),
     );
   }
 
   async reorderPages(data: ArrayBuffer, newOrder: number[]): Promise<OperationResult> {
-    return this.executeWithFallback('reorderPages', { data, newOrder }, () =>
-      this.getFallbackEngine().reorderPages(data, newOrder),
+    return this.executeWithFallback('reorderPages', { data, newOrder }, async () =>
+      (await this.getFallbackEngine()).reorderPages(data, newOrder),
     );
   }
 
@@ -200,104 +202,104 @@ export class PdfWorkerClient {
     pages: number[],
     copies: number,
   ): Promise<OperationResult> {
-    return this.executeWithFallback('duplicatePages', { data, pages, copies }, () =>
-      this.getFallbackEngine().duplicatePages(data, pages, copies),
+    return this.executeWithFallback('duplicatePages', { data, pages, copies }, async () =>
+      (await this.getFallbackEngine()).duplicatePages(data, pages, copies),
     );
   }
 
   async addPageNumbers(data: ArrayBuffer, config: PageNumberConfig): Promise<OperationResult> {
-    return this.executeWithFallback('addPageNumbers', { data, config }, () =>
-      this.getFallbackEngine().addPageNumbers(data, config),
+    return this.executeWithFallback('addPageNumbers', { data, config }, async () =>
+      (await this.getFallbackEngine()).addPageNumbers(data, config),
     );
   }
 
   async addHeadersFooters(data: ArrayBuffer, config: HeaderFooterConfig): Promise<OperationResult> {
-    return this.executeWithFallback('addHeadersFooters', { data, config }, () =>
-      this.getFallbackEngine().addHeadersFooters(data, config),
+    return this.executeWithFallback('addHeadersFooters', { data, config }, async () =>
+      (await this.getFallbackEngine()).addHeadersFooters(data, config),
     );
   }
 
   async addWatermark(data: ArrayBuffer, config: WatermarkConfig): Promise<OperationResult> {
-    return this.executeWithFallback('addWatermark', { data, config }, () =>
-      this.getFallbackEngine().addWatermark(data, config),
+    return this.executeWithFallback('addWatermark', { data, config }, async () =>
+      (await this.getFallbackEngine()).addWatermark(data, config),
     );
   }
 
   async addTextOverlay(data: ArrayBuffer, overlays: TextOverlay[]): Promise<OperationResult> {
-    return this.executeWithFallback('addTextOverlay', { data, overlays }, () =>
-      this.getFallbackEngine().addTextOverlay(data, overlays),
+    return this.executeWithFallback('addTextOverlay', { data, overlays }, async () =>
+      (await this.getFallbackEngine()).addTextOverlay(data, overlays),
     );
   }
 
   async embedAnnotation(data: ArrayBuffer, annotation: AnnotationData): Promise<OperationResult> {
-    return this.executeWithFallback('embedAnnotation', { data, annotation }, () =>
-      this.getFallbackEngine().embedAnnotation(data, annotation),
+    return this.executeWithFallback('embedAnnotation', { data, annotation }, async () =>
+      (await this.getFallbackEngine()).embedAnnotation(data, annotation),
     );
   }
 
   async imagesToPdf(images: ImageFile[]): Promise<OperationResult> {
-    return this.executeWithFallback('imagesToPdf', { images }, () =>
-      this.getFallbackEngine().imagesToPdf(images),
+    return this.executeWithFallback('imagesToPdf', { images }, async () =>
+      (await this.getFallbackEngine()).imagesToPdf(images),
     );
   }
 
   async compress(data: ArrayBuffer): Promise<OperationResult> {
-    return this.executeWithFallback('compress', { data }, () =>
-      this.getFallbackEngine().compress(data),
+    return this.executeWithFallback('compress', { data }, async () =>
+      (await this.getFallbackEngine()).compress(data),
     );
   }
 
   async flatten(data: ArrayBuffer): Promise<OperationResult> {
-    return this.executeWithFallback('flatten', { data }, () =>
-      this.getFallbackEngine().flatten(data),
+    return this.executeWithFallback('flatten', { data }, async () =>
+      (await this.getFallbackEngine()).flatten(data),
     );
   }
 
   async cropPages(data: ArrayBuffer, pages: number[], cropBox: CropBox): Promise<OperationResult> {
-    return this.executeWithFallback('cropPages', { data, pages, cropBox }, () =>
-      this.getFallbackEngine().cropPages(data, pages, cropBox),
+    return this.executeWithFallback('cropPages', { data, pages, cropBox }, async () =>
+      (await this.getFallbackEngine()).cropPages(data, pages, cropBox),
     );
   }
 
   async resizePages(data: ArrayBuffer, pages: number[], size: PageSize): Promise<OperationResult> {
-    return this.executeWithFallback('resizePages', { data, pages, size }, () =>
-      this.getFallbackEngine().resizePages(data, pages, size),
+    return this.executeWithFallback('resizePages', { data, pages, size }, async () =>
+      (await this.getFallbackEngine()).resizePages(data, pages, size),
     );
   }
 
   async linearize(data: ArrayBuffer): Promise<OperationResult> {
-    return this.executeWithFallback('linearize', { data }, () =>
-      this.getFallbackEngine().linearize(data),
+    return this.executeWithFallback('linearize', { data }, async () =>
+      (await this.getFallbackEngine()).linearize(data),
     );
   }
 
   async getMetadata(data: ArrayBuffer): Promise<PdfMetadata> {
-    return this.executeWithFallback('getMetadata', { data }, () =>
-      this.getFallbackEngine().getMetadata(data),
+    return this.executeWithFallback('getMetadata', { data }, async () =>
+      (await this.getFallbackEngine()).getMetadata(data),
     );
   }
 
   async setMetadata(data: ArrayBuffer, metadata: Partial<PdfMetadata>): Promise<OperationResult> {
-    return this.executeWithFallback('setMetadata', { data, metadata }, () =>
-      this.getFallbackEngine().setMetadata(data, metadata),
+    return this.executeWithFallback('setMetadata', { data, metadata }, async () =>
+      (await this.getFallbackEngine()).setMetadata(data, metadata),
     );
   }
 
   async getBookmarks(data: ArrayBuffer): Promise<Bookmark[]> {
-    return this.executeWithFallback('getBookmarks', { data }, () =>
-      this.getFallbackEngine().getBookmarks(data),
+    return this.executeWithFallback('getBookmarks', { data }, async () =>
+      (await this.getFallbackEngine()).getBookmarks(data),
     );
   }
 
   async setBookmarks(data: ArrayBuffer, bookmarks: Bookmark[]): Promise<OperationResult> {
-    return this.executeWithFallback('setBookmarks', { data, bookmarks }, () =>
-      this.getFallbackEngine().setBookmarks(data, bookmarks),
+    return this.executeWithFallback('setBookmarks', { data, bookmarks }, async () =>
+      (await this.getFallbackEngine()).setBookmarks(data, bookmarks),
     );
   }
 
   async getFormFields(data: ArrayBuffer): Promise<FormField[]> {
-    return this.executeWithFallback('getFormFields', { data }, () =>
-      this.getFallbackEngine().getFormFields(data),
+    return this.executeWithFallback('getFormFields', { data }, async () =>
+      (await this.getFallbackEngine()).getFormFields(data),
     );
   }
 
@@ -305,27 +307,52 @@ export class PdfWorkerClient {
     data: ArrayBuffer,
     values: Record<string, string | boolean>,
   ): Promise<OperationResult> {
-    return this.executeWithFallback('fillFormFields', { data, values }, () =>
-      this.getFallbackEngine().fillFormFields(data, values),
+    return this.executeWithFallback('fillFormFields', { data, values }, async () =>
+      (await this.getFallbackEngine()).fillFormFields(data, values),
     );
   }
 
   async encrypt(data: ArrayBuffer, password: string): Promise<OperationResult> {
-    return this.executeWithFallback('encrypt', { data, password }, () =>
-      this.getFallbackEngine().encrypt(data, password),
+    return this.executeWithFallback('encrypt', { data, password }, async () =>
+      (await this.getFallbackEngine()).encrypt(data, password),
     );
   }
 
   async decrypt(data: ArrayBuffer, password: string): Promise<OperationResult> {
-    return this.executeWithFallback('decrypt', { data, password }, () =>
-      this.getFallbackEngine().decrypt(data, password),
+    return this.executeWithFallback('decrypt', { data, password }, async () =>
+      (await this.getFallbackEngine()).decrypt(data, password),
     );
   }
 
   async redact(data: ArrayBuffer, regions: RedactRegion[]): Promise<OperationResult> {
-    return this.executeWithFallback('redact', { data, regions }, () =>
-      this.getFallbackEngine().redact(data, regions),
+    return this.executeWithFallback('redact', { data, regions }, async () =>
+      (await this.getFallbackEngine()).redact(data, regions),
     );
+  }
+
+  async getPageCount(data: ArrayBuffer): Promise<number> {
+    return this.executeWithFallback('getPageCount', { data }, async () =>
+      (await this.getFallbackEngine()).getPageCount(data),
+    );
+  }
+
+  async applyLetterhead(
+    data: ArrayBuffer,
+    template: LetterheadTemplate,
+    target: LetterheadPageTarget,
+  ): Promise<ArrayBuffer> {
+    return this.executeWithFallback('applyLetterhead', { data, template, target }, async () => {
+      const { applyLetterhead } = await import('@/features/letterhead/utils/letterhead-renderer');
+      return applyLetterhead(data, template, target);
+    });
+  }
+
+  async exportLetterheadAsPdf(template: LetterheadTemplate): Promise<ArrayBuffer> {
+    return this.executeWithFallback('exportLetterheadAsPdf', { template }, async () => {
+      const { exportLetterheadAsPdf } =
+        await import('@/features/letterhead/utils/letterhead-renderer');
+      return exportLetterheadAsPdf(template);
+    });
   }
 
   /**

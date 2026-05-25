@@ -199,10 +199,10 @@ This implementation plan covers the comprehensive UI/UX redesign of the PDF Edit
 - [x] 7.1 Add `React.lazy()` code splitting to all tool page routes (currently only canvas editor is lazy-loaded)
 - [x] 7.2 Create route-level skeleton placeholders for all lazy-loaded tool pages
 - [x] 7.3 Add font preloading (`<link rel="preload">`) for Inter and JetBrains Mono in `index.html`
-- [-] 7.4 Implement thumbnail virtualization (`src/hooks/useVirtualScroll.ts`) for page thumbnail lists — render only visible items + buffer
-- [~] 7.5 Verify Vite content-hash filenames are configured for immutable caching (check `vite.config.ts` output settings)
-- [~] 7.6 Audit and optimize initial bundle size — target < 150KB gzipped (analyze with `vite-bundle-visualizer`)
-- [~] 7.7 Ensure all PDF processing operations use Web Workers (audit existing worker usage, extend to any synchronous processing)
+- [x] 7.4 Implement thumbnail virtualization (`src/hooks/useVirtualScroll.ts`) for page thumbnail lists — render only visible items + buffer
+- [x] 7.5 Verify Vite content-hash filenames are configured for immutable caching (check `vite.config.ts` output settings)
+- [x] 7.6 Audit and optimize initial bundle size — target < 150KB gzipped (analyze with `vite-bundle-visualizer`)
+- [x] 7.7 Ensure all PDF processing operations use Web Workers (audit existing worker usage, extend to any synchronous processing)
 
 ## Phase 8: Accessibility Audit & Fixes
 

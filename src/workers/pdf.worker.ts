@@ -5,6 +5,11 @@
  */
 
 import { PdfEngine } from '@/core/pdf-engine/operations';
+import {
+  applyLetterhead,
+  exportLetterheadAsPdf,
+} from '@/features/letterhead/utils/letterhead-renderer';
+import type { LetterheadTemplate, LetterheadPageTarget } from '@/features/letterhead/types';
 import type { PdfWorkerRequest, PdfWorkerResponse } from './pdf-worker.types';
 
 const engine = new PdfEngine();
@@ -120,6 +125,22 @@ self.onmessage = async (event: MessageEvent<PdfWorkerRequest>) => {
 
       case 'redact':
         result = await engine.redact(payload.data, payload.regions);
+        break;
+
+      case 'getPageCount':
+        result = await engine.getPageCount(payload.data);
+        break;
+
+      case 'applyLetterhead':
+        result = await applyLetterhead(
+          payload.data,
+          payload.template as LetterheadTemplate,
+          payload.target as LetterheadPageTarget,
+        );
+        break;
+
+      case 'exportLetterheadAsPdf':
+        result = await exportLetterheadAsPdf(payload.template as LetterheadTemplate);
         break;
 
       default: {
