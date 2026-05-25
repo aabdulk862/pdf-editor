@@ -224,8 +224,8 @@ This implementation plan covers the comprehensive UI/UX redesign of the PDF Edit
 - [x] 9.3 Standardize all transition durations to token values (50ms, 150ms, 200ms, 300ms) and ensure explicit easing curves on every transition
 - [x] 9.4 Refactor tool pages (RotatePage, PageSizePage, WatermarksPage, PageNumbersPage, ComparePage) to use shared SegmentedControl and Button components instead of inline styling
 - [x] 9.5 Add loading/processing state transitions with skeleton placeholders to tool pages that currently jump between states
-- [ ] 9.6 Standardize icon sizing across all components to use the Icon wrapper (16/20/24px, 1.5px stroke)
-- [ ] 9.7 Add error recovery (retry buttons, preserved file state) to all tool pages that currently show generic errors
+- [x] 9.6 Standardize icon sizing across all components to use the Icon wrapper (16/20/24px, 1.5px stroke)
+- [-] 9.7 Add error recovery (retry buttons, preserved file state) to all tool pages that currently show generic errors
 - [ ] 9.8 Fix toast positioning: bottom-center on mobile (within thumb reach), top-right on desktop
 
 ## Phase 10: Mobile Responsiveness Polish

@@ -3,13 +3,12 @@
 
 const CACHE_NAME = 'pdf-editor-v1';
 const APP_SHELL_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/favicon.ico',
-  '/favicon.svg',
-  '/icons/icon-192x192.svg',
-  '/icons/icon-512x512.svg',
+  '/tools/',
+  '/tools/index.html',
+  '/tools/manifest.json',
+  '/tools/favicon.ico',
+  '/tools/icons/icon-192x192.svg',
+  '/tools/icons/icon-512x512.svg',
 ];
 
 // Install: pre-cache app shell assets
@@ -104,7 +103,7 @@ async function networkFirst(request) {
     }
     // For navigation requests, serve the cached index.html (SPA fallback)
     if (request.mode === 'navigate') {
-      const fallback = await caches.match('/index.html');
+      const fallback = await caches.match('/tools/index.html');
       if (fallback) {
         return fallback;
       }

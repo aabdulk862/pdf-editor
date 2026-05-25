@@ -241,7 +241,7 @@ function NotFoundPage() {
 
 export function AppRouter() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/tools">
       <Routes>
         <Route element={<RootLayout />}>
           <Route path="/" element={<HomePage />} />

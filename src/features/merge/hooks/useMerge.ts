@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import { formatFileSize } from '@/utils/file-size';
+import type { ToolErrorState } from '@/components/ui/ErrorRecovery';
 
 export interface MergeFile {
   id: string;
@@ -16,6 +17,7 @@ export interface UseMergeReturn {
   mergedResult: ArrayBuffer | null;
   mergedFileSize: number | null;
   isMerging: boolean;
+  errorState: ToolErrorState | null;
   addFiles: (newFiles: File[]) => void;
   removeFile: (id: string) => void;
   reorderFiles: (fromIndex: number, toIndex: number) => void;
@@ -38,6 +40,7 @@ export function useMerge(): UseMergeReturn {
   const [mergedResult, setMergedResult] = useState<ArrayBuffer | null>(null);
   const [mergedFileSize, setMergedFileSize] = useState<number | null>(null);
   const [isMerging, setIsMerging] = useState(false);
+  const [errorState, setErrorState] = useState<ToolErrorState | null>(null);
   const toast = useToast();
   const workerClientRef = useRef(getPdfWorkerClient({ onError: (msg) => toast.error(msg) }));
 
@@ -135,6 +138,7 @@ export function useMerge(): UseMergeReturn {
     setIsMerging(true);
     setMergedResult(null);
     setMergedFileSize(null);
+    setErrorState(null);
 
     try {
       const documents = files.map((f) => f.data);
@@ -145,11 +149,22 @@ export function useMerge(): UseMergeReturn {
         setMergedFileSize(result.data.byteLength);
         toast.success('PDFs merged successfully!');
       } else {
-        toast.error(result.error ?? 'Merge operation failed.');
+        const message = result.error ?? 'Merge operation failed.';
+        setErrorState({
+          type: 'processing-failed',
+          message,
+          recoverable: true,
+          retryAction: () => merge(),
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      toast.error(`Merge failed: ${message}`);
+      setErrorState({
+        type: 'unknown',
+        message: `Merge failed: ${message}`,
+        recoverable: true,
+        retryAction: () => merge(),
+      });
     } finally {
       setIsMerging(false);
     }
@@ -159,6 +174,7 @@ export function useMerge(): UseMergeReturn {
     setFiles([]);
     setMergedResult(null);
     setMergedFileSize(null);
+    setErrorState(null);
   }, []);
 
   return {
@@ -166,6 +182,7 @@ export function useMerge(): UseMergeReturn {
     mergedResult,
     mergedFileSize,
     isMerging,
+    errorState,
     addFiles,
     removeFile,
     reorderFiles,

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { Button } from '@/components/ui/Button';
 import { ProcessingState } from '@/components/ui/ProcessingState';
+import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { useToast } from '@/hooks/useToast';
 import { PdfjsRenderEngine } from '@/core/render-engine/renderer';
 import type { RenderableDocument } from '@/core/render-engine/index';
@@ -61,6 +62,7 @@ export function ComparePage(): JSX.Element {
   const [isComparing, setIsComparing] = useState(false);
   const [comparisonResult, setComparisonResult] = useState<ComparisonResult | null>(null);
   const [currentDiffIndex, setCurrentDiffIndex] = useState(0);
+  const [errorState, setErrorState] = useState<ToolErrorState | null>(null);
 
   // View state
   const [currentPage, setCurrentPage] = useState(1);
@@ -233,6 +235,7 @@ export function ComparePage(): JSX.Element {
     setIsComparing(true);
     setComparisonResult(null);
     setCurrentDiffIndex(0);
+    setErrorState(null);
 
     try {
       const pageCount1 = doc1.pageCount;
@@ -276,7 +279,12 @@ export function ComparePage(): JSX.Element {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      toast.error(`Comparison failed: ${message}`);
+      setErrorState({
+        type: 'processing-failed',
+        message: `Comparison failed: ${message}`,
+        recoverable: true,
+        retryAction: () => handleCompare(),
+      });
     } finally {
       setIsComparing(false);
     }
@@ -484,6 +492,9 @@ export function ComparePage(): JSX.Element {
         label="Comparing documents..."
         variant="comparison"
       />
+
+      {/* Error recovery state */}
+      {errorState && <ErrorRecovery error={errorState} onReset={handleReset} />}
 
       {/* Comparison summary — fades in when results are ready */}
       <div

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { Button } from '@/components/ui/Button';
+import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import { formatFileSize, calculatePercentChange } from '@/utils/file-size';
@@ -31,6 +32,7 @@ export function CompressPage(): JSX.Element {
   const [isCompressing, setIsCompressing] = useState(false);
   const [compressedData, setCompressedData] = useState<ArrayBuffer | null>(null);
   const [compressedSize, setCompressedSize] = useState<number>(0);
+  const [errorState, setErrorState] = useState<ToolErrorState | null>(null);
 
   // Track previous compressedData to detect new successful operations
   const prevCompressedDataRef = useRef<ArrayBuffer | null>(null);
@@ -80,6 +82,7 @@ export function CompressPage(): JSX.Element {
     setIsCompressing(true);
     setCompressedData(null);
     setCompressedSize(0);
+    setErrorState(null);
 
     try {
       const client = getPdfWorkerClient({ onError: (msg) => toast.warning(msg) });
@@ -101,11 +104,22 @@ export function CompressPage(): JSX.Element {
           toast.success('PDF compressed successfully.');
         }
       } else {
-        toast.error(result.error ?? 'Failed to compress the PDF.');
+        const message = result.error ?? 'Failed to compress the PDF.';
+        setErrorState({
+          type: 'processing-failed',
+          message,
+          recoverable: true,
+          retryAction: () => handleCompress(),
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      toast.error(message);
+      setErrorState({
+        type: 'unknown',
+        message,
+        recoverable: true,
+        retryAction: () => handleCompress(),
+      });
     } finally {
       setIsCompressing(false);
     }
@@ -252,6 +266,9 @@ export function CompressPage(): JSX.Element {
           </Button>
         )}
       </div>
+
+      {/* Error recovery state */}
+      {errorState && <ErrorRecovery error={errorState} onReset={handleReset} />}
 
       {/* Quick Actions Bar */}
       {compressedData && <QuickActionsBar />}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
+import { ErrorRecovery } from '@/components/ui/ErrorRecovery';
 import { useToast } from '@/hooks/useToast';
 import { formatFileSize } from '@/utils/file-size';
 import { MergeFileList } from './MergeFileList';
@@ -29,6 +30,7 @@ export function MergePage(): JSX.Element {
     mergedResult,
     mergedFileSize,
     isMerging,
+    errorState,
     addFiles,
     removeFile,
     reorderFiles,
@@ -144,6 +146,9 @@ export function MergePage(): JSX.Element {
           </Button>
         </div>
       )}
+
+      {/* Error recovery state */}
+      {errorState && <ErrorRecovery error={errorState} onReset={reset} />}
 
       {/* Merged result section */}
       {mergedResult && (

@@ -4,6 +4,7 @@ import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import {
@@ -66,6 +67,7 @@ export function CropPage(): JSX.Element {
   // Operation state
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultData, setResultData] = useState<ArrayBuffer | null>(null);
+  const [errorState, setErrorState] = useState<ToolErrorState | null>(null);
 
   // Preview/navigation state
   const [currentPage, setCurrentPage] = useState(1);
@@ -428,6 +430,7 @@ export function CropPage(): JSX.Element {
 
     setIsProcessing(true);
     setResultData(null);
+    setErrorState(null);
 
     try {
       const client = getPdfWorkerClient({ onError: (msg) => toast.warning(msg) });
@@ -445,11 +448,22 @@ export function CropPage(): JSX.Element {
         setResultData(result.data);
         toast.success('Pages cropped successfully.');
       } else {
-        toast.error(result.error ?? 'Failed to crop pages.');
+        const message = result.error ?? 'Failed to crop pages.';
+        setErrorState({
+          type: 'processing-failed',
+          message,
+          recoverable: true,
+          retryAction: () => handleApplyCrop(),
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      toast.error(message);
+      setErrorState({
+        type: 'unknown',
+        message,
+        recoverable: true,
+        retryAction: () => handleApplyCrop(),
+      });
     } finally {
       setIsProcessing(false);
     }

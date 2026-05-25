@@ -3,6 +3,7 @@ import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { ProcessingState } from '@/components/ui/ProcessingState';
+import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
@@ -47,6 +48,7 @@ export function WatermarksPage(): JSX.Element {
   // Operation state
   const [modifiedData, setModifiedData] = useState<ArrayBuffer | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [errorState, setErrorState] = useState<ToolErrorState | null>(null);
   const [zoom, setZoom] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -135,6 +137,7 @@ export function WatermarksPage(): JSX.Element {
     if (!validate()) return;
 
     setProcessing(true);
+    setErrorState(null);
     try {
       const client = getPdfWorkerClient({
         onError: (msg) => toast.warning(msg),
@@ -154,10 +157,22 @@ export function WatermarksPage(): JSX.Element {
         setModifiedData(result.data);
         toast.success('Watermark applied successfully.');
       } else {
-        toast.error(result.error ?? 'Failed to apply watermark.');
+        const message = result.error ?? 'Failed to apply watermark.';
+        setErrorState({
+          type: 'processing-failed',
+          message,
+          recoverable: true,
+          retryAction: () => handleApply(),
+        });
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'An unexpected error occurred.');
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
+      setErrorState({
+        type: 'unknown',
+        message,
+        recoverable: true,
+        retryAction: () => handleApply(),
+      });
     } finally {
       setProcessing(false);
     }
@@ -394,6 +409,9 @@ export function WatermarksPage(): JSX.Element {
                 </div>
               )}
             </div>
+
+            {/* Error recovery state */}
+            {errorState && <ErrorRecovery error={errorState} onReset={handleReset} />}
           </div>
 
           {/* Processing state skeleton */}

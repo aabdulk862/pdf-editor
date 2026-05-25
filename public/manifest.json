@@ -1,7 +1,7 @@
 {
   "name": "PDF Editor",
   "short_name": "PDF Editor",
-  "start_url": "/",
+  "start_url": "/tools/",
   "display": "standalone",
   "theme_color": "#1a1a2e",
   "background_color": "#ffffff",

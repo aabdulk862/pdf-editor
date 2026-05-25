@@ -4,6 +4,7 @@ import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { ProcessingState } from '@/components/ui/ProcessingState';
+import { ErrorRecovery, type ToolErrorState } from '@/components/ui/ErrorRecovery';
 import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
@@ -53,6 +54,7 @@ export function RotatePage(): JSX.Element {
   // Operation state
   const [isProcessing, setIsProcessing] = useState(false);
   const [rotatedData, setRotatedData] = useState<ArrayBuffer | null>(null);
+  const [errorState, setErrorState] = useState<ToolErrorState | null>(null);
 
   // Preview state
   const [zoom, setZoom] = useState(1);
@@ -207,6 +209,7 @@ export function RotatePage(): JSX.Element {
 
     setIsProcessing(true);
     setRotatedData(null);
+    setErrorState(null);
 
     try {
       const client = getPdfWorkerClient({ onError: (msg) => toast.warning(msg) });
@@ -220,11 +223,22 @@ export function RotatePage(): JSX.Element {
         setRotatedData(result.data);
         toast.success('Pages rotated successfully.');
       } else {
-        toast.error(result.error ?? 'Failed to rotate pages.');
+        const message = result.error ?? 'Failed to rotate pages.';
+        setErrorState({
+          type: 'processing-failed',
+          message,
+          recoverable: true,
+          retryAction: () => handleRotate(),
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      toast.error(message);
+      setErrorState({
+        type: 'unknown',
+        message,
+        recoverable: true,
+        retryAction: () => handleRotate(),
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -360,6 +374,19 @@ export function RotatePage(): JSX.Element {
           </div>
         )}
       </div>
+
+      {/* Error recovery state */}
+      {errorState && (
+        <ErrorRecovery
+          error={errorState}
+          onReset={() => {
+            setPdfData(null);
+            setFileName('');
+            setRotatedData(null);
+            setErrorState(null);
+          }}
+        />
+      )}
 
       {/* Processing state skeleton */}
       <ProcessingState isProcessing={isProcessing} label="Rotating pages..." variant="preview" />
