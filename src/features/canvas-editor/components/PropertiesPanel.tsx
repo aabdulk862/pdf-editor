@@ -83,18 +83,13 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
   const handleBackgroundColorChange = useCallback(
     (color: string) => {
       if (!document || !activePage) return;
-      // Update page background via store — use setPageSize pattern but for bg color
-      // Since the store doesn't have a dedicated action, we update via the page directly
-      // For now, we use updateElement pattern — but page bg needs a store action
-      // We'll use the store's set method through a workaround
       useCanvasStore.setState((state) => {
-        if (!state.document) return state;
+        if (!state.document) return;
         const page = state.document.pages[state.document.activePageIndex];
         if (page) {
           page.backgroundColor = color;
           state.document.updatedAt = Date.now();
         }
-        return state;
       });
     },
     [document, activePage],
@@ -103,7 +98,6 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
   const handleGridToggle = useCallback((enabled: boolean) => {
     useCanvasStore.setState((state) => {
       state.gridEnabled = enabled;
-      return state;
     });
   }, []);
 

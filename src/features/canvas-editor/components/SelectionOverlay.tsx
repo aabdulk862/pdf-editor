@@ -83,11 +83,10 @@ function getHandleConfigs(width: number, height: number): HandleConfig[] {
 }
 
 export interface SelectionOverlayProps {
-  /** Optional callback when a handle interaction starts */
-  onHandlePointerDown?: (handle: HandlePosition, event: React.PointerEvent) => void;
+  /** Optional: currently unused as canvas input handles resize via hitTestHandle */
 }
 
-export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({ onHandlePointerDown }) => {
+export const SelectionOverlay: React.FC<SelectionOverlayProps> = () => {
   const selection = useCanvasStore((state) => state.selection);
   const viewport = useCanvasStore((state) => state.viewport);
 
@@ -137,7 +136,7 @@ export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({ onHandlePoin
         {handles.map((handle) => (
           <div
             key={handle.position}
-            className="pointer-events-auto absolute flex items-center justify-center"
+            className="pointer-events-none absolute flex items-center justify-center"
             style={{
               ...handle.style,
               width: TOUCH_TARGET_SIZE,
@@ -146,10 +145,6 @@ export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({ onHandlePoin
               marginLeft: -(TOUCH_TARGET_SIZE - HANDLE_SIZE) / 2,
               marginTop: -(TOUCH_TARGET_SIZE - HANDLE_SIZE) / 2,
               cursor: handle.cursor,
-            }}
-            onPointerDown={(e) => {
-              e.stopPropagation();
-              onHandlePointerDown?.(handle.position, e);
             }}
             data-testid={`handle-${handle.position}`}
             role="button"

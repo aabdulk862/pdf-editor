@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { DEFAULT_TEXT_WIDTH } from '../constants';
+import { DEFAULT_TEXT_WIDTH, MM_TO_PX } from '../constants';
 import { useCanvasStore } from '../store/canvas-store';
 import type { CanvasTool, ShapeElement, TextElement } from '../types';
 
@@ -115,13 +115,16 @@ export function EmptyState({ onOpenTemplatePicker }: EmptyStateProps) {
       const centerY = page.height / 2;
 
       if (action.tool === 'text') {
+        // Convert DEFAULT_TEXT_WIDTH from px to mm for document coordinates
+        const textWidthMm = DEFAULT_TEXT_WIDTH / MM_TO_PX;
+        const textHeightMm = 30 / MM_TO_PX;
         const textElement: TextElement = {
           id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
           type: 'text',
-          x: centerX - DEFAULT_TEXT_WIDTH / 2,
-          y: centerY - 15,
-          width: DEFAULT_TEXT_WIDTH,
-          height: 30,
+          x: centerX - textWidthMm / 2,
+          y: centerY - textHeightMm / 2,
+          width: textWidthMm,
+          height: textHeightMm,
           rotation: 0,
           opacity: 100,
           zIndex: page.elements.length,

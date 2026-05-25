@@ -49,10 +49,13 @@ function renderPageToContext(
   pixelWidth: number,
   pixelHeight: number,
 ): void {
-  // The viewport for export: no pan offset, zoom = pixels / mm
-  // This maps document coordinates (mm) directly to pixel coordinates
-  const scaleX = pixelWidth / page.width;
-  const scaleY = pixelHeight / page.height;
+  // The viewport for export: no pan offset, zoom maps mm → pixels
+  // Renderer formula: screenX = (docX * MM_TO_PX - panX) * zoom
+  // We want: docX (mm) * MM_TO_PX * zoom = pixelX
+  // So: zoom = pixelWidth / (page.width * MM_TO_PX)
+  const MM_TO_PX_LOCAL = 96 / 25.4;
+  const scaleX = pixelWidth / (page.width * MM_TO_PX_LOCAL);
+  const scaleY = pixelHeight / (page.height * MM_TO_PX_LOCAL);
   // Use uniform scale (should be the same for both axes given the formula)
   const scale = Math.min(scaleX, scaleY);
 

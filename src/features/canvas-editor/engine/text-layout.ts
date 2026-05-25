@@ -347,8 +347,8 @@ export function renderTextElement(
 
   ctx.save();
 
-  // Apply element opacity
-  ctx.globalAlpha = element.opacity / 100;
+  // Note: opacity is already applied by the parent renderElement() in renderer.ts
+  // Do NOT set ctx.globalAlpha here to avoid double-application
 
   // Apply rotation if needed
   if (element.rotation !== 0) {

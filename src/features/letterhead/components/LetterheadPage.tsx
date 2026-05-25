@@ -213,6 +213,19 @@ export function LetterheadPage(): JSX.Element {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="primary" size="sm" onClick={handleCreateTemplate}>
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 5v10M5 10h10" />
+            </svg>
+            New Letterhead
+          </Button>
           <Button
             variant="outline"
             size="sm"

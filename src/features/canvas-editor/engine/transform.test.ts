@@ -160,26 +160,33 @@ describe('calculateImagePlacement', () => {
   const defaultViewport: Viewport = { panX: 0, panY: 0, zoom: 1 };
   const viewportSize = { width: 1000, height: 800 };
 
-  it('scales image to fit within 80% of viewport', () => {
+  it('scales image to fit within 80% of viewport (returns mm)', () => {
     const imageSize = { width: 2000, height: 1000 };
     const result = calculateImagePlacement(imageSize, viewportSize, defaultViewport);
 
-    // 80% of viewport: 800x640
-    // Scale by width: 800/2000 = 0.4, by height: 640/1000 = 0.64
+    // Visible area in mm: (1000 / 1 / MM_TO_PX) x (800 / 1 / MM_TO_PX)
+    // = ~264.58mm x ~211.67mm
+    // 80% of visible: ~211.67mm x ~169.33mm
+    // Image in mm: 2000/MM_TO_PX x 1000/MM_TO_PX = ~529.17mm x ~264.58mm
+    // Scale by width: 211.67/529.17 = 0.4, by height: 169.33/264.58 = 0.64
     // Min(0.4, 0.64, 1) = 0.4
-    expect(result.width).toBe(2000 * 0.4); // 800
-    expect(result.height).toBe(1000 * 0.4); // 400
+    const imageWidthMm = 2000 / MM_TO_PX;
+    const imageHeightMm = 1000 / MM_TO_PX;
+    const visibleWidthMm = 1000 / MM_TO_PX;
+    const scale = (visibleWidthMm * 0.8) / imageWidthMm; // 0.4
+    expect(result.width).toBeCloseTo(imageWidthMm * scale);
+    expect(result.height).toBeCloseTo(imageHeightMm * scale);
   });
 
-  it('never upscales (scale capped at 1)', () => {
+  it('never upscales (scale capped at 1, returns mm)', () => {
     const imageSize = { width: 100, height: 50 };
     const result = calculateImagePlacement(imageSize, viewportSize, defaultViewport);
 
-    // 80% of viewport: 800x640
-    // Scale by width: 800/100 = 8, by height: 640/50 = 12.8
-    // Min(8, 12.8, 1) = 1
-    expect(result.width).toBe(100);
-    expect(result.height).toBe(50);
+    // Image in mm: 100/MM_TO_PX x 50/MM_TO_PX = ~26.46mm x ~13.23mm
+    // Visible area 80%: ~211.67mm x ~169.33mm — much larger than image
+    // Scale would be >1, capped at 1
+    expect(result.width).toBeCloseTo(100 / MM_TO_PX);
+    expect(result.height).toBeCloseTo(50 / MM_TO_PX);
   });
 
   it('centers image in visible viewport area', () => {
@@ -188,9 +195,10 @@ describe('calculateImagePlacement', () => {
 
     // Center of viewport in doc mm: (0 + 1000/1/2) / MM_TO_PX, (0 + 800/1/2) / MM_TO_PX
     // = 500 / MM_TO_PX, 400 / MM_TO_PX
-    // Image is 100x100 (no upscale), so placed at (center - 50)
-    const expectedX = 500 / MM_TO_PX - 50;
-    const expectedY = 400 / MM_TO_PX - 50;
+    // Image is 100/MM_TO_PX mm (no upscale), so placed at (center - imageWidthMm/2)
+    const imageMm = 100 / MM_TO_PX;
+    const expectedX = 500 / MM_TO_PX - imageMm / 2;
+    const expectedY = 400 / MM_TO_PX - imageMm / 2;
     expect(result.x).toBeCloseTo(expectedX);
     expect(result.y).toBeCloseTo(expectedY);
   });
@@ -202,8 +210,9 @@ describe('calculateImagePlacement', () => {
 
     // Center in doc mm: (100 + 1000/2/2) / MM_TO_PX, (50 + 800/2/2) / MM_TO_PX
     // = 350 / MM_TO_PX, 250 / MM_TO_PX
-    const expectedX = 350 / MM_TO_PX - 50;
-    const expectedY = 250 / MM_TO_PX - 50;
+    const imageMm = 100 / MM_TO_PX;
+    const expectedX = 350 / MM_TO_PX - imageMm / 2;
+    const expectedY = 250 / MM_TO_PX - imageMm / 2;
     expect(result.x).toBeCloseTo(expectedX);
     expect(result.y).toBeCloseTo(expectedY);
   });

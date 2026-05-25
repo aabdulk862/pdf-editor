@@ -187,9 +187,15 @@ export function isPointInShape(localPoint: Point, element: ShapeElement): boolea
 
     case 'line':
     case 'arrow': {
-      // Line from top-left to bottom-right with a tolerance band
+      // Line is drawn from left-center to right-center in the renderer
+      // So hit-test should match: (0, height/2) to (width, height/2) with tolerance
       const tolerance = Math.max(element.strokeWidth || 4, 4);
-      return isPointNearLine(localPoint, { x: 0, y: 0 }, { x: width, y: height }, tolerance);
+      return isPointNearLine(
+        localPoint,
+        { x: 0, y: height / 2 },
+        { x: width, y: height / 2 },
+        tolerance,
+      );
     }
 
     case 'star': {

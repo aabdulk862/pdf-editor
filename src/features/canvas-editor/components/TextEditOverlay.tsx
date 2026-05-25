@@ -44,21 +44,27 @@ export const TextEditOverlay: React.FC<TextEditOverlayProps> = ({
   // Calculate scaled font size
   const scaledFontSize = element.fontSize * viewport.zoom;
 
-  // Focus the editable div on mount
+  // Focus the editable div on mount with a microtask delay
+  // to ensure the canvas has released pointer capture and the DOM is ready
   useEffect(() => {
     const el = editableRef.current;
     if (!el) return;
 
-    el.focus();
+    // Use requestAnimationFrame to ensure the overlay is painted before focusing
+    const raf = requestAnimationFrame(() => {
+      el.focus();
 
-    // Select all text for easy replacement
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    const selection = window.getSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+      // Select all text for easy replacement
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    });
+
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   const handleCommit = useCallback(() => {
@@ -115,14 +121,10 @@ export const TextEditOverlay: React.FC<TextEditOverlayProps> = ({
   }, []);
 
   return (
-    <div
-      className="pointer-events-none absolute inset-0"
-      aria-hidden="true"
-      data-testid="text-edit-overlay"
-    >
+    <div className="pointer-events-none absolute inset-0 z-30" data-testid="text-edit-overlay">
       <div
         ref={editableRef}
-        className="pointer-events-auto absolute outline-none ring-2 ring-primary-500 rounded-sm"
+        className="pointer-events-auto absolute outline-none ring-2 ring-primary-500 rounded-sm z-30"
         contentEditable
         suppressContentEditableWarning
         role="textbox"

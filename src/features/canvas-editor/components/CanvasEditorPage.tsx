@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useToastStore } from '../../../store/toast';
+import { pdfExportEngine } from '../export/pdf-export';
+import { createPngExportEngine } from '../export/png-export';
+import { SvgExportEngine } from '../export/svg-export';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { useCanvasShortcuts } from '../hooks/useCanvasShortcuts';
 import { useRecentFilesIntegration } from '../hooks/useRecentFilesIntegration';
@@ -151,11 +154,104 @@ export function CanvasEditorPage() {
   useRecentFilesIntegration();
 
   // --- Export handler ---
-  const handleExport = useCallback((_options: ExportOptions) => {
-    // Export logic is handled by the export engines; the dialog manages
-    // its own progress state via the store's exportProgress.
-    // This callback can be extended to trigger the actual export pipeline.
-  }, []);
+  const handleExport = useCallback(
+    async (options: ExportOptions) => {
+      const doc = useCanvasStore.getState().document;
+      if (!doc) return;
+
+      // Set exporting state
+      useCanvasStore.setState((state) => {
+        state.exportProgress = {
+          status: 'exporting',
+          currentPage: 0,
+          totalPages: doc.pages.length,
+        };
+      });
+
+      try {
+        let blob: Blob | Blob[];
+
+        const pageIndices = options.pages === 'all' ? doc.pages.map((_, i) => i) : options.pages;
+
+        switch (options.format) {
+          case 'pdf': {
+            blob = await pdfExportEngine.exportDocument(doc, options);
+            break;
+          }
+          case 'png': {
+            const pngEngine = createPngExportEngine();
+            const blobs: Blob[] = [];
+            for (let i = 0; i < pageIndices.length; i++) {
+              useCanvasStore.setState((state) => {
+                state.exportProgress.currentPage = i + 1;
+              });
+              const page = doc.pages[pageIndices[i]];
+              if (page) {
+                const b = await pngEngine.exportPage(page, { dpi: options.dpi ?? 150 });
+                blobs.push(b);
+              }
+            }
+            blob = blobs.length === 1 ? blobs[0] : blobs;
+            break;
+          }
+          case 'svg': {
+            const svgEngine = new SvgExportEngine();
+            const blobs: Blob[] = [];
+            for (let i = 0; i < pageIndices.length; i++) {
+              useCanvasStore.setState((state) => {
+                state.exportProgress.currentPage = i + 1;
+              });
+              const page = doc.pages[pageIndices[i]];
+              if (page) {
+                const b = await svgEngine.exportPage(page);
+                blobs.push(b);
+              }
+            }
+            blob = blobs.length === 1 ? blobs[0] : blobs;
+            break;
+          }
+          default:
+            throw new Error(`Export format "${options.format}" is not yet supported.`);
+        }
+
+        // Trigger download
+        const blobs = Array.isArray(blob) ? blob : [blob];
+        for (let i = 0; i < blobs.length; i++) {
+          const url = URL.createObjectURL(blobs[i]);
+          const a = window.document.createElement('a');
+          a.href = url;
+          const ext = options.format;
+          const suffix = blobs.length > 1 ? `-page${i + 1}` : '';
+          a.download = `${doc.name}${suffix}.${ext}`;
+          window.document.body.appendChild(a);
+          a.click();
+          window.document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+
+        useCanvasStore.setState((state) => {
+          state.exportProgress = {
+            status: 'complete',
+            currentPage: pageIndices.length,
+            totalPages: pageIndices.length,
+          };
+        });
+        addToast(`Exported as ${options.format.toUpperCase()}`, 'success');
+        setIsExportDialogOpen(false);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Export failed';
+        useCanvasStore.setState((state) => {
+          state.exportProgress = {
+            status: 'error',
+            currentPage: 0,
+            totalPages: 0,
+            error: message,
+          };
+        });
+      }
+    },
+    [addToast],
+  );
 
   // --- Template picker callbacks ---
   const handleOpenTemplatePicker = useCallback(() => {
@@ -268,6 +364,54 @@ export function CanvasEditorPage() {
 
             {/* Floating toolbar overlays the canvas at the top center */}
             <FloatingToolbar />
+
+            {/* Document actions menu (top-left) */}
+            <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  useCanvasStore.getState().createDocument();
+                }}
+                className="flex items-center gap-1.5 px-4 py-2.5 bg-primary-600 text-white rounded-lg shadow-level-2 text-sm font-medium hover:bg-primary-700 active:bg-primary-800 active:scale-[0.98] transition-[transform,background-color] duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                aria-label="New design"
+                title="New Design (creates a blank canvas)"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <path d="M8 3v10M3 8h10" />
+                </svg>
+                New Design
+              </button>
+              <button
+                type="button"
+                onClick={handleOpenTemplatePicker}
+                className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-secondary-800 rounded-lg shadow-level-2 border border-secondary-200 dark:border-secondary-600 text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-50 dark:hover:bg-secondary-700 active:scale-[0.98] transition-[transform,background-color] duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                aria-label="Browse templates"
+                title="Templates"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <rect x="2" y="2" width="5" height="5" rx="1" />
+                  <rect x="9" y="2" width="5" height="5" rx="1" />
+                  <rect x="2" y="9" width="5" height="5" rx="1" />
+                  <rect x="9" y="9" width="5" height="5" rx="1" />
+                </svg>
+                Templates
+              </button>
+            </div>
 
             {/* Empty state shown when no elements on current page */}
             {isPageEmpty && <EmptyState onOpenTemplatePicker={handleOpenTemplatePicker} />}

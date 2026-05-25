@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { ZOOM_STEP, DEFAULT_TEXT_WIDTH } from '../constants';
+import { ZOOM_STEP, DEFAULT_TEXT_WIDTH, MM_TO_PX } from '../constants';
 import { computeCursor, type CursorStyle } from '../engine/cursor';
 import { hitTest, hitTestHandle } from '../engine/hit-test';
 import { calculateSnap } from '../engine/snap';
@@ -134,10 +134,12 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
             state.dragMode = 'resize';
             state.activeHandle = handle as ResizeHandle;
 
-            // Store original size of the first selected element
+            // Store original size and position of the first selected element
             const selectedEl = page.elements.find((el) => el.id === selection.selectedIds[0]);
             if (selectedEl) {
               state.originalSize = { width: selectedEl.width, height: selectedEl.height };
+              state.originalPositions = new Map();
+              state.originalPositions.set(selectedEl.id, { x: selectedEl.x, y: selectedEl.y });
             }
 
             // Capture pre-drag snapshot for history
@@ -199,13 +201,16 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
 
         case 'text': {
           // Create a text element at click position
+          // DEFAULT_TEXT_WIDTH is in px; convert to mm for document coordinates
+          const textWidthMm = DEFAULT_TEXT_WIDTH / MM_TO_PX;
+          const textHeightMm = 30 / MM_TO_PX;
           const textElement: TextElement = {
             id: generateId(),
             type: 'text',
             x: docPoint.x,
             y: docPoint.y,
-            width: DEFAULT_TEXT_WIDTH,
-            height: 30,
+            width: textWidthMm,
+            height: textHeightMm,
             rotation: 0,
             opacity: 100,
             zIndex: page.elements.length,
@@ -377,24 +382,52 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
           const selectedId = store.selection.selectedIds[0];
           if (!selectedId || !state.originalSize || !state.activeHandle) break;
 
+          const originalPos = state.originalPositions.get(selectedId);
+          if (!originalPos) break;
+
           const deltaX = docPoint.x - state.dragStart.x;
           const deltaY = docPoint.y - state.dragStart.y;
 
           // Calculate new size based on handle direction
           let newWidth = state.originalSize.width;
           let newHeight = state.originalSize.height;
+          let newX = originalPos.x;
+          let newY = originalPos.y;
 
           const handle = state.activeHandle;
-          if (handle.includes('e')) newWidth += deltaX;
-          if (handle.includes('w')) newWidth -= deltaX;
-          if (handle.includes('s')) newHeight += deltaY;
-          if (handle.includes('n')) newHeight -= deltaY;
 
-          newWidth = Math.max(1, newWidth);
-          newHeight = Math.max(1, newHeight);
+          // East handles: width increases with positive deltaX
+          if (handle.includes('e')) newWidth += deltaX;
+          // West handles: width decreases with positive deltaX, position moves right
+          if (handle.includes('w')) {
+            newWidth -= deltaX;
+            newX += deltaX;
+          }
+          // South handles: height increases with positive deltaY
+          if (handle.includes('s')) newHeight += deltaY;
+          // North handles: height decreases with positive deltaY, position moves down
+          if (handle.includes('n')) {
+            newHeight -= deltaY;
+            newY += deltaY;
+          }
+
+          // Clamp minimum size and adjust position accordingly
+          if (newWidth < 1) {
+            if (handle.includes('w')) newX += newWidth - 1;
+            newWidth = 1;
+          }
+          if (newHeight < 1) {
+            if (handle.includes('n')) newY += newHeight - 1;
+            newHeight = 1;
+          }
 
           // Use silent update to avoid flooding history during drag
-          store.updateElementSilent(selectedId, { width: newWidth, height: newHeight });
+          store.updateElementSilent(selectedId, {
+            width: newWidth,
+            height: newHeight,
+            x: newX,
+            y: newY,
+          } as Partial<CanvasElement>);
           break;
         }
 

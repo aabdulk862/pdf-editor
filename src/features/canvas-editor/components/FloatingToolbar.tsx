@@ -393,7 +393,14 @@ export function FloatingToolbar() {
         return;
       }
       if (toolId === 'fit-page') {
-        setZoom(1.0);
+        // Actually fit the page to the viewport using canvas dimensions
+        const canvas = document.querySelector('[aria-label="Canvas editor viewport"]');
+        if (canvas) {
+          const rect = canvas.getBoundingClientRect();
+          useCanvasStore.getState().fitPageToViewport(rect.width, rect.height);
+        } else {
+          setZoom(1.0);
+        }
         return;
       }
       // Set active tool for all other tools

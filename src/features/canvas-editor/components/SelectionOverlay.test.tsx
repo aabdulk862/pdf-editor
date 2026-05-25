@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 import { MM_TO_PX } from '../constants';
 import { useCanvasStore } from '../store/canvas-store';
@@ -73,7 +73,7 @@ describe('SelectionOverlay', () => {
     });
   });
 
-  it('calls onHandlePointerDown when a handle is clicked', () => {
+  it('handles are pointer-events-none (canvas input handles resize via hitTestHandle)', () => {
     useCanvasStore.setState({
       selection: {
         selectedIds: ['el-1'],
@@ -82,14 +82,13 @@ describe('SelectionOverlay', () => {
       },
     });
 
-    const handlePointerDown = vi.fn();
-    render(<SelectionOverlay onHandlePointerDown={handlePointerDown} />);
+    render(<SelectionOverlay />);
 
-    fireEvent.pointerDown(screen.getByTestId('handle-nw'));
-    expect(handlePointerDown).toHaveBeenCalledWith('nw', expect.any(Object));
+    const handle = screen.getByTestId('handle-nw');
+    expect(handle.className).toContain('pointer-events-none');
   });
 
-  it('calls onHandlePointerDown with rotate when rotate handle is clicked', () => {
+  it('handles are visual indicators without pointer event interception', () => {
     useCanvasStore.setState({
       selection: {
         selectedIds: ['el-1'],
@@ -98,11 +97,10 @@ describe('SelectionOverlay', () => {
       },
     });
 
-    const handlePointerDown = vi.fn();
-    render(<SelectionOverlay onHandlePointerDown={handlePointerDown} />);
+    render(<SelectionOverlay />);
 
-    fireEvent.pointerDown(screen.getByTestId('handle-rotate'));
-    expect(handlePointerDown).toHaveBeenCalledWith('rotate', expect.any(Object));
+    const handle = screen.getByTestId('handle-rotate');
+    expect(handle.className).toContain('pointer-events-none');
   });
 
   it('positions the selection box based on viewport transform', () => {

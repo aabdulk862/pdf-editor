@@ -96,27 +96,36 @@ export function resizeWithAspectLock(
  * Calculate placement for an image dropped onto the canvas.
  * Scales to fit within 80% of the viewport while maintaining aspect ratio.
  * Never upscales (scale capped at 1).
- * Centers in the visible viewport area (converted to document coords).
+ * Centers in the visible viewport area (converted to document coords in mm).
+ *
+ * Returns position and size in mm (document coordinates).
  */
 export function calculateImagePlacement(
   imageSize: Size,
   viewportSize: Size,
   viewport: Viewport,
 ): { x: number; y: number; width: number; height: number } {
-  // Scale to fit within 80% of viewport while maintaining aspect ratio
+  // Calculate the visible area in document mm coordinates
+  const visibleWidthMm = viewportSize.width / viewport.zoom / MM_TO_PX;
+  const visibleHeightMm = viewportSize.height / viewport.zoom / MM_TO_PX;
+
+  // Convert image pixel dimensions to mm (at 96 DPI)
+  const imageWidthMm = imageSize.width / MM_TO_PX;
+  const imageHeightMm = imageSize.height / MM_TO_PX;
+
+  // Scale to fit within 80% of visible viewport area while maintaining aspect ratio
+  // Never upscale beyond original size in mm
   const scale = Math.min(
-    (viewportSize.width * 0.8) / imageSize.width,
-    (viewportSize.height * 0.8) / imageSize.height,
+    (visibleWidthMm * 0.8) / imageWidthMm,
+    (visibleHeightMm * 0.8) / imageHeightMm,
     1, // never upscale
   );
 
-  const width = imageSize.width * scale;
-  const height = imageSize.height * scale;
+  const width = imageWidthMm * scale;
+  const height = imageHeightMm * scale;
 
-  // Center in visible viewport area (convert to document mm coords)
-  // panX/panY are in pixel space, viewportSize is in CSS pixels
-  // centerPx = panX + viewportSize / zoom / 2 (center of visible area in px)
-  // centerMm = centerPx / MM_TO_PX
+  // Center in visible viewport area
+  // panX/panY are in pixel space; convert to mm
   const centerX = (viewport.panX + viewportSize.width / viewport.zoom / 2) / MM_TO_PX;
   const centerY = (viewport.panY + viewportSize.height / viewport.zoom / 2) / MM_TO_PX;
 
