@@ -175,6 +175,8 @@ export function useCanvasRenderer(
 
       ctxRef.current = null;
     };
+    // ghostElementRef is a stable ref that doesn't trigger re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef]);
 
   // Re-render when renderTrigger changes (ghost element updates during drag-create)

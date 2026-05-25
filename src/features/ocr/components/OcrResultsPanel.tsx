@@ -40,7 +40,7 @@ export function OcrResultsPanel({
   const { totalPagesProcessed, totalPagesFailed, averageConfidence, failedPages } = results;
 
   return (
-    <div className="w-full rounded-lg bg-white p-4 shadow-lg dark:bg-secondary-800">
+    <div className="w-full rounded-lg bg-white p-4 shadow-level-3 dark:bg-secondary-800">
       <h2 className="text-base font-semibold text-text-dark dark:text-secondary-100">
         OCR Results
       </h2>

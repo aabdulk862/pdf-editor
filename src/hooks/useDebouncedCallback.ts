@@ -18,8 +18,8 @@ export function useDebouncedCallback<T extends (...args: any[]) => void>(
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (...args: any[]) => {
       if (timeoutRef.current !== null) {
         clearTimeout(timeoutRef.current);

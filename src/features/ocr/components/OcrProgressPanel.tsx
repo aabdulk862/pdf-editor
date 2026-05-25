@@ -21,7 +21,7 @@ export function OcrProgressPanel({ progress, onCancel }: OcrProgressPanelProps):
   const { currentPage, totalPages, percentComplete, estimatedTimeRemainingMs } = progress;
 
   return (
-    <div className="w-full rounded-lg bg-white p-4 shadow-lg dark:bg-secondary-800">
+    <div className="w-full rounded-lg bg-white p-4 shadow-level-3 dark:bg-secondary-800">
       <ProgressBar
         progress={percentComplete}
         label={`Processing page ${currentPage} of ${totalPages}`}

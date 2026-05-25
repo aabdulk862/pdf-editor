@@ -23,7 +23,7 @@ const LINE_SPACING = 4;
 /**
  * LetterheadPreview renders a live canvas-based preview of a letterhead template.
  * Updates within 200ms of field changes using debounced rendering.
- * Displays a white background with shadow-lg styling matching PreviewPanel.
+ * Displays a white background with shadow-level-3 styling matching PreviewPanel.
  *
  * Requirements: 12.2, 13.7
  */
@@ -238,7 +238,7 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
         ref={canvasRef}
         width={CANVAS_WIDTH}
         height={CANVAS_HEIGHT}
-        className="bg-white shadow-lg rounded-sm max-w-full h-auto"
+        className="bg-white shadow-level-3 rounded-sm max-w-full h-auto"
         style={{ aspectRatio: `${CANVAS_WIDTH} / ${CANVAS_HEIGHT}` }}
         role="img"
         aria-label="Letterhead preview"

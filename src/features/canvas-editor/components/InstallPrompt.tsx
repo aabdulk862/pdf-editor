@@ -22,7 +22,7 @@ export function InstallPrompt() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-3 px-4 py-2 bg-blue-600 text-white text-sm shadow-md"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-3 px-4 py-2 bg-primary-600 text-white text-sm shadow-level-2"
       role="banner"
       aria-label="Install application"
     >
@@ -31,7 +31,7 @@ export function InstallPrompt() {
       <button
         type="button"
         onClick={promptInstall}
-        className="flex-shrink-0 px-3 py-1 min-h-[32px] bg-white text-blue-600 rounded-md text-xs font-medium hover:bg-blue-50 active:bg-blue-100 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600"
+        className="flex-shrink-0 px-3 py-1 min-h-[32px] bg-white text-primary-600 rounded-md text-xs font-medium hover:bg-primary-50 active:bg-primary-100 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600"
       >
         Install
       </button>

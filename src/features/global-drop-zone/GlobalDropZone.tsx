@@ -166,8 +166,8 @@ export function GlobalDropZone({ children, onFilesDropped }: GlobalDropZoneProps
             'transition-opacity duration-fast ease-in-out',
             'pointer-events-none',
             isValidType
-              ? 'bg-green-500/20 border-4 border-dashed border-green-500 dark:bg-green-400/15 dark:border-green-400'
-              : 'bg-red-500/20 border-4 border-dashed border-red-500 dark:bg-red-400/15 dark:border-red-400',
+              ? 'bg-success-500/20 border-4 border-dashed border-success-500 dark:bg-success-400/15 dark:border-success-400'
+              : 'bg-error-500/20 border-4 border-dashed border-error-500 dark:bg-error-400/15 dark:border-error-400',
           ].join(' ')}
           aria-live="polite"
           role="status"
@@ -177,8 +177,8 @@ export function GlobalDropZone({ children, onFilesDropped }: GlobalDropZoneProps
               'flex flex-col items-center gap-3 rounded-xl px-8 py-6',
               'backdrop-blur-sm',
               isValidType
-                ? 'bg-green-50/90 text-green-800 dark:bg-green-900/80 dark:text-green-200'
-                : 'bg-red-50/90 text-red-800 dark:bg-red-900/80 dark:text-red-200',
+                ? 'bg-success-50/90 text-success-800 dark:bg-success-900/80 dark:text-success-200'
+                : 'bg-error-50/90 text-error-800 dark:bg-error-900/80 dark:text-error-200',
             ].join(' ')}
           >
             {/* Drop icon */}
@@ -186,8 +186,8 @@ export function GlobalDropZone({ children, onFilesDropped }: GlobalDropZoneProps
               className={[
                 'h-12 w-12',
                 isValidType
-                  ? 'text-green-600 dark:text-green-400'
-                  : 'text-red-600 dark:text-red-400',
+                  ? 'text-success-600 dark:text-success-400'
+                  : 'text-error-600 dark:text-error-400',
               ].join(' ')}
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

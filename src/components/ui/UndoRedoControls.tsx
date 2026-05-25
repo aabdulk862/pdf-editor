@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useHistoryStore } from '../../store/history';
+import { Icon } from '../../design-system/primitives/Icon';
 
 /**
  * Undo/Redo UI controls component.
@@ -54,19 +55,12 @@ export function UndoRedoControls() {
         aria-label="Undo"
         title="Undo (Ctrl+Z)"
       >
-        <svg
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M4 7h8a5 5 0 010 10H9" />
-          <path d="M7 4L4 7l3 3" />
-        </svg>
+        <Icon size={20}>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M4 7h8a5 5 0 010 10H9" />
+            <path d="M7 4L4 7l3 3" />
+          </svg>
+        </Icon>
       </button>
 
       <button
@@ -77,19 +71,12 @@ export function UndoRedoControls() {
         aria-label="Redo"
         title="Redo (Ctrl+Y)"
       >
-        <svg
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M16 7H8a5 5 0 000 10h3" />
-          <path d="M13 4l3 3-3 3" />
-        </svg>
+        <Icon size={20}>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M16 7H8a5 5 0 000 10h3" />
+            <path d="M13 4l3 3-3 3" />
+          </svg>
+        </Icon>
       </button>
     </div>
   );

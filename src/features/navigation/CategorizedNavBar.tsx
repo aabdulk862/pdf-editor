@@ -297,7 +297,7 @@ export function CategorizedNavBar() {
         {/* Tooltip */}
         {tooltip && (
           <div
-            className="fixed left-14 z-50 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-gray-700 rounded shadow-lg whitespace-nowrap pointer-events-none"
+            className="fixed left-14 z-50 px-2 py-1 text-xs font-medium text-white bg-secondary-900 dark:bg-secondary-700 rounded shadow-level-3 whitespace-nowrap pointer-events-none"
             style={{
               top: tooltip.top,
               transform: 'translateY(-50%)',

@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../../store/theme';
+import { Icon } from '../../design-system/primitives/Icon';
 
 interface NavRoute {
   path: string;
@@ -48,32 +49,18 @@ function ThemeToggleButton() {
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
       {theme === 'light' ? (
-        <svg
-          className="h-5 w-5 flex-shrink-0"
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M17 10a7 7 0 01-9.9 6.4A7 7 0 0110 3.1a5.5 5.5 0 007 6.9z" />
-        </svg>
+        <Icon size={20} className="flex-shrink-0">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M17 10a7 7 0 01-9.9 6.4A7 7 0 0110 3.1a5.5 5.5 0 007 6.9z" />
+          </svg>
+        </Icon>
       ) : (
-        <svg
-          className="h-5 w-5 flex-shrink-0"
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="10" cy="10" r="4" />
-          <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41" />
-        </svg>
+        <Icon size={20} className="flex-shrink-0">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true">
+            <circle cx="10" cy="10" r="4" />
+            <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41" />
+          </svg>
+        </Icon>
       )}
       <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
     </button>

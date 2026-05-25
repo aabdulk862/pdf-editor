@@ -83,7 +83,7 @@ export const NavToolLink = forwardRef<HTMLAnchorElement, NavToolLinkProps>(funct
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900',
           isActive
             ? 'border-l-[3px] border-primary-600 bg-primary-50 dark:bg-primary-900 text-primary-700 dark:text-primary-200'
-            : 'border-l-[3px] border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
+            : 'border-l-[3px] border-transparent hover:bg-secondary-100 dark:hover:bg-secondary-800 text-secondary-700 dark:text-secondary-300',
         ].join(' ')
       }
     >

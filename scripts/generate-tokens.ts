@@ -8,7 +8,7 @@
  * Usage: npx tsx scripts/generate-tokens.ts
  */
 
-import { writeFileSync, readFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -275,20 +275,24 @@ export default config;
 // ---------------------------------------------------------------------------
 
 function main(): void {
+  // eslint-disable-next-line no-console
   console.log('🎨 Generating design tokens...\n');
 
   // 1. Generate CSS custom properties
   const cssContent = generateCSSCustomProperties();
   const cssPath = resolve(ROOT, 'src/design-system/tokens.generated.css');
   writeFileSync(cssPath, cssContent, 'utf-8');
+  // eslint-disable-next-line no-console
   console.log(`  ✓ Generated ${cssPath}`);
 
   // 2. Generate Tailwind config
   const tailwindContent = generateTailwindConfig();
   const tailwindPath = resolve(ROOT, 'tailwind.config.ts');
   writeFileSync(tailwindPath, tailwindContent, 'utf-8');
+  // eslint-disable-next-line no-console
   console.log(`  ✓ Updated ${tailwindPath}`);
 
+  // eslint-disable-next-line no-console
   console.log('\n✅ Token generation complete!');
 }
 

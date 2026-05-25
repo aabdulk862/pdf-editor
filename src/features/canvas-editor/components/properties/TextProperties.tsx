@@ -142,7 +142,7 @@ export const TextProperties: React.FC<TextPropertiesProps> = ({ element, onChang
           value={element.fontFamily}
           onChange={handleFontFamilyChange}
           className="min-h-[44px] px-3 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
             hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out cursor-pointer"
         >
           {FONT_FAMILIES.map((font) => (
@@ -169,7 +169,7 @@ export const TextProperties: React.FC<TextPropertiesProps> = ({ element, onChang
           value={element.fontSize}
           onChange={handleFontSizeChange}
           className="min-h-[44px] px-3 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
             hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
         />
       </div>
@@ -182,8 +182,8 @@ export const TextProperties: React.FC<TextPropertiesProps> = ({ element, onChang
             type="button"
             onClick={() => onChange({ bold: !element.bold })}
             className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
-              font-bold text-sm transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500
-              ${element.bold ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
+              font-bold text-sm transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500
+              ${element.bold ? 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
             aria-label="Bold"
             aria-pressed={element.bold}
           >
@@ -193,8 +193,8 @@ export const TextProperties: React.FC<TextPropertiesProps> = ({ element, onChang
             type="button"
             onClick={() => onChange({ italic: !element.italic })}
             className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
-              italic text-sm transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500
-              ${element.italic ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
+              italic text-sm transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500
+              ${element.italic ? 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
             aria-label="Italic"
             aria-pressed={element.italic}
           >
@@ -204,8 +204,8 @@ export const TextProperties: React.FC<TextPropertiesProps> = ({ element, onChang
             type="button"
             onClick={() => onChange({ underline: !element.underline })}
             className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
-              underline text-sm transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500
-              ${element.underline ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
+              underline text-sm transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500
+              ${element.underline ? 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
             aria-label="Underline"
             aria-pressed={element.underline}
           >
@@ -224,8 +224,8 @@ export const TextProperties: React.FC<TextPropertiesProps> = ({ element, onChang
               type="button"
               onClick={() => handleAlignmentChange(opt.value)}
               className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
-                transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500
-                ${element.alignment === opt.value ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
+                transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500
+                ${element.alignment === opt.value ? 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
               aria-label={opt.label}
               aria-pressed={element.alignment === opt.value}
             >

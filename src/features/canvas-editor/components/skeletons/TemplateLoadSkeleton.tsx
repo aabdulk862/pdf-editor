@@ -26,7 +26,7 @@ export function TemplateLoadSkeleton({
       aria-busy="true"
     >
       {/* Template thumbnail with shimmer overlay */}
-      <div className="relative w-[180px] h-[240px] rounded-lg overflow-hidden shadow-md bg-secondary-100 dark:bg-secondary-700">
+      <div className="relative w-[180px] h-[240px] rounded-lg overflow-hidden shadow-level-2 bg-secondary-100 dark:bg-secondary-700">
         {/* Thumbnail image (if available) */}
         {thumbnailSrc && (
           <img

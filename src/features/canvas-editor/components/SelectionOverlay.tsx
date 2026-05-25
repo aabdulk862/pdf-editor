@@ -114,7 +114,7 @@ export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({ onHandlePoin
     >
       {/* Selection bounding box */}
       <div
-        className="absolute border-2 border-blue-500"
+        className="absolute border-2 border-primary-500"
         style={{
           left: screenX,
           top: screenY,
@@ -125,7 +125,7 @@ export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({ onHandlePoin
       >
         {/* Rotate handle connector line */}
         <div
-          className="absolute left-1/2 w-px bg-blue-500"
+          className="absolute left-1/2 w-px bg-primary-500"
           style={{
             top: -ROTATE_HANDLE_OFFSET + HANDLE_SIZE / 2,
             height: ROTATE_HANDLE_OFFSET - HANDLE_SIZE / 2,
@@ -160,9 +160,9 @@ export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({ onHandlePoin
           >
             {/* Visual handle indicator */}
             {handle.position === 'rotate' ? (
-              <div className="h-3 w-3 rounded-full border-2 border-blue-500 bg-white shadow-sm" />
+              <div className="h-3 w-3 rounded-full border-2 border-primary-500 bg-white shadow-level-1" />
             ) : (
-              <div className="h-3 w-3 rounded-sm border-2 border-blue-500 bg-white shadow-sm" />
+              <div className="h-3 w-3 rounded-sm border-2 border-primary-500 bg-white shadow-level-1" />
             )}
           </div>
         ))}

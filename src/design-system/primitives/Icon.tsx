@@ -111,6 +111,7 @@ export function Icon({
 
   if (!paths) {
     if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
       console.warn(
         `[Icon] Unknown icon name: "${name}". Available icons: ${Object.keys(iconPaths).join(', ')}`,
       );

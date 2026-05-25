@@ -3,6 +3,7 @@ import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/hooks/useToast';
+import { getDevicePixelRatio } from '@/core/render-engine/hidpi';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import * as pdfjsLib from 'pdfjs-dist';
 
@@ -104,11 +105,15 @@ export function ReorderPage(): JSX.Element {
       try {
         const page = await doc.getPage(i + 1);
         const viewport = page.getViewport({ scale: 0.3 });
+        const dpr = getDevicePixelRatio();
         const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        canvas.width = Math.round(viewport.width * dpr);
+        canvas.height = Math.round(viewport.height * dpr);
+        canvas.style.width = `${viewport.width}px`;
+        canvas.style.height = `${viewport.height}px`;
         const context = canvas.getContext('2d');
         if (context) {
+          context.scale(dpr, dpr);
           await page.render({ canvasContext: context, viewport }).promise;
         }
         updatedThumbs[i] = { pageNumber: i + 1, canvas, loading: false };
@@ -382,13 +387,13 @@ function DraggablePageThumbnail({
       onDrop={(e) => onDrop(e, displayIndex)}
       aria-label={`Page ${originalPageNum}, position ${displayIndex + 1}. Drag to reorder.`}
       className={[
-        'relative flex flex-col items-center rounded-lg border-2 p-2 cursor-grab transition-all duration-normal ease-in-out',
+        'relative flex flex-col items-center rounded-lg border-2 p-2 cursor-grab transition-[border-color,background-color,opacity,transform,box-shadow] duration-normal ease-in-out',
         'min-w-[100px] min-h-[44px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
         isDragging
           ? 'opacity-50 border-primary-400 bg-primary-50 dark:bg-primary-900/20'
           : isDropTarget
-            ? 'border-primary-500 bg-primary-100 dark:bg-primary-900/30 scale-105 shadow-lg'
+            ? 'border-primary-500 bg-primary-100 dark:bg-primary-900/30 scale-105 shadow-level-3'
             : 'border-secondary-200 dark:border-secondary-600 bg-secondary-50 dark:bg-secondary-700 hover:border-primary-300 dark:hover:border-primary-500',
       ]
         .filter(Boolean)
