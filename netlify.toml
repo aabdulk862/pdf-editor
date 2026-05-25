@@ -5,20 +5,20 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Immutable caching for content-hashed assets (JS, CSS, fonts, images in /tools/assets/)
+# Immutable caching for content-hashed assets (JS, CSS, fonts, images in /assets/)
 [[headers]]
-  for = "/tools/assets/*"
+  for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Short cache for HTML (must revalidate to pick up new hashed asset references)
 [[headers]]
-  for = "/tools/*.html"
+  for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # Short cache for service worker (must always be fresh)
 [[headers]]
-  for = "/tools/service-worker.js"
+  for = "/service-worker.js"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"

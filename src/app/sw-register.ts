@@ -13,9 +13,7 @@ export function registerServiceWorker(): void {
 
   window.addEventListener('load', async () => {
     try {
-      const registration = await navigator.serviceWorker.register('/tools/service-worker.js', {
-        scope: '/tools/',
-      });
+      const registration = await navigator.serviceWorker.register('/service-worker.js');
 
       // Listen for new service worker installations
       registration.addEventListener('updatefound', () => {
