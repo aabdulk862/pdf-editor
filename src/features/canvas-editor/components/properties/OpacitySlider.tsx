@@ -53,7 +53,7 @@ export const OpacitySlider: React.FC<OpacitySliderProps> = ({ value, onChange })
             onChange={handleInputChange}
             className="w-14 min-h-[44px] px-2 text-sm text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+              hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
             aria-label="Opacity value"
           />
           <span className="text-xs text-secondary-500 dark:text-secondary-400">%</span>

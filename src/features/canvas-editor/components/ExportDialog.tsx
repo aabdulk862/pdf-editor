@@ -144,7 +144,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
         'backdrop:bg-black/50 backdrop:backdrop-blur-sm',
         'bg-white dark:bg-secondary-800',
         'w-[calc(100%-2rem)] max-w-lg',
-        'animate-in fade-in duration-150 motion-reduce:animate-none',
+        'animate-in fade-in duration-normal motion-reduce:animate-none',
       ].join(' ')}
     >
       <div className="flex flex-col">
@@ -160,7 +160,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
             type="button"
             onClick={onClose}
             aria-label="Close export dialog"
-            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-secondary-500 transition-colors hover:bg-secondary-100 hover:text-secondary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-200"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-secondary-500 transition-colors duration-normal ease-in-out hover:bg-secondary-100 hover:text-secondary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -193,7 +193,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
                   onClick={() => setFormat(opt.value)}
                   aria-pressed={format === opt.value}
                   className={[
-                    'flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150',
+                    'flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-normal ease-in-out',
                     'min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                     format === opt.value
                       ? 'bg-white text-primary-700 shadow-sm dark:bg-secondary-600 dark:text-primary-300'
@@ -285,7 +285,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
               aria-checked={batch}
               onClick={() => setBatch(!batch)}
               className={[
-                'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 motion-reduce:transition-none',
+                'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-moderate ease-in-out motion-reduce:transition-none',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                 batch
                   ? 'bg-primary-600 dark:bg-primary-500'
@@ -295,7 +295,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
               <span
                 aria-hidden="true"
                 className={[
-                  'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 motion-reduce:transition-none',
+                  'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-moderate ease-in-out motion-reduce:transition-none',
                   batch ? 'translate-x-5' : 'translate-x-0',
                 ].join(' ')}
               />
@@ -314,7 +314,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
                 aria-checked={insertIntoPdf}
                 onClick={() => setInsertIntoPdf(!insertIntoPdf)}
                 className={[
-                  'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 motion-reduce:transition-none',
+                  'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-moderate ease-in-out motion-reduce:transition-none',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                   insertIntoPdf
                     ? 'bg-primary-600 dark:bg-primary-500'
@@ -324,7 +324,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
                 <span
                   aria-hidden="true"
                   className={[
-                    'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 motion-reduce:transition-none',
+                    'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm ring-0 transition-transform duration-moderate ease-in-out motion-reduce:transition-none',
                     insertIntoPdf ? 'translate-x-5' : 'translate-x-0',
                   ].join(' ')}
                 />
@@ -344,7 +344,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
               </p>
               <div className="h-2 w-full overflow-hidden rounded-full bg-primary-100 dark:bg-primary-800">
                 <div
-                  className="h-full rounded-full bg-primary-500 transition-all duration-200 ease-out motion-reduce:transition-none dark:bg-primary-400"
+                  className="h-full rounded-full bg-primary-500 transition-all duration-moderate ease-out motion-reduce:transition-none dark:bg-primary-400"
                   style={{ width: `${progressPercent}%` }}
                   role="progressbar"
                   aria-valuenow={progressPercent}
@@ -389,7 +389,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
                   type="button"
                   onClick={onClose}
                   aria-label="Dismiss error"
-                  className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-error-500 transition-colors hover:bg-error-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error-500 dark:hover:bg-error-800"
+                  className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-error-500 transition-colors duration-normal ease-in-out hover:bg-error-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error-500 dark:hover:bg-error-800"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -415,7 +415,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-secondary-700 transition-colors hover:bg-secondary-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-200 dark:hover:bg-secondary-800"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-secondary-700 transition-colors duration-normal ease-in-out hover:bg-secondary-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-200 dark:hover:bg-secondary-800"
           >
             Cancel
           </button>
@@ -425,7 +425,7 @@ export function ExportDialog({ isOpen, onClose, onExport }: ExportDialogProps): 
             disabled={isExporting}
             aria-disabled={isExporting}
             className={[
-              'inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-colors duration-150',
+              'inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white transition-colors duration-normal ease-in-out',
               'bg-primary-600 hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
               'dark:bg-primary-500 dark:hover:bg-primary-600',
               isExporting ? 'cursor-not-allowed opacity-50' : '',

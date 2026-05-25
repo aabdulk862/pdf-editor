@@ -210,7 +210,7 @@ export function QuickActionsBar(): JSX.Element | null {
         'flex items-center gap-2 mt-3 p-3 rounded-lg',
         'border border-secondary-200 dark:border-secondary-700',
         'bg-secondary-50 dark:bg-secondary-800/50',
-        'transition-all duration-300 ease-in-out motion-reduce:transition-none',
+        'transition-all duration-slow ease-in-out motion-reduce:transition-none',
         isAnimatedIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1',
       ].join(' ')}
     >
@@ -234,7 +234,7 @@ export function QuickActionsBar(): JSX.Element | null {
               'hover:bg-primary-50 hover:border-primary-300 hover:text-primary-700',
               'dark:hover:bg-primary-900/20 dark:hover:border-primary-600 dark:hover:text-primary-300',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
-              'transition-colors duration-150',
+              'transition-colors duration-normal ease-in-out',
               'min-h-[36px]',
             ].join(' ')}
           >
@@ -254,7 +254,7 @@ export function QuickActionsBar(): JSX.Element | null {
           'text-secondary-400 hover:text-secondary-600 dark:text-secondary-500 dark:hover:text-secondary-300',
           'hover:bg-secondary-200 dark:hover:bg-secondary-700',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-          'transition-colors duration-150',
+          'transition-colors duration-normal ease-in-out',
           'min-h-[36px] min-w-[36px] flex items-center justify-center',
         ].join(' ')}
       >

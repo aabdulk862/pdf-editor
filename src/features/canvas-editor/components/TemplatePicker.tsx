@@ -149,7 +149,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
         'backdrop:bg-black/50 backdrop:backdrop-blur-sm',
         'bg-white dark:bg-secondary-800',
         'w-[calc(100%-2rem)] max-w-3xl max-h-[85vh]',
-        'animate-in fade-in duration-150 motion-reduce:animate-none',
+        'animate-in fade-in duration-normal motion-reduce:animate-none',
       ].join(' ')}
     >
       <div className="flex h-full max-h-[85vh] flex-col">
@@ -165,7 +165,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
             type="button"
             onClick={onClose}
             aria-label="Close template picker"
-            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-secondary-500 transition-colors hover:bg-secondary-100 hover:text-secondary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-200"
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-secondary-500 transition-colors duration-normal ease-in-out hover:bg-secondary-100 hover:text-secondary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-secondary-400 dark:hover:bg-secondary-700 dark:hover:text-secondary-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +191,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
               onClick={() => setActiveCategory('all')}
               aria-pressed={activeCategory === 'all'}
               className={[
-                'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-150',
+                'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-normal ease-in-out',
                 'min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                 activeCategory === 'all'
                   ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
@@ -207,7 +207,7 @@ export function TemplatePicker({ isOpen, onClose, onSelect }: TemplatePickerProp
                 onClick={() => setActiveCategory(cat)}
                 aria-pressed={activeCategory === cat}
                 className={[
-                  'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-150',
+                  'rounded-md px-3 py-1.5 text-sm font-medium transition-colors duration-normal ease-in-out',
                   'min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                   activeCategory === cat
                     ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
@@ -264,7 +264,7 @@ function TemplateCard({ template, onSelect, disabled }: TemplateCardProps) {
       aria-label={`Use ${template.name} template`}
       className={[
         'group flex flex-col items-center gap-2 rounded-lg border border-secondary-200 p-3',
-        'transition-all duration-150 motion-reduce:transition-none motion-reduce:transform-none',
+        'transition-all duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none',
         'hover:border-primary-300 hover:shadow-md hover:scale-[1.02]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:border-secondary-600 dark:hover:border-primary-500',

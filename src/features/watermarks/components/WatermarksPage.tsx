@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
+import { ProcessingState } from '@/components/ui/ProcessingState';
+import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import type { WatermarkConfig } from '@/types/operations';
@@ -233,38 +235,15 @@ export function WatermarksPage(): JSX.Element {
               <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300">
                 Type
               </label>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setWatermarkType('text')}
-                  className={[
-                    'min-h-[44px] min-w-[44px] rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-150',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-                    'dark:focus-visible:ring-offset-background-dark',
-                    watermarkType === 'text'
-                      ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                      : 'border-secondary-300 bg-secondary-50 text-secondary-700 hover:border-primary-400 hover:bg-secondary-100 dark:border-secondary-600 dark:bg-secondary-900 dark:text-secondary-300 dark:hover:border-primary-500 dark:hover:bg-secondary-700',
-                  ].join(' ')}
-                  aria-pressed={watermarkType === 'text'}
-                >
-                  Text
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setWatermarkType('image')}
-                  className={[
-                    'min-h-[44px] min-w-[44px] rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-150',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-                    'dark:focus-visible:ring-offset-background-dark',
-                    watermarkType === 'image'
-                      ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                      : 'border-secondary-300 bg-secondary-50 text-secondary-700 hover:border-primary-400 hover:bg-secondary-100 dark:border-secondary-600 dark:bg-secondary-900 dark:text-secondary-300 dark:hover:border-primary-500 dark:hover:bg-secondary-700',
-                  ].join(' ')}
-                  aria-pressed={watermarkType === 'image'}
-                >
-                  Image
-                </button>
-              </div>
+              <SegmentedControl
+                options={[
+                  { value: 'text', label: 'Text' },
+                  { value: 'image', label: 'Image' },
+                ]}
+                value={watermarkType}
+                onChange={(val) => setWatermarkType(val as WatermarkType)}
+                size="sm"
+              />
             </div>
 
             {/* Text Input */}
@@ -314,7 +293,7 @@ export function WatermarksPage(): JSX.Element {
                   <label
                     htmlFor="watermark-image"
                     className={[
-                      'inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-150',
+                      'inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors duration-normal ease-in-out',
                       'border-secondary-300 bg-secondary-50 text-secondary-700 hover:border-primary-400 hover:bg-secondary-100',
                       'dark:border-secondary-600 dark:bg-secondary-900 dark:text-secondary-300 dark:hover:border-primary-500 dark:hover:bg-secondary-700',
                       'focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2',
@@ -408,22 +387,43 @@ export function WatermarksPage(): JSX.Element {
                 Apply Watermark
               </Button>
               {modifiedData && (
-                <Button variant="secondary" onClick={handleDownload}>
-                  Download
-                </Button>
+                <div className="motion-safe:animate-page-enter">
+                  <Button variant="secondary" onClick={handleDownload}>
+                    Download
+                  </Button>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Preview */}
-          <PreviewPanel
-            originalDoc={pdfData}
-            modifiedDoc={modifiedData}
-            zoom={zoom}
-            onZoomChange={setZoom}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
+          {/* Processing state skeleton */}
+          <ProcessingState
+            isProcessing={processing}
+            label="Applying watermark..."
+            variant="preview"
           />
+
+          {/* Preview — fades in when result is ready */}
+          <div
+            className={[
+              'motion-safe:transition-[opacity,transform] motion-safe:duration-moderate motion-safe:ease-out',
+              'motion-reduce:transition-none',
+              modifiedData
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-2 pointer-events-none h-0 overflow-hidden',
+            ].join(' ')}
+          >
+            {(pdfData || modifiedData) && (
+              <PreviewPanel
+                originalDoc={pdfData}
+                modifiedDoc={modifiedData}
+                zoom={zoom}
+                onZoomChange={setZoom}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+              />
+            )}
+          </div>
         </>
       )}
     </div>

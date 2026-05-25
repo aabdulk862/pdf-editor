@@ -3,6 +3,8 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
+import { ProcessingState } from '@/components/ui/ProcessingState';
+import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import { validateDimension } from '@/utils/validation';
@@ -356,65 +358,27 @@ export function PageSizePage(): JSX.Element {
         <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Page Size</h2>
 
         {/* Size mode toggle */}
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setSizeMode('predefined')}
-            className={[
-              'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-              'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-              'dark:focus-visible:ring-offset-background-dark',
-              sizeMode === 'predefined'
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-            ].join(' ')}
-            aria-pressed={sizeMode === 'predefined'}
-          >
-            Predefined
-          </button>
-          <button
-            type="button"
-            onClick={() => setSizeMode('custom')}
-            className={[
-              'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-              'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-              'dark:focus-visible:ring-offset-background-dark',
-              sizeMode === 'custom'
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-            ].join(' ')}
-            aria-pressed={sizeMode === 'custom'}
-          >
-            Custom
-          </button>
-        </div>
+        <SegmentedControl
+          options={[
+            { value: 'predefined', label: 'Predefined' },
+            { value: 'custom', label: 'Custom' },
+          ]}
+          value={sizeMode}
+          onChange={(val) => setSizeMode(val as SizeMode)}
+          size="sm"
+        />
 
         {/* Predefined sizes */}
         {sizeMode === 'predefined' && (
-          <div className="flex flex-wrap gap-2">
-            {PREDEFINED_SIZES.map((size, index) => (
-              <button
-                key={size.label}
-                type="button"
-                onClick={() => setSelectedPreset(index)}
-                className={[
-                  'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-                  'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-                  'dark:focus-visible:ring-offset-background-dark',
-                  selectedPreset === index
-                    ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                    : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-                ].join(' ')}
-                aria-pressed={selectedPreset === index}
-                aria-label={`${size.label} (${size.width}×${size.height}mm)`}
-              >
-                <span>{size.label}</span>
-                <span className="ml-2 text-xs text-secondary-500 dark:text-secondary-400">
-                  {size.width}×{size.height}mm
-                </span>
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={PREDEFINED_SIZES.map((size, index) => ({
+              value: String(index),
+              label: `${size.label} (${size.width}×${size.height}mm)`,
+            }))}
+            value={String(selectedPreset)}
+            onChange={(val) => setSelectedPreset(Number(val))}
+            size="sm"
+          />
         )}
 
         {/* Custom dimensions */}
@@ -468,111 +432,59 @@ export function PageSizePage(): JSX.Element {
           <h3 className="text-xs font-medium text-secondary-600 dark:text-secondary-400">
             Orientation
           </h3>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setOrientation('portrait')}
-              className={[
-                'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-                'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-                'dark:focus-visible:ring-offset-background-dark',
-                orientation === 'portrait'
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                  : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-              ].join(' ')}
-              aria-pressed={orientation === 'portrait'}
-              aria-label="Portrait orientation"
-            >
-              <svg
-                className="w-4 h-4 mr-2"
-                viewBox="0 0 24 32"
-                fill="none"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <rect x="2" y="2" width="20" height="28" rx="2" strokeWidth="2" />
-              </svg>
-              Portrait
-            </button>
-            <button
-              type="button"
-              onClick={() => setOrientation('landscape')}
-              className={[
-                'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-                'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-                'dark:focus-visible:ring-offset-background-dark',
-                orientation === 'landscape'
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                  : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-              ].join(' ')}
-              aria-pressed={orientation === 'landscape'}
-              aria-label="Landscape orientation"
-            >
-              <svg
-                className="w-5 h-4 mr-2"
-                viewBox="0 0 32 24"
-                fill="none"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <rect x="2" y="2" width="28" height="20" rx="2" strokeWidth="2" />
-              </svg>
-              Landscape
-            </button>
-          </div>
+          <SegmentedControl
+            options={[
+              {
+                value: 'portrait',
+                label: 'Portrait',
+                icon: (
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 32"
+                    fill="none"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <rect x="2" y="2" width="20" height="28" rx="2" strokeWidth="2" />
+                  </svg>
+                ),
+              },
+              {
+                value: 'landscape',
+                label: 'Landscape',
+                icon: (
+                  <svg
+                    className="w-5 h-4"
+                    viewBox="0 0 32 24"
+                    fill="none"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <rect x="2" y="2" width="28" height="20" rx="2" strokeWidth="2" />
+                  </svg>
+                ),
+              },
+            ]}
+            value={orientation}
+            onChange={(val) => setOrientation(val as Orientation)}
+            size="sm"
+          />
         </div>
       </div>
 
       {/* Apply mode */}
       <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800 space-y-4">
         <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Apply To</h2>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setApplyMode('all')}
-            className={[
-              'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-              'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-              'dark:focus-visible:ring-offset-background-dark',
-              applyMode === 'all'
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-            ].join(' ')}
-            aria-pressed={applyMode === 'all'}
-          >
-            All Pages
-          </button>
-          <button
-            type="button"
-            onClick={() => setApplyMode('single')}
-            className={[
-              'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-              'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-              'dark:focus-visible:ring-offset-background-dark',
-              applyMode === 'single'
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-            ].join(' ')}
-            aria-pressed={applyMode === 'single'}
-          >
-            Single Page
-          </button>
-          <button
-            type="button"
-            onClick={() => setApplyMode('selected')}
-            className={[
-              'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-              'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-              'dark:focus-visible:ring-offset-background-dark',
-              applyMode === 'selected'
-                ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-            ].join(' ')}
-            aria-pressed={applyMode === 'selected'}
-          >
-            Selected Pages
-          </button>
-        </div>
+        <SegmentedControl
+          options={[
+            { value: 'all', label: 'All Pages' },
+            { value: 'single', label: 'Single Page' },
+            { value: 'selected', label: 'Selected Pages' },
+          ]}
+          value={applyMode}
+          onChange={(val) => setApplyMode(val as ApplyMode)}
+          size="sm"
+        />
 
         {/* Single page selector */}
         {applyMode === 'single' && (
@@ -640,26 +552,41 @@ export function PageSizePage(): JSX.Element {
           {isProcessing ? 'Resizing...' : 'Resize Pages'}
         </Button>
         {resizedData && (
-          <Button variant="secondary" onClick={handleDownload}>
-            Download Resized PDF
-          </Button>
+          <div className="motion-safe:animate-page-enter">
+            <Button variant="secondary" onClick={handleDownload}>
+              Download Resized PDF
+            </Button>
+          </div>
         )}
       </div>
 
-      {/* Preview */}
-      {resizedData && (
-        <div className="space-y-3">
-          <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Preview</h2>
-          <PreviewPanel
-            originalDoc={pdfData}
-            modifiedDoc={resizedData}
-            zoom={zoom}
-            onZoomChange={setZoom}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
+      {/* Processing state skeleton */}
+      <ProcessingState isProcessing={isProcessing} label="Resizing pages..." variant="preview" />
+
+      {/* Preview — fades in when result is ready */}
+      <div
+        className={[
+          'motion-safe:transition-[opacity,transform] motion-safe:duration-moderate motion-safe:ease-out',
+          'motion-reduce:transition-none',
+          resizedData
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-2 pointer-events-none h-0 overflow-hidden',
+        ].join(' ')}
+      >
+        {resizedData && (
+          <div className="space-y-3">
+            <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Preview</h2>
+            <PreviewPanel
+              originalDoc={pdfData}
+              modifiedDoc={resizedData}
+              zoom={zoom}
+              onZoomChange={setZoom}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -699,7 +626,7 @@ function PageThumbnailCard({
       aria-pressed={isSelected}
       aria-label={`Page ${thumbnail.pageNumber}${isSelected ? ' (selected)' : ''}`}
       className={[
-        'relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-150 cursor-pointer',
+        'relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-normal ease-in-out cursor-pointer',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:focus-visible:ring-offset-background-dark',
         'min-w-[44px] min-h-[44px]',
@@ -712,13 +639,13 @@ function PageThumbnailCard({
       {isSelected && (
         <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
           <svg
-            className="w-3 h-3 text-white"
+            className="w-4 h-4 text-white"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
       )}

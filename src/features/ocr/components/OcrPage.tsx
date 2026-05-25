@@ -178,7 +178,7 @@ export function OcrPage(): JSX.Element {
         <aside className="w-full shrink-0 space-y-4 overflow-y-auto md:max-w-[320px]">
           {/* State: Empty — show upload */}
           <div
-            className={`transition-opacity duration-200 ${
+            className={`transition-opacity duration-moderate ease-out ${
               workflowState === 'empty' ? 'opacity-100' : 'hidden'
             }`}
           >
@@ -194,7 +194,7 @@ export function OcrPage(): JSX.Element {
 
           {/* State: Detecting — show skeleton loading */}
           <div
-            className={`transition-opacity duration-200 ${
+            className={`transition-opacity duration-moderate ease-out ${
               workflowState === 'detecting' ? 'opacity-100' : 'hidden'
             }`}
           >
@@ -207,7 +207,7 @@ export function OcrPage(): JSX.Element {
 
           {/* State: Ready — show controls */}
           <div
-            className={`space-y-4 transition-opacity duration-200 ${
+            className={`space-y-4 transition-opacity duration-moderate ease-out ${
               workflowState === 'ready' ? 'opacity-100' : 'hidden'
             }`}
           >
@@ -272,7 +272,7 @@ export function OcrPage(): JSX.Element {
 
           {/* State: Processing — show progress */}
           <div
-            className={`transition-opacity duration-200 ${
+            className={`transition-opacity duration-moderate ease-out ${
               workflowState === 'processing' ? 'opacity-100' : 'hidden'
             }`}
           >
@@ -281,7 +281,7 @@ export function OcrPage(): JSX.Element {
 
           {/* State: Results — show results panel */}
           <div
-            className={`transition-opacity duration-200 ${
+            className={`transition-opacity duration-moderate ease-out ${
               workflowState === 'results' ? 'opacity-100' : 'hidden'
             }`}
           >
@@ -429,7 +429,7 @@ function DocumentPreview({
       </p>
 
       {/* Status overlay based on workflow state */}
-      <div className="transition-opacity duration-200">
+      <div className="transition-opacity duration-moderate ease-out">
         {workflowState === 'detecting' && (
           <div className="flex items-center gap-2 text-sm text-secondary-500 dark:text-secondary-400">
             <svg

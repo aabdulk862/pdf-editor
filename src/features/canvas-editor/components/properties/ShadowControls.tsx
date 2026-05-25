@@ -46,7 +46,7 @@ export const ShadowControls: React.FC<ShadowControlsProps> = ({ shadow, onChange
           type="button"
           onClick={handleToggle}
           className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
-            transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500
+            transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500
             ${isEnabled ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-secondary-100 dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-500 dark:text-secondary-400 hover:bg-secondary-200 dark:hover:bg-secondary-700'}`}
           aria-label={isEnabled ? 'Disable shadow' : 'Enable shadow'}
           aria-pressed={!!isEnabled}
@@ -96,7 +96,7 @@ export const ShadowControls: React.FC<ShadowControlsProps> = ({ shadow, onChange
               value={current.offsetX}
               onChange={(e) => handleChange('offsetX', Number(e.target.value))}
               className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Shadow X offset value"
             />
           </div>
@@ -127,7 +127,7 @@ export const ShadowControls: React.FC<ShadowControlsProps> = ({ shadow, onChange
               value={current.offsetY}
               onChange={(e) => handleChange('offsetY', Number(e.target.value))}
               className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Shadow Y offset value"
             />
           </div>
@@ -158,7 +158,7 @@ export const ShadowControls: React.FC<ShadowControlsProps> = ({ shadow, onChange
               value={current.blur}
               onChange={(e) => handleChange('blur', Number(e.target.value))}
               className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Shadow blur value"
             />
           </div>

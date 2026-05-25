@@ -309,7 +309,7 @@ export function SignaturePage(): JSX.Element {
                   type="button"
                   onClick={() => setStrokeColor(color.value)}
                   className={[
-                    'w-7 h-7 min-w-[44px] min-h-[44px] rounded-full border-2 flex items-center justify-center transition-all duration-150',
+                    'w-7 h-7 min-w-[44px] min-h-[44px] rounded-full border-2 flex items-center justify-center transition-all duration-normal ease-in-out',
                     strokeColor === color.value
                       ? 'border-primary-500 ring-2 ring-primary-200 dark:ring-primary-800'
                       : 'border-secondary-300 dark:border-secondary-600 hover:border-secondary-400',

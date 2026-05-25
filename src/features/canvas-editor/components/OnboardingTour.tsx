@@ -235,7 +235,7 @@ export function OnboardingTour() {
     >
       {/* Dark overlay with spotlight cutout */}
       <div
-        className="absolute inset-0 bg-black/60 transition-all duration-300 motion-reduce:transition-none"
+        className="absolute inset-0 bg-black/60 transition-all duration-slow ease-in-out motion-reduce:transition-none"
         style={overlayMask ? { clipPath: overlayMask } : undefined}
         aria-hidden="true"
       />
@@ -243,7 +243,7 @@ export function OnboardingTour() {
       {/* Spotlight glow border */}
       {spotlightRect && (
         <div
-          className="absolute rounded-lg pointer-events-none transition-all duration-300 motion-reduce:transition-none"
+          className="absolute rounded-lg pointer-events-none transition-all duration-slow ease-in-out motion-reduce:transition-none"
           style={{
             top: spotlightRect.top,
             left: spotlightRect.left,
@@ -258,7 +258,7 @@ export function OnboardingTour() {
       {/* Tooltip card */}
       <div
         ref={tooltipRef}
-        className="absolute w-80 bg-white dark:bg-secondary-800 rounded-xl shadow-2xl border border-secondary-200 dark:border-secondary-700 p-5 transition-all duration-300 motion-reduce:transition-none"
+        className="absolute w-80 bg-white dark:bg-secondary-800 rounded-xl shadow-2xl border border-secondary-200 dark:border-secondary-700 p-5 transition-all duration-slow ease-in-out motion-reduce:transition-none"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
@@ -271,16 +271,16 @@ export function OnboardingTour() {
         <button
           type="button"
           onClick={skipTour}
-          className="absolute top-3 right-3 flex items-center justify-center w-7 h-7 rounded-md text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="absolute top-3 right-3 flex items-center justify-center w-6 h-6 rounded-md text-secondary-400 dark:text-secondary-500 hover:text-secondary-600 dark:hover:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           aria-label="Close tour"
         >
           <svg
-            width="14"
-            height="14"
+            width="16"
+            height="16"
             viewBox="0 0 14 14"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth={1.5}
             strokeLinecap="round"
           >
             <path d="M1 1l12 12M13 1L1 13" />
@@ -313,7 +313,7 @@ export function OnboardingTour() {
           <button
             type="button"
             onClick={skipTour}
-            className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-2 py-1"
+            className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-2 py-1"
           >
             Skip
           </button>
@@ -321,7 +321,7 @@ export function OnboardingTour() {
           <button
             type="button"
             onClick={isLastStep ? completeTour : nextStep}
-            className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             {isLastStep ? 'Done' : 'Next'}
           </button>
@@ -332,7 +332,7 @@ export function OnboardingTour() {
           {Array.from({ length: totalSteps }, (_, i) => (
             <div
               key={i}
-              className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
+              className={`w-1.5 h-1.5 rounded-full transition-colors duration-moderate ease-in-out ${
                 i === currentStep ? 'bg-blue-500' : 'bg-secondary-300 dark:bg-secondary-600'
               }`}
             />

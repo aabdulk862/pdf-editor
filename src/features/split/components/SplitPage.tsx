@@ -152,7 +152,7 @@ export function SplitPage(): JSX.Element {
               value={rangeInput}
               onChange={(e) => setRangeInput(e.target.value)}
               placeholder="e.g., 1-3, 4-6, 7-10"
-              className="w-full rounded-lg border border-secondary-300 bg-white px-4 py-3 text-sm text-text-light placeholder-secondary-400 transition-colors duration-150 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-secondary-600 dark:bg-secondary-800 dark:text-text-dark dark:placeholder-secondary-500 dark:focus:border-primary-400"
+              className="w-full rounded-lg border border-secondary-300 bg-white px-4 py-3 text-sm text-text-light placeholder-secondary-400 transition-colors duration-normal ease-in-out focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-secondary-600 dark:bg-secondary-800 dark:text-text-dark dark:placeholder-secondary-500 dark:focus:border-primary-400"
               aria-describedby="range-help"
               disabled={splitting}
             />

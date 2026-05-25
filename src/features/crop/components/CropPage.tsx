@@ -572,7 +572,7 @@ export function CropPage(): JSX.Element {
               type="button"
               onClick={goToPreviousPage}
               disabled={currentPage <= 1}
-              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out"
               aria-label="Previous page"
             >
               <svg
@@ -597,7 +597,7 @@ export function CropPage(): JSX.Element {
               type="button"
               onClick={goToNextPage}
               disabled={currentPage >= pageCount}
-              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out"
               aria-label="Next page"
             >
               <svg

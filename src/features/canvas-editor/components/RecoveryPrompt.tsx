@@ -60,7 +60,7 @@ export function RecoveryPrompt({
       aria-modal="true"
       aria-labelledby="recovery-prompt-title"
     >
-      <div className="w-[calc(100%-2rem)] max-w-md bg-white dark:bg-secondary-800 rounded-lg shadow-xl animate-in fade-in duration-150 motion-reduce:animate-none">
+      <div className="w-[calc(100%-2rem)] max-w-md bg-white dark:bg-secondary-800 rounded-lg shadow-xl animate-in fade-in duration-normal motion-reduce:animate-none">
         {/* Header */}
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center gap-3 mb-3">
@@ -109,14 +109,14 @@ export function RecoveryPrompt({
           <button
             type="button"
             onClick={onDiscard}
-            className="min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600 transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium text-secondary-600 dark:text-secondary-300 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             Discard
           </button>
           <button
             type="button"
             onClick={onRestore}
-            className="min-h-[44px] px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="min-h-[44px] px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition-colors duration-normal ease-in-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             autoFocus
           >
             Restore

@@ -318,7 +318,7 @@ export function DeletePagesPage(): JSX.Element {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
                   />
                 </svg>
@@ -455,7 +455,7 @@ function PageThumbnailItem({
         }
       }}
       className={[
-        'relative cursor-pointer rounded-lg border-2 p-2 transition-all duration-150',
+        'relative cursor-pointer rounded-lg border-2 p-2 transition-all duration-normal ease-in-out',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:focus-visible:ring-offset-background-dark',
         'min-h-[44px] min-w-[44px]',
@@ -468,7 +468,7 @@ function PageThumbnailItem({
       {isSelected && (
         <div className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-error-500 text-white">
           <svg
-            className="h-3 w-3"
+            className="h-4 w-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -477,7 +477,7 @@ function PageThumbnailItem({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={3}
+              strokeWidth={2}
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>

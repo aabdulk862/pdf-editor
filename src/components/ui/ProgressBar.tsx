@@ -80,7 +80,7 @@ export function ProgressBar({ progress, label, ariaLabel }: ProgressBarProps): J
     <div
       aria-live="polite"
       aria-atomic="true"
-      className={`w-full transition-opacity duration-300 motion-reduce:transition-none ${fadingOut ? 'opacity-0' : 'opacity-100'}`}
+      className={`w-full transition-opacity duration-slow ease-out motion-reduce:transition-none ${fadingOut ? 'opacity-0' : 'opacity-100'}`}
     >
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-text-light dark:text-text-dark">{label}</span>
@@ -100,7 +100,7 @@ export function ProgressBar({ progress, label, ariaLabel }: ProgressBarProps): J
       >
         {isDeterminate ? (
           <div
-            className="h-full rounded-full bg-primary-500 dark:bg-primary-400 transition-all duration-200 ease-out motion-reduce:transition-none"
+            className="h-full rounded-full bg-primary-500 dark:bg-primary-400 transition-all duration-moderate ease-out motion-reduce:transition-none"
             style={{ width: `${clampedProgress}%` }}
           />
         ) : (

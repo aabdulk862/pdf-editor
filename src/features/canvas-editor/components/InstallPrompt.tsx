@@ -31,7 +31,7 @@ export function InstallPrompt() {
       <button
         type="button"
         onClick={promptInstall}
-        className="flex-shrink-0 px-3 py-1 min-h-[32px] bg-white text-blue-600 rounded-md text-xs font-medium hover:bg-blue-50 active:bg-blue-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600"
+        className="flex-shrink-0 px-3 py-1 min-h-[32px] bg-white text-blue-600 rounded-md text-xs font-medium hover:bg-blue-50 active:bg-blue-100 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600"
       >
         Install
       </button>
@@ -39,16 +39,16 @@ export function InstallPrompt() {
       <button
         type="button"
         onClick={dismiss}
-        className="flex-shrink-0 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-md text-white/80 hover:text-white hover:bg-white/10 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        className="flex-shrink-0 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-md text-white/80 hover:text-white hover:bg-white/10 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
         aria-label="Dismiss install prompt"
       >
         <svg
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           viewBox="0 0 14 14"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth={1.5}
           strokeLinecap="round"
         >
           <path d="M2 2l10 10M12 2L2 12" />

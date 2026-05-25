@@ -104,7 +104,7 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
             value={element.strokeWidth}
             onChange={handleStrokeWidthChange}
             className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-              focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+              focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
             aria-label="Stroke width value"
           />
         </div>
@@ -124,7 +124,7 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
           onChange={handleBorderStyleChange}
           className="min-h-[44px] px-3 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-            hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors cursor-pointer"
+            hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out cursor-pointer"
         >
           {BORDER_STYLES.map((style) => (
             <option key={style.value} value={style.value}>
@@ -166,7 +166,7 @@ export const ShapeProperties: React.FC<ShapePropertiesProps> = ({ element, onCha
               value={element.polygonSides ?? POLYGON_SIDES_MIN}
               onChange={handlePolygonSidesChange}
               className="w-14 min-h-[44px] px-2 text-xs text-center border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Polygon sides value"
             />
           </div>

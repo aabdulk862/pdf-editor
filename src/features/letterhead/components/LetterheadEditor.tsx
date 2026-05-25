@@ -193,7 +193,7 @@ function LogoSection({ logo, onChange }: LogoSectionProps): JSX.Element {
           }}
           className={[
             'flex min-h-[120px] cursor-pointer flex-col items-center justify-center',
-            'rounded-md border-2 border-dashed p-4 transition-colors duration-150',
+            'rounded-md border-2 border-dashed p-4 transition-colors duration-normal ease-in-out',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
             'dark:focus-visible:ring-offset-background-dark',
             isDragOver
@@ -202,7 +202,7 @@ function LogoSection({ logo, onChange }: LogoSectionProps): JSX.Element {
           ].join(' ')}
         >
           <svg
-            className="mb-2 h-8 w-8 text-secondary-400 dark:text-secondary-500"
+            className="mb-2 h-6 w-6 text-secondary-400 dark:text-secondary-500"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -698,7 +698,7 @@ function AlignmentToggles({ value, onChange, label }: AlignmentTogglesProps): JS
             aria-pressed={value === key}
             className={[
               'inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-3 py-2',
-              'transition-colors duration-150',
+              'transition-colors duration-normal ease-in-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
               'first:rounded-l-md last:rounded-r-md',
               value === key

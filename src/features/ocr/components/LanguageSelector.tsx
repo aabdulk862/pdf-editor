@@ -52,7 +52,7 @@ export function LanguageSelector(): JSX.Element {
             <label
               key={lang.code}
               className={[
-                'flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors duration-150',
+                'flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors duration-normal ease-in-out',
                 isSelected
                   ? 'bg-primary-50 dark:bg-primary-900/30'
                   : 'hover:bg-secondary-50 dark:hover:bg-secondary-800',

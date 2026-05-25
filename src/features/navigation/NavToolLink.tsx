@@ -79,7 +79,7 @@ export const NavToolLink = forwardRef<HTMLAnchorElement, NavToolLinkProps>(funct
       onTouchMove={handleTouchMove}
       className={({ isActive }) =>
         [
-          'flex items-center gap-2 px-3 min-h-[44px] rounded-md text-sm transition-colors duration-200',
+          'flex items-center gap-2 px-3 min-h-[44px] rounded-md text-sm transition-colors duration-moderate ease-in-out',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900',
           isActive
             ? 'border-l-[3px] border-primary-600 bg-primary-50 dark:bg-primary-900 text-primary-700 dark:text-primary-200'

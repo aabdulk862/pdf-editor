@@ -344,7 +344,7 @@ function ToolButton({ tool, isActive, onClick }: ToolButtonProps) {
         ref={buttonRef}
         type="button"
         className={`
-          flex items-center justify-center min-w-[44px] min-h-[44px] md:min-w-[36px] md:min-h-[36px] rounded-lg transition-colors duration-150
+          flex items-center justify-center min-w-[44px] min-h-[44px] md:min-w-[36px] md:min-h-[36px] rounded-lg transition-colors duration-normal ease-in-out
           ${
             isActive
               ? 'bg-blue-500/20 text-blue-500'

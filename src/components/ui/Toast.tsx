@@ -168,7 +168,7 @@ function ToastItem({ toast, onDismiss, reducedMotion }: ToastItemProps): JSX.Ele
       <button
         type="button"
         onClick={handleDismiss}
-        className="shrink-0 rounded p-1 opacity-70 transition-opacity motion-reduce:transition-none hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
+        className="shrink-0 rounded p-1 opacity-70 transition-opacity duration-normal ease-out motion-reduce:transition-none hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900"
         aria-label="Dismiss notification"
       >
         <svg
@@ -176,7 +176,7 @@ function ToastItem({ toast, onDismiss, reducedMotion }: ToastItemProps): JSX.Ele
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={2}
+          strokeWidth={1.5}
           aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

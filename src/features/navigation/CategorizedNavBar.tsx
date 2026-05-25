@@ -237,7 +237,7 @@ export function CategorizedNavBar() {
           type="button"
           onClick={toggleSidebar}
           aria-label="Expand sidebar"
-          className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800 transition-colors duration-150"
+          className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800 transition-colors duration-normal ease-in-out"
         >
           <svg
             className="w-5 h-5"
@@ -262,7 +262,7 @@ export function CategorizedNavBar() {
             handleToolMouseEnter(theme === 'light' ? 'Dark Mode' : 'Light Mode', e)
           }
           onMouseLeave={handleToolMouseLeave}
-          className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800 transition-colors duration-150"
+          className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md text-secondary-600 hover:bg-secondary-100 dark:text-secondary-400 dark:hover:bg-secondary-800 transition-colors duration-normal ease-in-out"
         >
           {theme === 'light' ? (
             <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -316,7 +316,7 @@ export function CategorizedNavBar() {
       <div className="px-4 py-3">
         <Link
           to="/"
-          className="text-lg font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+          className="text-lg font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-normal ease-in-out"
         >
           PDF Editor
         </Link>
@@ -416,7 +416,7 @@ export function CategorizedNavBar() {
         ) : (
           <div className="px-3 py-6 text-center">
             <svg
-              className="mx-auto h-10 w-10 text-secondary-400 dark:text-secondary-500"
+              className="mx-auto h-6 w-6 text-secondary-400 dark:text-secondary-500"
               viewBox="0 0 20 20"
               fill="none"
               stroke="currentColor"
@@ -441,7 +441,7 @@ export function CategorizedNavBar() {
         <button
           type="button"
           onClick={toggleSidebar}
-          className="hidden md:flex w-full items-center gap-3 min-h-[44px] px-3 py-2 rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150"
+          className="hidden md:flex w-full items-center gap-3 min-h-[44px] px-3 py-2 rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out"
           aria-label="Collapse sidebar"
         >
           <svg
@@ -463,7 +463,7 @@ export function CategorizedNavBar() {
         <button
           type="button"
           onClick={toggleTheme}
-          className="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150"
+          className="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out"
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
           {theme === 'light' ? (

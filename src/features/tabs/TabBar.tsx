@@ -91,7 +91,7 @@ export function TabBar() {
               aria-selected={isActive}
               aria-label={`Tab: ${tab.fileName}`}
               onClick={() => switchTab(tab.id)}
-              className={`group relative flex items-center gap-2 px-3 py-2 min-w-[120px] max-w-[200px] text-sm font-medium whitespace-nowrap border-r border-secondary-200 dark:border-secondary-700 transition-colors duration-normal flex-shrink-0 ${
+              className={`group relative flex items-center gap-2 px-3 py-2 min-w-[120px] max-w-[200px] text-sm font-medium whitespace-nowrap border-r border-secondary-200 dark:border-secondary-700 transition-colors duration-normal ease-in-out flex-shrink-0 ${
                 isActive
                   ? 'bg-background-light dark:bg-background-dark text-primary-700 dark:text-primary-300'
                   : 'text-secondary-600 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-800 hover:text-text-light dark:hover:text-text-dark'
@@ -113,7 +113,7 @@ export function TabBar() {
                     closeTab(tab.id);
                   }
                 }}
-                className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-sm opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-secondary-200 dark:hover:bg-secondary-600 transition-opacity duration-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900 focus-visible:opacity-100"
+                className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-sm opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-secondary-200 dark:hover:bg-secondary-600 transition-opacity duration-normal ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 dark:focus-visible:ring-offset-secondary-900 focus-visible:opacity-100"
               >
                 <svg
                   className="w-3 h-3"

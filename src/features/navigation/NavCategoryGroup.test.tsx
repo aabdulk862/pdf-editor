@@ -97,7 +97,7 @@ describe('NavCategoryGroup', () => {
     expect(chevron).not.toHaveClass('rotate-90');
   });
 
-  it('chevron has transition-transform duration-200 for animation', () => {
+  it('chevron has transition-transform duration-moderate ease-in-out for animation', () => {
     const { container } = render(
       <NavCategoryGroup {...defaultProps}>
         <div>Content</div>
@@ -105,7 +105,7 @@ describe('NavCategoryGroup', () => {
     );
 
     const chevron = container.querySelector('svg[aria-hidden="true"]');
-    expect(chevron).toHaveClass('transition-transform', 'duration-200');
+    expect(chevron).toHaveClass('transition-transform', 'duration-moderate', 'ease-in-out');
   });
 
   it('sets aria-expanded correctly based on isCollapsed', () => {

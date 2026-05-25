@@ -177,7 +177,7 @@ export function FileUploadZone({
         onKeyDown={handleKeyDown}
         className={[
           'relative flex min-h-[180px] min-w-[44px] cursor-pointer flex-col items-center justify-center',
-          'rounded-lg border-2 border-dashed p-6 transition-colors duration-150 motion-reduce:transition-none',
+          'rounded-lg border-2 border-dashed p-6 transition-colors duration-normal ease-in-out motion-reduce:transition-none',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
           'dark:focus-visible:ring-offset-background-dark',
           isDragOver
@@ -190,7 +190,7 @@ export function FileUploadZone({
         {/* Upload icon */}
         <svg
           className={[
-            'mb-3 h-10 w-10 transition-colors duration-150 motion-reduce:transition-none',
+            'mb-3 h-6 w-6 transition-colors duration-normal ease-in-out motion-reduce:transition-none',
             isDragOver
               ? 'text-primary-500 dark:text-primary-400'
               : 'text-secondary-400 dark:text-secondary-500',
@@ -270,7 +270,7 @@ function FileIcon({ type }: { type: string }): JSX.Element {
   if (isPdf) {
     return (
       <svg
-        className="h-8 w-8 flex-shrink-0 text-error-500"
+        className="h-6 w-6 flex-shrink-0 text-error-500"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -290,7 +290,7 @@ function FileIcon({ type }: { type: string }): JSX.Element {
   if (isImage) {
     return (
       <svg
-        className="h-8 w-8 flex-shrink-0 text-primary-500"
+        className="h-6 w-6 flex-shrink-0 text-primary-500"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -309,7 +309,7 @@ function FileIcon({ type }: { type: string }): JSX.Element {
 
   return (
     <svg
-      className="h-8 w-8 flex-shrink-0 text-secondary-400"
+      className="h-6 w-6 flex-shrink-0 text-secondary-400"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

@@ -73,7 +73,7 @@ export function NavFilterInput({ value, onChange, debounceMs = 50 }: NavFilterIn
         className={[
           'block w-full min-h-[44px] rounded-md border bg-white pl-10 pr-10 py-2 text-sm',
           'placeholder:text-text-muted text-text-light',
-          'border-secondary-300 transition-colors duration-150',
+          'border-secondary-300 transition-colors duration-normal ease-in-out',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
           'dark:bg-secondary-800 dark:text-text-dark dark:placeholder:text-secondary-400',
           'dark:border-secondary-600 dark:focus-visible:ring-offset-background-dark',
@@ -93,7 +93,7 @@ export function NavFilterInput({ value, onChange, debounceMs = 50 }: NavFilterIn
             'dark:text-secondary-400 dark:hover:text-text-dark',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
             'dark:focus-visible:ring-offset-background-dark',
-            'transition-colors duration-150',
+            'transition-colors duration-normal ease-in-out',
           ].join(' ')}
         >
           <svg

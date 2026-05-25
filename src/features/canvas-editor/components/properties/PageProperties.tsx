@@ -85,7 +85,7 @@ export const PageProperties: React.FC<PagePropertiesProps> = ({
           onChange={handlePresetChange}
           className="min-h-[44px] px-3 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-            hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors cursor-pointer"
+            hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out cursor-pointer"
         >
           <option value="" disabled>
             Custom
@@ -119,7 +119,7 @@ export const PageProperties: React.FC<PagePropertiesProps> = ({
               value={width}
               onChange={handleWidthChange}
               className="min-h-[44px] px-3 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Page width in millimeters"
             />
           </div>
@@ -138,7 +138,7 @@ export const PageProperties: React.FC<PagePropertiesProps> = ({
               value={height}
               onChange={handleHeightChange}
               className="min-h-[44px] px-3 text-sm border border-secondary-300 dark:border-secondary-600 rounded-md bg-white dark:bg-secondary-800 text-secondary-900 dark:text-secondary-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors"
+                focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-secondary-400 dark:hover:border-secondary-500 transition-colors duration-normal ease-in-out"
               aria-label="Page height in millimeters"
             />
           </div>
@@ -159,7 +159,7 @@ export const PageProperties: React.FC<PagePropertiesProps> = ({
           type="button"
           onClick={() => onGridToggle(!gridEnabled)}
           className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md border
-            transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500
+            transition-colors duration-normal ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500
             ${gridEnabled ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600' : 'bg-white dark:bg-secondary-800 border-secondary-300 dark:border-secondary-600 text-secondary-500 dark:text-secondary-400 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600'}`}
           aria-label={gridEnabled ? 'Disable grid' : 'Enable grid'}
           aria-pressed={gridEnabled}

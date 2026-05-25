@@ -303,7 +303,7 @@ export function PreviewPanel({
             type="button"
             onClick={handleZoomOut}
             disabled={zoom <= MIN_ZOOM}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Zoom out"
           >
             <svg
@@ -313,7 +313,7 @@ export function PreviewPanel({
               viewBox="0 0 24 24"
               aria-hidden="true"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 12H4" />
             </svg>
           </button>
           <span
@@ -327,7 +327,7 @@ export function PreviewPanel({
             type="button"
             onClick={handleZoomIn}
             disabled={zoom >= MAX_ZOOM}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Zoom in"
           >
             <svg
@@ -340,7 +340,7 @@ export function PreviewPanel({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 d="M12 4v16m8-8H4"
               />
             </svg>
@@ -353,7 +353,7 @@ export function PreviewPanel({
             type="button"
             onClick={handlePrevPage}
             disabled={currentPage <= 1}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Previous page"
           >
             <svg
@@ -366,7 +366,7 @@ export function PreviewPanel({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 d="M15 19l-7-7 7-7"
               />
             </svg>
@@ -382,7 +382,7 @@ export function PreviewPanel({
             type="button"
             onClick={handleNextPage}
             disabled={currentPage >= totalPages}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-normal ease-in-out"
             aria-label="Next page"
           >
             <svg
@@ -392,7 +392,12 @@ export function PreviewPanel({
               viewBox="0 0 24 24"
               aria-hidden="true"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </div>
@@ -456,7 +461,7 @@ function PageLoadingPlaceholder(): JSX.Element {
       aria-label="Loading page"
     >
       <svg
-        className="w-8 h-8 animate-spin motion-reduce:animate-none text-primary-500"
+        className="w-6 h-6 animate-spin motion-reduce:animate-none text-primary-500"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -490,7 +495,7 @@ function PageErrorPlaceholder({ error }: { error: string }): JSX.Element {
       aria-live="assertive"
     >
       <svg
-        className="w-10 h-10 text-error-500"
+        className="w-6 h-6 text-error-500"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -499,7 +504,7 @@ function PageErrorPlaceholder({ error }: { error: string }): JSX.Element {
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth={2}
+          strokeWidth={1.5}
           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
         />
       </svg>

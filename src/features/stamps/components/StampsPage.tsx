@@ -328,7 +328,7 @@ export function StampsPage(): JSX.Element {
               type="button"
               onClick={() => handleStampSelect(option.type)}
               className={[
-                'min-w-[44px] min-h-[44px] px-4 py-2 rounded-lg border-2 font-bold text-sm transition-all duration-150',
+                'min-w-[44px] min-h-[44px] px-4 py-2 rounded-lg border-2 font-bold text-sm transition-all duration-normal ease-in-out',
                 selectedStamp === option.type
                   ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 ring-2 ring-primary-300'
                   : 'border-secondary-300 dark:border-secondary-600 hover:border-primary-300 dark:hover:border-primary-600',

@@ -443,7 +443,7 @@ function PageThumbnail({
       aria-pressed={isSelected}
       aria-label={`Page ${pageNum}${isSelected ? ', selected' : ''}`}
       className={[
-        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-150',
+        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-normal ease-in-out',
         'min-h-[44px] min-w-[44px] cursor-pointer',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:focus-visible:ring-offset-background-dark',
@@ -456,11 +456,11 @@ function PageThumbnail({
       {isSelected && (
         <div className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-white dark:bg-primary-400">
           <svg
-            className="h-3 w-3"
+            className="h-4 w-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={3}
+            strokeWidth={2}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>

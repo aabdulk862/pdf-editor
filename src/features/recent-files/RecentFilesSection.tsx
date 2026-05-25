@@ -72,7 +72,7 @@ export function RecentFilesSection() {
         </h2>
         <button
           onClick={clearAll}
-          className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-normal min-h-[44px] min-w-[44px] flex items-center justify-center"
+          className="text-sm text-secondary-500 dark:text-secondary-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-normal ease-in-out min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label="Clear all recent files"
         >
           Clear All
@@ -104,7 +104,7 @@ export function RecentFilesSection() {
               // Animation
               !prefersReducedMotion &&
                 'transition-all duration-normal ease-out hover:-translate-y-0.5',
-              prefersReducedMotion && 'transition-colors duration-normal',
+              prefersReducedMotion && 'transition-colors duration-normal ease-in-out',
             ]
               .filter(Boolean)
               .join(' ')}
@@ -113,11 +113,11 @@ export function RecentFilesSection() {
             <div className="relative w-full aspect-[85/110] bg-secondary-100 dark:bg-secondary-700 flex items-center justify-center">
               {/* PDF page icon as placeholder */}
               <svg
-                className="h-10 w-10 text-secondary-300 dark:text-secondary-500"
+                className="h-6 w-6 text-secondary-300 dark:text-secondary-500"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1}
+                strokeWidth={1.5}
                 stroke="currentColor"
                 aria-hidden="true"
               >

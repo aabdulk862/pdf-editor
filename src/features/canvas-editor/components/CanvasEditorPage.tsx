@@ -207,7 +207,7 @@ export function CanvasEditorPage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <button
                 type="button"
-                className="flex items-center gap-2 px-5 py-3 min-h-[44px] bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                className="flex items-center gap-2 px-5 py-3 min-h-[44px] bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                 onClick={() => {
                   useCanvasStore.getState().createDocument();
                 }}
@@ -228,7 +228,7 @@ export function CanvasEditorPage() {
               </button>
               <button
                 type="button"
-                className="flex items-center gap-2 px-5 py-3 min-h-[44px] border border-secondary-200 dark:border-secondary-600 bg-white dark:bg-secondary-800 rounded-lg text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-50 dark:hover:bg-secondary-700 hover:border-secondary-300 dark:hover:border-secondary-500 active:bg-secondary-100 dark:active:bg-secondary-600 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                className="flex items-center gap-2 px-5 py-3 min-h-[44px] border border-secondary-200 dark:border-secondary-600 bg-white dark:bg-secondary-800 rounded-lg text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-50 dark:hover:bg-secondary-700 hover:border-secondary-300 dark:hover:border-secondary-500 active:bg-secondary-100 dark:active:bg-secondary-600 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                 onClick={handleOpenTemplatePicker}
                 aria-label="Browse templates"
               >
@@ -279,7 +279,7 @@ export function CanvasEditorPage() {
             <button
               type="button"
               onClick={handleOpenExportDialog}
-              className="absolute bottom-4 left-4 z-30 flex items-center gap-2 px-4 py-2.5 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-lg shadow-md border border-secondary-200/60 dark:border-secondary-700/60 text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-white dark:hover:bg-secondary-800 hover:shadow-lg active:scale-[0.98] transition-all duration-200 motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="absolute bottom-4 left-4 z-30 flex items-center gap-2 px-4 py-2.5 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-lg shadow-md border border-secondary-200/60 dark:border-secondary-700/60 text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-white dark:hover:bg-secondary-800 hover:shadow-lg active:scale-[0.98] transition-all duration-moderate ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-label="Export document"
             >
               <svg

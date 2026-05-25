@@ -98,7 +98,7 @@ export function TemplateProgress() {
       aria-modal="true"
       aria-labelledby="template-progress-title"
     >
-      <div className="w-full max-w-md mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-150 motion-reduce:animate-none">
+      <div className="w-full max-w-md mx-4 rounded-lg bg-white dark:bg-secondary-800 shadow-xl animate-in fade-in duration-normal motion-reduce:animate-none">
         {/* Header */}
         <div className="px-6 py-4 border-b border-secondary-200 dark:border-secondary-700">
           <h2
@@ -135,7 +135,7 @@ export function TemplateProgress() {
           >
             <div
               className={[
-                'h-full rounded-full transition-all duration-300 ease-out motion-reduce:transition-none',
+                'h-full rounded-full transition-all duration-slow ease-out motion-reduce:transition-none',
                 execution.status === 'failed'
                   ? 'bg-red-500 dark:bg-red-400'
                   : execution.status === 'completed'

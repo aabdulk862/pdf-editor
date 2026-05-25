@@ -145,7 +145,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
           </h2>
           <button
             type="button"
-            className="flex items-center justify-center w-8 h-8 rounded-lg text-secondary-400 dark:text-secondary-500 hover:text-secondary-700 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="flex items-center justify-center w-8 h-8 rounded-lg text-secondary-400 dark:text-secondary-500 hover:text-secondary-700 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             onClick={onClose}
             aria-label="Close shortcuts panel"
           >
@@ -155,7 +155,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
               viewBox="0 0 16 16"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth={1.5}
               strokeLinecap="round"
             >
               <path d="M4 4l8 8M12 4l-8 8" />
@@ -197,7 +197,7 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
           </p>
           <button
             type="button"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             onClick={() => {
               useOnboardingStore.getState().resetTour();
               onClose();
@@ -205,12 +205,12 @@ export function ShortcutPanel({ isOpen, onClose }: ShortcutPanelProps) {
             aria-label="Show onboarding tour"
           >
             <svg
-              width="14"
-              height="14"
+              width="16"
+              height="16"
               viewBox="0 0 14 14"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.5"
+              strokeWidth={1.5}
               strokeLinecap="round"
               strokeLinejoin="round"
             >

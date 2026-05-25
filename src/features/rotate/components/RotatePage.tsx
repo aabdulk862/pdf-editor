@@ -3,6 +3,8 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
+import { ProcessingState } from '@/components/ui/ProcessingState';
+import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 
@@ -294,28 +296,16 @@ export function RotatePage(): JSX.Element {
       {/* Angle picker */}
       <div className="space-y-2">
         <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Rotation Angle</h2>
-        <div className="flex flex-wrap gap-2">
-          {([90, 180, 270] as RotationAngle[]).map((angle) => (
-            <button
-              key={angle}
-              type="button"
-              onClick={() => setSelectedAngle(angle)}
-              className={[
-                'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
-                'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-                'dark:focus-visible:ring-offset-background-dark',
-                selectedAngle === angle
-                  ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                  : 'border-secondary-300 bg-white text-secondary-700 hover:bg-secondary-50 dark:border-secondary-600 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700',
-              ].join(' ')}
-              aria-pressed={selectedAngle === angle}
-              aria-label={`Rotate ${angle} degrees clockwise`}
-            >
-              <RotationIcon angle={angle} />
-              <span className="ml-2">{angle}°</span>
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          options={[
+            { value: '90', label: '90°', icon: <RotationIcon angle={90} /> },
+            { value: '180', label: '180°', icon: <RotationIcon angle={180} /> },
+            { value: '270', label: '270°', icon: <RotationIcon angle={270} /> },
+          ]}
+          value={selectedAngle?.toString() ?? ''}
+          onChange={(val) => setSelectedAngle(Number(val) as RotationAngle)}
+          size="sm"
+        />
       </div>
 
       {/* Page selection */}
@@ -325,20 +315,12 @@ export function RotatePage(): JSX.Element {
             Select Pages ({selectedPages.size} of {pageCount} selected)
           </h2>
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={selectAllPages}
-              className="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 min-w-[44px] min-h-[44px] inline-flex items-center justify-center"
-            >
+            <Button variant="ghost" size="sm" onClick={selectAllPages}>
               Select all
-            </button>
-            <button
-              type="button"
-              onClick={deselectAllPages}
-              className="text-xs text-secondary-500 hover:text-secondary-700 dark:text-secondary-400 dark:hover:text-secondary-300 min-w-[44px] min-h-[44px] inline-flex items-center justify-center"
-            >
+            </Button>
+            <Button variant="ghost" size="sm" onClick={deselectAllPages}>
               Deselect all
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -371,26 +353,41 @@ export function RotatePage(): JSX.Element {
           Rotate Selected Pages
         </Button>
         {rotatedData && (
-          <Button variant="secondary" onClick={handleDownload}>
-            Download Rotated PDF
-          </Button>
+          <div className="motion-safe:animate-page-enter">
+            <Button variant="secondary" onClick={handleDownload}>
+              Download Rotated PDF
+            </Button>
+          </div>
         )}
       </div>
 
-      {/* Preview */}
-      {rotatedData && (
-        <div className="space-y-3">
-          <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Preview</h2>
-          <PreviewPanel
-            originalDoc={pdfData}
-            modifiedDoc={rotatedData}
-            zoom={zoom}
-            onZoomChange={setZoom}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
+      {/* Processing state skeleton */}
+      <ProcessingState isProcessing={isProcessing} label="Rotating pages..." variant="preview" />
+
+      {/* Preview — fades in when result is ready */}
+      <div
+        className={[
+          'motion-safe:transition-[opacity,transform] motion-safe:duration-moderate motion-safe:ease-out',
+          'motion-reduce:transition-none',
+          rotatedData
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-2 pointer-events-none h-0 overflow-hidden',
+        ].join(' ')}
+      >
+        {rotatedData && (
+          <div className="space-y-3">
+            <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Preview</h2>
+            <PreviewPanel
+              originalDoc={pdfData}
+              modifiedDoc={rotatedData}
+              zoom={zoom}
+              onZoomChange={setZoom}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -430,7 +427,7 @@ function PageThumbnailCard({
       aria-pressed={isSelected}
       aria-label={`Page ${thumbnail.pageNumber}${isSelected ? ' (selected)' : ''}`}
       className={[
-        'relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-150 cursor-pointer',
+        'relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-normal ease-in-out cursor-pointer',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
         'dark:focus-visible:ring-offset-background-dark',
         'min-w-[44px] min-h-[44px]',
@@ -443,13 +440,13 @@ function PageThumbnailCard({
       {isSelected && (
         <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
           <svg
-            className="w-3 h-3 text-white"
+            className="w-4 h-4 text-white"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
       )}

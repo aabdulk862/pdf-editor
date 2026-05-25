@@ -112,7 +112,7 @@ export function LetterheadTemplateList({
           <div
             key={template.id}
             className={[
-              'group flex flex-col gap-2 rounded-md border px-3 py-2 transition-colors duration-200',
+              'group flex flex-col gap-2 rounded-md border px-3 py-2 transition-colors duration-moderate ease-in-out',
               isActive
                 ? 'border-primary-500 bg-primary-50 dark:border-primary-400 dark:bg-primary-900/30'
                 : 'border-secondary-200 bg-white hover:border-secondary-300 dark:border-secondary-700 dark:bg-secondary-800 dark:hover:border-secondary-600',
@@ -205,7 +205,7 @@ export function LetterheadTemplateList({
 
             {/* Action buttons row */}
             {!isRenaming && !isDeleting && (
-              <div className="flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
+              <div className="flex items-center gap-1 opacity-0 transition-opacity duration-moderate ease-out group-hover:opacity-100 group-focus-within:opacity-100">
                 {/* Edit button */}
                 <button
                   type="button"

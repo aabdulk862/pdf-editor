@@ -197,7 +197,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
       {/* Desktop panel: fixed right side, 320px wide */}
       <aside
         className={`hidden md:flex fixed right-0 top-0 h-full w-80 bg-white dark:bg-secondary-900 border-l border-secondary-200 dark:border-secondary-700
-          shadow-lg flex-col z-40 transition-transform duration-200 ease-out motion-reduce:transition-none
+          shadow-lg flex-col z-40 transition-transform duration-moderate ease-out motion-reduce:transition-none
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         aria-label="Properties panel"
         role="complementary"
@@ -215,7 +215,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
             onClick={onClose}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
               text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700 active:bg-secondary-200 dark:active:bg-secondary-600
-              focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-normal ease-in-out"
             aria-label="Close properties panel"
           >
             <svg
@@ -245,7 +245,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
       {isOpen && (
         <aside
           className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-secondary-900 border-t border-secondary-200 dark:border-secondary-700
-            shadow-[0_-4px_20px_rgba(0,0,0,0.1)] rounded-t-2xl transition-transform duration-200 ease-out motion-reduce:transition-none"
+            shadow-[0_-4px_20px_rgba(0,0,0,0.1)] rounded-t-2xl transition-transform duration-moderate ease-out motion-reduce:transition-none"
           style={{
             maxHeight: '50vh',
             transform: `translateY(${dragOffset}px)`,
@@ -277,7 +277,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
               onClick={onClose}
               className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md
                 text-secondary-400 hover:text-secondary-600 dark:hover:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700
-                focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-normal ease-in-out"
               aria-label="Close properties panel"
             >
               <svg

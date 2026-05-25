@@ -49,7 +49,7 @@ export function NavCategoryGroup({
           strokeLinejoin="round"
           aria-hidden="true"
           className={[
-            'shrink-0 transition-transform duration-200 motion-reduce:transition-none',
+            'shrink-0 transition-transform duration-moderate ease-in-out motion-reduce:transition-none',
             isCollapsed ? 'rotate-0' : 'rotate-90',
           ].join(' ')}
         >
@@ -69,7 +69,7 @@ export function NavCategoryGroup({
         role="group"
         aria-label={category.label}
         className={[
-          'overflow-hidden transition-all duration-200 motion-reduce:transition-none',
+          'overflow-hidden transition-all duration-moderate ease-in-out motion-reduce:transition-none',
           isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[2000px] opacity-100',
         ].join(' ')}
       >

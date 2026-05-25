@@ -382,7 +382,7 @@ function DraggablePageThumbnail({
       onDrop={(e) => onDrop(e, displayIndex)}
       aria-label={`Page ${originalPageNum}, position ${displayIndex + 1}. Drag to reorder.`}
       className={[
-        'relative flex flex-col items-center rounded-lg border-2 p-2 cursor-grab transition-all duration-150',
+        'relative flex flex-col items-center rounded-lg border-2 p-2 cursor-grab transition-all duration-normal ease-in-out',
         'min-w-[100px] min-h-[44px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
         isDragging

@@ -335,7 +335,7 @@ export function PdfToImagePage(): JSX.Element {
               type="button"
               onClick={() => setFormat('png')}
               className={[
-                'min-h-[44px] min-w-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
+                'min-h-[44px] min-w-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-normal ease-in-out',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                 format === 'png'
                   ? 'bg-primary-600 text-white dark:bg-primary-500'
@@ -349,7 +349,7 @@ export function PdfToImagePage(): JSX.Element {
               type="button"
               onClick={() => setFormat('jpg')}
               className={[
-                'min-h-[44px] min-w-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
+                'min-h-[44px] min-w-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-normal ease-in-out',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                 format === 'jpg'
                   ? 'bg-primary-600 text-white dark:bg-primary-500'
@@ -374,7 +374,7 @@ export function PdfToImagePage(): JSX.Element {
                 type="button"
                 onClick={() => setDpi(option)}
                 className={[
-                  'min-h-[44px] min-w-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-150',
+                  'min-h-[44px] min-w-[44px] px-4 py-2 rounded-md text-sm font-medium transition-colors duration-normal ease-in-out',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                   dpi === option
                     ? 'bg-primary-600 text-white dark:bg-primary-500'
@@ -432,7 +432,7 @@ export function PdfToImagePage(): JSX.Element {
                   'placeholder:text-secondary-400 dark:placeholder:text-secondary-500',
                   'border-secondary-300 dark:border-secondary-600',
                   'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500',
-                  'transition-colors duration-150',
+                  'transition-colors duration-normal ease-in-out',
                 ].join(' ')}
               />
             )}

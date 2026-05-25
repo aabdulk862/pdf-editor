@@ -378,7 +378,7 @@ function ImageCard({
       onDrop={(e) => onDrop(e, index)}
       onDragEnd={onDragEnd}
       className={[
-        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-150',
+        'group relative flex flex-col items-center rounded-lg border-2 p-2 transition-all duration-normal ease-in-out',
         'cursor-grab active:cursor-grabbing',
         isDragging
           ? 'opacity-50 border-primary-300 dark:border-primary-600'
@@ -401,15 +401,15 @@ function ImageCard({
           e.stopPropagation();
           onRemove(image.id);
         }}
-        className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-error-500 text-white opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-error-500"
+        className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-error-500 text-white opacity-0 transition-opacity duration-normal ease-out group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-error-500"
         aria-label={`Remove ${image.name}`}
       >
         <svg
-          className="h-3 w-3"
+          className="h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={3}
+          strokeWidth={2}
           aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

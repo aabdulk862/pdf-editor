@@ -163,7 +163,7 @@ export function GlobalDropZone({ children, onFilesDropped }: GlobalDropZoneProps
         <div
           className={[
             'fixed inset-0 z-[9999] flex items-center justify-center',
-            'transition-opacity duration-100 ease-in-out',
+            'transition-opacity duration-fast ease-in-out',
             'pointer-events-none',
             isValidType
               ? 'bg-green-500/20 border-4 border-dashed border-green-500 dark:bg-green-400/15 dark:border-green-400'

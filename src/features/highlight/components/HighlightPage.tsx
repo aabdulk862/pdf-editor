@@ -401,7 +401,7 @@ export function HighlightPage(): JSX.Element {
               type="button"
               onClick={() => setSelectedColor(color.value)}
               className={[
-                'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150',
+                'inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-normal ease-in-out',
                 'border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
                 'dark:focus-visible:ring-offset-background-dark',
                 selectedColor === color.value
@@ -434,7 +434,7 @@ export function HighlightPage(): JSX.Element {
               type="button"
               onClick={goToPreviousPage}
               disabled={currentPage <= 1}
-              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out"
               aria-label="Previous page"
             >
               <svg
@@ -459,7 +459,7 @@ export function HighlightPage(): JSX.Element {
               type="button"
               onClick={goToNextPage}
               disabled={currentPage >= pageCount}
-              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md border border-secondary-300 dark:border-secondary-600 text-secondary-600 dark:text-secondary-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-secondary-50 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out"
               aria-label="Next page"
             >
               <svg

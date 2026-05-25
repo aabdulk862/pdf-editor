@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
+import { ProcessingState } from '@/components/ui/ProcessingState';
+import { SegmentedControl } from '@/design-system/primitives/SegmentedControl';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import type { PageNumberConfig } from '@/types/operations';
@@ -171,26 +173,12 @@ export function PageNumbersPage(): JSX.Element {
             <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300">
               Position
             </label>
-            <div className="grid grid-cols-3 gap-2">
-              {POSITION_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setPosition(opt.value)}
-                  className={[
-                    'min-h-[44px] min-w-[44px] rounded-md border px-3 py-2 text-sm font-medium transition-colors duration-150',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-                    'dark:focus-visible:ring-offset-background-dark',
-                    position === opt.value
-                      ? 'border-primary-500 bg-primary-50 text-primary-700 dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                      : 'border-secondary-300 bg-secondary-50 text-secondary-700 hover:border-primary-400 hover:bg-secondary-100 dark:border-secondary-600 dark:bg-secondary-900 dark:text-secondary-300 dark:hover:border-primary-500 dark:hover:bg-secondary-700',
-                  ].join(' ')}
-                  aria-pressed={position === opt.value}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+            <SegmentedControl
+              options={POSITION_OPTIONS}
+              value={position}
+              onChange={(val) => setPosition(val as Position)}
+              size="sm"
+            />
           </div>
 
           {/* Starting Number Input */}
@@ -236,9 +224,11 @@ export function PageNumbersPage(): JSX.Element {
               Add Page Numbers
             </Button>
             {modifiedData && (
-              <Button variant="secondary" onClick={handleDownload}>
-                Download
-              </Button>
+              <div className="motion-safe:animate-page-enter">
+                <Button variant="secondary" onClick={handleDownload}>
+                  Download
+                </Button>
+              </div>
             )}
           </div>
 
@@ -247,17 +237,36 @@ export function PageNumbersPage(): JSX.Element {
         </div>
       )}
 
-      {/* Preview */}
-      {(pdfData || modifiedData) && (
-        <PreviewPanel
-          originalDoc={pdfData}
-          modifiedDoc={modifiedData}
-          zoom={zoom}
-          onZoomChange={setZoom}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
+      {/* Processing state skeleton */}
+      {pdfData && (
+        <ProcessingState
+          isProcessing={processing}
+          label="Adding page numbers..."
+          variant="preview"
         />
       )}
+
+      {/* Preview — fades in when result is ready */}
+      <div
+        className={[
+          'motion-safe:transition-[opacity,transform] motion-safe:duration-moderate motion-safe:ease-out',
+          'motion-reduce:transition-none',
+          pdfData || modifiedData
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-2 pointer-events-none h-0 overflow-hidden',
+        ].join(' ')}
+      >
+        {(pdfData || modifiedData) && (
+          <PreviewPanel
+            originalDoc={pdfData}
+            modifiedDoc={modifiedData}
+            zoom={zoom}
+            onZoomChange={setZoom}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -121,7 +121,7 @@ export function AppShell({ sidebar, children, rightPanel }: AppShellProps) {
         <button
           type="button"
           onClick={toggle}
-          className="flex items-center justify-center w-full h-10 border-t border-secondary-200 dark:border-secondary-700 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 text-secondary-600 dark:text-secondary-300 transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
+          className="flex items-center justify-center w-full h-10 border-t border-secondary-200 dark:border-secondary-700 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 text-secondary-600 dark:text-secondary-300 transition-colors duration-fast ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           aria-expanded={!collapsed}
         >
@@ -168,7 +168,7 @@ export function AppShell({ sidebar, children, rightPanel }: AppShellProps) {
             <button
               type="button"
               onClick={closeMobile}
-              className="flex items-center justify-center w-10 h-10 rounded-md text-secondary-600 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
+              className="flex items-center justify-center w-10 h-10 rounded-md text-secondary-600 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors duration-fast ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
               aria-label="Close sidebar"
             >
               <svg
@@ -205,7 +205,7 @@ export function AppShell({ sidebar, children, rightPanel }: AppShellProps) {
           <button
             type="button"
             onClick={openMobile}
-            className="flex items-center justify-center w-10 h-10 rounded-md text-secondary-600 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
+            className="flex items-center justify-center w-10 h-10 rounded-md text-secondary-600 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 transition-colors duration-fast ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
             aria-label="Open menu"
             aria-expanded={mobileOpen}
             aria-controls="mobile-sidebar"

@@ -431,7 +431,7 @@ export function LetterheadPage(): JSX.Element {
               </div>
 
               {/* Editor or Preview */}
-              <div className="transition-opacity duration-200">
+              <div className="transition-opacity duration-moderate ease-out">
                 {editorState === 'editing' ? (
                   <div className="flex flex-col gap-4 lg:flex-row">
                     <div className="w-full lg:max-w-[400px]">

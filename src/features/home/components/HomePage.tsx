@@ -730,7 +730,7 @@ export function HomePage() {
                   // Transition: 150ms ease-out for hover, 100ms for active press
                   'transition-all duration-normal ease-out active:duration-fast active:ease-in-out',
                   // Reduced motion: disable transforms, keep color/shadow transitions
-                  'motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 motion-reduce:transition-colors motion-reduce:transform-none',
+                  'motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 motion-reduce:transition-colors duration-normal ease-in-out motion-reduce:transform-none',
                   // Touch target
                   'min-h-[44px]',
                 ].join(' ')}
@@ -921,7 +921,7 @@ function HeroDropZone() {
           'dark:focus-visible:ring-offset-secondary-900',
           // Transition — 100ms (duration-fast) for drag-over response per Requirement 4.1
           !prefersReducedMotion && 'transition-all duration-fast ease-out',
-          prefersReducedMotion && 'transition-colors duration-fast',
+          prefersReducedMotion && 'transition-colors duration-fast ease-in-out',
           // Motion-safe scale on drag-over
           !prefersReducedMotion && isDragOver && 'scale-[1.01]',
           // Drag-over state

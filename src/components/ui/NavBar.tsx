@@ -44,7 +44,7 @@ function ThemeToggleButton() {
   return (
     <button
       onClick={toggleTheme}
-      className="min-h-[44px] min-w-[44px] w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-150"
+      className="min-h-[44px] min-w-[44px] w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700 transition-colors duration-normal ease-in-out"
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
       {theme === 'light' ? (
@@ -103,7 +103,7 @@ export function NavBar() {
 
         <Link
           to="/"
-          className={`flex items-center min-h-[44px] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ${
+          className={`flex items-center min-h-[44px] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-normal ease-in-out ${
             isActive('/')
               ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
               : 'text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700'
@@ -116,7 +116,7 @@ export function NavBar() {
           <Link
             key={route.path}
             to={route.path}
-            className={`flex items-center min-h-[44px] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ${
+            className={`flex items-center min-h-[44px] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-normal ease-in-out ${
               isActive(route.path)
                 ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
                 : 'text-text-light dark:text-text-dark hover:bg-secondary-100 dark:hover:bg-secondary-700'

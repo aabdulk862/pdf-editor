@@ -152,10 +152,10 @@ describe('PropertiesPanel', () => {
     expect(shadowControls.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('applies slide-in animation with duration-200 ease-out', () => {
+  it('applies slide-in animation with duration-moderate ease-out', () => {
     const { container } = render(<PropertiesPanel isOpen={true} onClose={() => {}} />);
     const aside = container.querySelector('aside.hidden.md\\:flex');
-    expect(aside).toHaveClass('duration-200', 'ease-out');
+    expect(aside).toHaveClass('duration-moderate', 'ease-out');
   });
 
   it('hides panel with translate-x-full when closed', () => {

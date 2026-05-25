@@ -221,34 +221,34 @@ This implementation plan covers the comprehensive UI/UX redesign of the PDF Edit
 
 - [x] 9.1 Replace all raw `gray-*` classes with `secondary-*` token classes in ErrorBoundary, canvas editor EmptyState, RecoveryPrompt, MinimapOverlay, ColorPicker, and skeleton components
 - [x] 9.2 Add dark mode variants (`dark:`) to all canvas editor components that currently lack them
-- [ ] 9.3 Standardize all transition durations to token values (50ms, 150ms, 200ms, 300ms) and ensure explicit easing curves on every transition
-- [ ] 9.4 Refactor tool pages (RotatePage, PageSizePage, WatermarksPage, PageNumbersPage, ComparePage) to use shared SegmentedControl and Button components instead of inline styling
-- [ ] 9.5 Add loading/processing state transitions with skeleton placeholders to tool pages that currently jump between states
-- [ ] 9.6 Standardize icon sizing across all components to use the Icon wrapper (16/20/24px, 1.5px stroke)
-- [ ] 9.7 Add error recovery (retry buttons, preserved file state) to all tool pages that currently show generic errors
-- [ ] 9.8 Fix toast positioning: bottom-center on mobile (within thumb reach), top-right on desktop
+- [x] 9.3 Standardize all transition durations to token values (50ms, 150ms, 200ms, 300ms) and ensure explicit easing curves on every transition
+- [x] 9.4 Refactor tool pages (RotatePage, PageSizePage, WatermarksPage, PageNumbersPage, ComparePage) to use shared SegmentedControl and Button components instead of inline styling
+- [x] 9.5 Add loading/processing state transitions with skeleton placeholders to tool pages that currently jump between states
+- [-] 9.6 Standardize icon sizing across all components to use the Icon wrapper (16/20/24px, 1.5px stroke)
+- [~] 9.7 Add error recovery (retry buttons, preserved file state) to all tool pages that currently show generic errors
+- [~] 9.8 Fix toast positioning: bottom-center on mobile (within thumb reach), top-right on desktop
 
 ## Phase 10: Mobile Responsiveness Polish
 
-- [ ] 10.1 Ensure all interactive elements have min 44x44px touch targets on viewports below md breakpoint
-- [ ] 10.2 Implement toolbar overflow: reflow controls into scrollable horizontal strip with "more" menu on narrow viewports
-- [ ] 10.3 Convert Tool Card grid to single-column layout below sm breakpoint
-- [ ] 10.4 Hide non-essential UI (keyboard shortcut hints, secondary labels) below sm breakpoint using `hidden sm:block`
-- [ ] 10.5 Constrain all modals/dropdowns to viewport bounds with 16px margin on mobile
-- [ ] 10.6 Test and fix any overlapping or clipped content on 320px viewport width
-- [ ] 10.7 Write property-based test: all button/link variants at mobile breakpoint have min 44px dimensions
-  - [ ] 10.7.pbt Write property test for touch target minimum size
+- [~] 10.1 Ensure all interactive elements have min 44x44px touch targets on viewports below md breakpoint
+- [~] 10.2 Implement toolbar overflow: reflow controls into scrollable horizontal strip with "more" menu on narrow viewports
+- [~] 10.3 Convert Tool Card grid to single-column layout below sm breakpoint
+- [~] 10.4 Hide non-essential UI (keyboard shortcut hints, secondary labels) below sm breakpoint using `hidden sm:block`
+- [~] 10.5 Constrain all modals/dropdowns to viewport bounds with 16px margin on mobile
+- [~] 10.6 Test and fix any overlapping or clipped content on 320px viewport width
+- [~] 10.7 Write property-based test: all button/link variants at mobile breakpoint have min 44px dimensions
+  - [~] 10.7.pbt Write property test for touch target minimum size
 
 ## Phase 11: Visual QA & Pixel-Perfection Pass
 
-- [ ] 11.1 Audit all components for 4px sub-grid alignment — fix any fractional pixel offsets
-- [ ] 11.2 Verify shadow tokens simulate single top-left light source consistently across all elevated surfaces
-- [ ] 11.3 Ensure PDF page previews render at `window.devicePixelRatio` for Retina/HiDPI sharpness
-- [ ] 11.4 Add `-webkit-font-smoothing: antialiased` and `-moz-osx-font-smoothing: grayscale` to global styles
-- [ ] 11.5 Verify all animations use GPU-accelerated properties (transform, opacity) — no `width`, `height`, `top`, `left` animations
-- [ ] 11.6 Run full Lighthouse audit on mobile and desktop — target score 90+ on Performance, Accessibility, Best Practices
-- [ ] 11.7 Run `tsc --noEmit` and `eslint` — verify zero errors and zero warnings
-- [ ] 11.8 Final visual review: verify color harmony, consistent spacing, and professional polish across all pages in both light and dark themes
+- [~] 11.1 Audit all components for 4px sub-grid alignment — fix any fractional pixel offsets
+- [~] 11.2 Verify shadow tokens simulate single top-left light source consistently across all elevated surfaces
+- [~] 11.3 Ensure PDF page previews render at `window.devicePixelRatio` for Retina/HiDPI sharpness
+- [~] 11.4 Add `-webkit-font-smoothing: antialiased` and `-moz-osx-font-smoothing: grayscale` to global styles
+- [~] 11.5 Verify all animations use GPU-accelerated properties (transform, opacity) — no `width`, `height`, `top`, `left` animations
+- [~] 11.6 Run full Lighthouse audit on mobile and desktop — target score 90+ on Performance, Accessibility, Best Practices
+- [~] 11.7 Run `tsc --noEmit` and `eslint` — verify zero errors and zero warnings
+- [~] 11.8 Final visual review: verify color harmony, consistent spacing, and professional polish across all pages in both light and dark themes
 
 ## Notes
 

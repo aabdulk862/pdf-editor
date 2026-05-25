@@ -573,7 +573,7 @@ function BookmarkTree({
                   p. {bookmark.pageNumber}
                 </span>
                 {/* Action buttons - visible on hover/focus */}
-                <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-normal ease-out">
                   <button
                     type="button"
                     onClick={() => onStartRename(bookmark.id, bookmark.title)}

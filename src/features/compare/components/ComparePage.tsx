@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { Button } from '@/components/ui/Button';
+import { ProcessingState } from '@/components/ui/ProcessingState';
 import { useToast } from '@/hooks/useToast';
 import { PdfjsRenderEngine } from '@/core/render-engine/renderer';
 import type { RenderableDocument } from '@/core/render-engine/index';
@@ -477,62 +478,85 @@ export function ComparePage(): JSX.Element {
         </div>
       )}
 
-      {/* Comparison summary */}
-      {comparisonResult && (
-        <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
-          <h2 className="text-sm font-medium text-text-light dark:text-text-dark mb-3">
-            Comparison Summary
-          </h2>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-2">
-              <span className="inline-block h-3 w-3 rounded-full bg-amber-500" aria-hidden="true" />
-              <span className="text-sm text-secondary-700 dark:text-secondary-300">
-                {comparisonResult.pagesChanged} changed
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-block h-3 w-3 rounded-full bg-success-500"
-                aria-hidden="true"
-              />
-              <span className="text-sm text-secondary-700 dark:text-secondary-300">
-                {comparisonResult.pagesAdded} added
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="inline-block h-3 w-3 rounded-full bg-error-500" aria-hidden="true" />
-              <span className="text-sm text-secondary-700 dark:text-secondary-300">
-                {comparisonResult.pagesRemoved} removed
-              </span>
-            </div>
-          </div>
+      {/* Processing state skeleton for comparison */}
+      <ProcessingState
+        isProcessing={isComparing}
+        label="Comparing documents..."
+        variant="comparison"
+      />
 
-          {/* Difference navigation */}
-          {comparisonResult.differences.length > 0 && (
-            <div className="mt-3 flex items-center gap-2 border-t border-secondary-200 pt-3 dark:border-secondary-700">
-              <Button variant="outline" size="sm" onClick={handlePrevDiff}>
-                ← Previous diff
-              </Button>
-              <span className="text-sm text-secondary-500 dark:text-secondary-400">
-                {currentDiffIndex + 1} of {comparisonResult.differences.length}
-              </span>
-              <Button variant="outline" size="sm" onClick={handleNextDiff}>
-                Next diff →
-              </Button>
+      {/* Comparison summary — fades in when results are ready */}
+      <div
+        className={[
+          'motion-safe:transition-[opacity,transform] motion-safe:duration-moderate motion-safe:ease-out',
+          'motion-reduce:transition-none',
+          comparisonResult
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-2 pointer-events-none h-0 overflow-hidden',
+        ].join(' ')}
+      >
+        {comparisonResult && (
+          <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
+            <h2 className="text-sm font-medium text-text-light dark:text-text-dark mb-3">
+              Comparison Summary
+            </h2>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-block h-3 w-3 rounded-full bg-amber-500"
+                  aria-hidden="true"
+                />
+                <span className="text-sm text-secondary-700 dark:text-secondary-300">
+                  {comparisonResult.pagesChanged} changed
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-block h-3 w-3 rounded-full bg-success-500"
+                  aria-hidden="true"
+                />
+                <span className="text-sm text-secondary-700 dark:text-secondary-300">
+                  {comparisonResult.pagesAdded} added
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-block h-3 w-3 rounded-full bg-error-500"
+                  aria-hidden="true"
+                />
+                <span className="text-sm text-secondary-700 dark:text-secondary-300">
+                  {comparisonResult.pagesRemoved} removed
+                </span>
+              </div>
             </div>
-          )}
-        </div>
-      )}
+
+            {/* Difference navigation */}
+            {comparisonResult.differences.length > 0 && (
+              <div className="mt-3 flex items-center gap-2 border-t border-secondary-200 pt-3 dark:border-secondary-700">
+                <Button variant="outline" size="sm" onClick={handlePrevDiff}>
+                  ← Previous diff
+                </Button>
+                <span className="text-sm text-secondary-500 dark:text-secondary-400">
+                  {currentDiffIndex + 1} of {comparisonResult.differences.length}
+                </span>
+                <Button variant="outline" size="sm" onClick={handleNextDiff}>
+                  Next diff →
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Controls bar */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-lg border border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-900">
         {/* Zoom controls */}
         <div className="flex items-center gap-1">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleZoomOut}
             disabled={zoom <= 0.5}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
             aria-label="Zoom out"
           >
             <svg
@@ -544,18 +568,18 @@ export function ComparePage(): JSX.Element {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
-          </button>
+          </Button>
           <span
             className="text-sm font-medium text-text-light dark:text-text-dark min-w-[48px] text-center"
             aria-live="polite"
           >
             {Math.round(zoom * 100)}%
           </span>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleZoomIn}
             disabled={zoom >= 2}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
             aria-label="Zoom in"
           >
             <svg
@@ -572,16 +596,16 @@ export function ComparePage(): JSX.Element {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Page navigation */}
         <div className="flex items-center gap-1">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handlePrevPage}
             disabled={currentPage <= 1}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
             aria-label="Previous page"
           >
             <svg
@@ -598,7 +622,7 @@ export function ComparePage(): JSX.Element {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-          </button>
+          </Button>
           <span
             className="text-sm font-medium text-text-light dark:text-text-dark min-w-[80px] text-center"
             aria-live="polite"
@@ -606,11 +630,11 @@ export function ComparePage(): JSX.Element {
           >
             {totalPages > 0 ? `${currentPage} / ${totalPages}` : '0 / 0'}
           </span>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={handleNextPage}
             disabled={currentPage >= totalPages}
-            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
             aria-label="Next page"
           >
             <svg
@@ -622,7 +646,7 @@ export function ComparePage(): JSX.Element {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Current page diff indicator */}
@@ -653,7 +677,7 @@ export function ComparePage(): JSX.Element {
           </h3>
           <div
             className={[
-              'relative rounded-lg border-2 bg-white dark:bg-secondary-800 overflow-auto min-h-[200px] flex items-center justify-center transition-colors duration-150',
+              'relative rounded-lg border-2 bg-white dark:bg-secondary-800 overflow-auto min-h-[200px] flex items-center justify-center transition-colors duration-normal ease-in-out',
               getBorderClass(currentPageDiffType),
             ].join(' ')}
           >
@@ -668,7 +692,7 @@ export function ComparePage(): JSX.Element {
           </h3>
           <div
             className={[
-              'relative rounded-lg border-2 bg-white dark:bg-secondary-800 overflow-auto min-h-[200px] flex items-center justify-center transition-colors duration-150',
+              'relative rounded-lg border-2 bg-white dark:bg-secondary-800 overflow-auto min-h-[200px] flex items-center justify-center transition-colors duration-normal ease-in-out',
               getBorderClass(currentPageDiffType),
             ].join(' ')}
           >

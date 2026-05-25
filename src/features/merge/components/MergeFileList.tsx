@@ -94,7 +94,7 @@ export function MergeFileList({ files, onReorder, onRemove }: MergeFileListProps
             onDragEnd={handleDragEnd}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={[
-              'flex items-center gap-3 rounded-md border px-3 py-2 transition-all duration-150 cursor-grab active:cursor-grabbing',
+              'flex items-center gap-3 rounded-md border px-3 py-2 transition-all duration-normal ease-in-out cursor-grab active:cursor-grabbing',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
               dragIndex === index
                 ? 'opacity-50 border-primary-300 dark:border-primary-600'
@@ -149,7 +149,7 @@ export function MergeFileList({ files, onReorder, onRemove }: MergeFileListProps
                 e.stopPropagation();
                 onRemove(file.id);
               }}
-              className="flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-secondary-400 hover:text-error-500 hover:bg-error-50 dark:hover:text-error-400 dark:hover:bg-error-900/20 transition-colors duration-150"
+              className="flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-secondary-400 hover:text-error-500 hover:bg-error-50 dark:hover:text-error-400 dark:hover:bg-error-900/20 transition-colors duration-normal ease-in-out"
               aria-label={`Remove ${file.name}`}
             >
               <svg
