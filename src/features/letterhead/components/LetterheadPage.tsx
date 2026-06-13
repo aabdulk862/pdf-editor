@@ -8,9 +8,8 @@ import type { LetterheadPageTarget, LetterheadTemplate } from '../types';
 import type { StarterTemplateData } from '../starter-templates';
 import { useLetterheadStore } from '../store/letterhead-store';
 import { LetterheadApplyModal } from './LetterheadApplyModal';
-import { LetterheadEditor } from './LetterheadEditor';
-import { LetterheadPreview } from './LetterheadPreview';
 import { LetterheadTemplateList } from './LetterheadTemplateList';
+import { LetterheadVisualEditor } from './LetterheadVisualEditor';
 import { StarterTemplatePicker } from './StarterTemplatePicker';
 
 /**
@@ -41,7 +40,6 @@ export function LetterheadPage(): JSX.Element {
   const {
     templates,
     activeTemplateId,
-    lastUsedTemplateId,
     editorState,
     createTemplate,
     updateTemplate,
@@ -73,7 +71,6 @@ export function LetterheadPage(): JSX.Element {
   }, [loadFromStorage]);
 
   const activeTemplate = templates.find((t) => t.id === activeTemplateId) ?? null;
-  const lastUsedTemplate = templates.find((t) => t.id === lastUsedTemplateId) ?? null;
 
   // ─── Handlers ──────────────────────────────────────────────────────────────
 
@@ -170,38 +167,6 @@ export function LetterheadPage(): JSX.Element {
     reader.readAsArrayBuffer(file);
   }, []);
 
-  const handleQuickApply = useCallback(async () => {
-    if (!lastUsedTemplate) {
-      addToast(
-        'No recent template available. Please select or create a template first.',
-        'warning',
-      );
-      return;
-    }
-
-    if (!pdfData) {
-      addToast('Please upload a PDF file first.', 'warning');
-      return;
-    }
-
-    setIsApplying(true);
-    try {
-      const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
-      const result = await client.applyLetterhead(pdfData, lastUsedTemplate, { type: 'first' });
-      downloadBlob(
-        new Blob([result], { type: 'application/pdf' }),
-        pdfFileName,
-        '_letterhead',
-        'pdf',
-      );
-      addToast('Letterhead applied to first page successfully.', 'success');
-    } catch {
-      addToast('Failed to apply letterhead. Please try again.', 'error');
-    } finally {
-      setIsApplying(false);
-    }
-  }, [lastUsedTemplate, pdfData, pdfFileName, addToast]);
-
   const handleApplyToDocument = useCallback(
     async (target: LetterheadPageTarget) => {
       if (!activeTemplate || !pdfData) return;
@@ -232,33 +197,33 @@ export function LetterheadPage(): JSX.Element {
 
     setIsExporting(true);
     try {
-      const client = getPdfWorkerClient({ onError: (msg) => addToast(msg, 'warning') });
-      const result = await client.exportLetterheadAsPdf(activeTemplate);
-      downloadBlob(
-        new Blob([result], { type: 'application/pdf' }),
-        activeTemplate.name,
-        '_letterhead',
-        'pdf',
-      );
-      addToast('Letterhead exported as PDF.', 'success');
-    } catch {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const cleanName = activeTemplate.name.replace(/\.(pdf|docx?)$/i, '');
+
+      const element = document.getElementById('letterhead-page-content');
+      if (!element) {
+        addToast('No letterhead to export.', 'warning');
+        setIsExporting(false);
+        return;
+      }
+
+      await html2pdf()
+        .set({
+          margin: 0,
+          filename: `${cleanName}_letter.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'] },
+        })
+        .from(element)
+        .save();
+
+      addToast('Letter exported as PDF.', 'success');
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Letterhead PDF export failed:', err);
       addToast('Failed to export letterhead as PDF.', 'error');
-    } finally {
-      setIsExporting(false);
-    }
-  }, [activeTemplate, addToast]);
-
-  const handleExportAsDocx = useCallback(async () => {
-    if (!activeTemplate) return;
-
-    setIsExporting(true);
-    try {
-      const { exportLetterheadAsDocx } = await import('../export/docx-export');
-      const blob = await exportLetterheadAsDocx(activeTemplate);
-      downloadBlob(blob, activeTemplate.name, '_letterhead', 'docx');
-      addToast('Letterhead exported as Word document.', 'success');
-    } catch {
-      addToast('Failed to export as Word document.', 'error');
     } finally {
       setIsExporting(false);
     }
@@ -292,91 +257,83 @@ export function LetterheadPage(): JSX.Element {
             </svg>
             New Letterhead
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleQuickApply}
-            loading={isApplying}
-            disabled={!pdfData || isApplying}
-          >
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              aria-hidden="true"
-            >
-              <path d="M13 2l5 5-5 5M18 7H6M2 12v5a1 1 0 001 1h14" />
-            </svg>
-            Quick Apply
-          </Button>
         </div>
       </div>
 
-      {/* PDF Upload section */}
-      {!pdfData && (
-        <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
-          <p className="mb-3 text-sm font-medium text-text-light dark:text-text-dark">
-            Upload a PDF to apply letterhead
-          </p>
-          <FileUploadZone
-            accept={['application/pdf']}
-            maxFiles={1}
-            multiple={false}
-            onFilesAccepted={handleFilesAccepted}
-            operationRoute="/letterhead"
-            operationName="Letterhead"
-          />
-        </div>
-      )}
-
-      {pdfData && (
-        <div className="flex items-center gap-3 rounded-lg border border-secondary-200 bg-white px-4 py-3 dark:border-secondary-700 dark:bg-secondary-800">
-          <svg
-            className="h-5 w-5 flex-shrink-0 text-error-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-            />
-          </svg>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-text-light dark:text-text-dark">
-              {pdfFileName}
-            </p>
-            <p className="text-xs text-secondary-500 dark:text-secondary-400">
-              {pdfPageCount} {pdfPageCount === 1 ? 'page' : 'pages'}
-            </p>
+      {/* PDF Upload section — secondary workflow: apply letterhead to existing PDF */}
+      {activeTemplate && (
+        <details className="rounded-lg border border-secondary-200 bg-white dark:border-secondary-700 dark:bg-secondary-800">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-secondary-700 dark:text-secondary-300 select-none">
+            Apply letterhead to an existing PDF (optional)
+          </summary>
+          <div className="px-4 pb-4">
+            {!pdfData ? (
+              <FileUploadZone
+                accept={['application/pdf']}
+                maxFiles={1}
+                multiple={false}
+                onFilesAccepted={handleFilesAccepted}
+                operationRoute="/letterhead"
+                operationName="Letterhead"
+              />
+            ) : (
+              <div className="flex items-center gap-3">
+                <svg
+                  className="h-5 w-5 flex-shrink-0 text-error-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                  />
+                </svg>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-text-light dark:text-text-dark">
+                    {pdfFileName}
+                  </p>
+                  <p className="text-xs text-secondary-500 dark:text-secondary-400">
+                    {pdfPageCount} {pdfPageCount === 1 ? 'page' : 'pages'}
+                  </p>
+                </div>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setIsApplyModalOpen(true)}
+                  disabled={isApplying}
+                  loading={isApplying}
+                >
+                  Apply Letterhead
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setPdfData(null);
+                    setPdfFileName('');
+                    setPdfPageCount(1);
+                  }}
+                  aria-label="Remove uploaded PDF"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </Button>
+              </div>
+            )}
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setPdfData(null);
-              setPdfFileName('');
-              setPdfPageCount(1);
-            }}
-            aria-label="Remove uploaded PDF"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </Button>
-        </div>
+        </details>
       )}
 
       {/* Starter Template Picker */}
@@ -389,10 +346,10 @@ export function LetterheadPage(): JSX.Element {
       )}
 
       {/* Two-column layout: template list left, editor/preview right */}
-      <div className="flex flex-col gap-4 md:flex-row">
-        {/* Left sidebar — Template list */}
-        <aside className="w-full shrink-0 md:max-w-[320px]">
-          <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
+      <div className="flex flex-col gap-4 lg:flex-row">
+        {/* Left sidebar — Template list (horizontal scroll on mobile, vertical on desktop) */}
+        <aside className="w-full shrink-0 lg:w-[280px] xl:max-w-[320px]">
+          <div className="rounded-lg border border-secondary-200 bg-white p-3 dark:border-secondary-700 dark:bg-secondary-800 md:p-4">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-medium text-text-light dark:text-text-dark">Templates</h2>
               <Button variant="primary" size="sm" onClick={handleCreateTemplate}>
@@ -406,7 +363,7 @@ export function LetterheadPage(): JSX.Element {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-                New
+                <span className="hidden sm:inline">New</span>
               </Button>
             </div>
             <LetterheadTemplateList
@@ -463,21 +420,21 @@ export function LetterheadPage(): JSX.Element {
           ) : (
             <div className="space-y-4">
               {/* Action bar */}
-              <div className="flex flex-wrap items-center gap-2 rounded-lg border border-secondary-200 bg-white px-4 py-3 dark:border-secondary-700 dark:bg-secondary-800">
-                <div className="mr-auto min-w-0">
+              <div className="flex items-center gap-2 rounded-lg border border-secondary-200 bg-white px-3 py-2.5 dark:border-secondary-700 dark:bg-secondary-800 md:px-4 md:py-3 overflow-x-auto">
+                <div className="mr-auto min-w-0 shrink-0">
                   <h2 className="truncate text-sm font-medium text-text-light dark:text-text-dark">
                     {activeTemplate.name}
                   </h2>
                 </div>
 
                 {/* Edit/Preview toggle */}
-                <div className="inline-flex rounded-md border border-secondary-300 dark:border-secondary-600">
+                <div className="inline-flex rounded-md border border-secondary-300 dark:border-secondary-600 shrink-0">
                   <button
                     type="button"
                     onClick={() => setEditorState('editing')}
                     aria-pressed={editorState === 'editing'}
                     className={[
-                      'inline-flex min-h-[36px] items-center gap-1.5 rounded-l-md px-3 py-1.5 text-sm font-medium transition-colors duration-fast',
+                      'inline-flex min-h-[36px] items-center gap-1.5 rounded-l-md px-2.5 py-1.5 text-sm font-medium transition-colors duration-fast',
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
                       editorState === 'editing'
                         ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
@@ -494,14 +451,14 @@ export function LetterheadPage(): JSX.Element {
                     >
                       <path d="M14.5 2.5l3 3L6 17H3v-3L14.5 2.5z" />
                     </svg>
-                    Edit
+                    <span className="hidden sm:inline">Edit</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditorState('previewing')}
                     aria-pressed={editorState === 'previewing'}
                     className={[
-                      'inline-flex min-h-[36px] items-center gap-1.5 rounded-r-md px-3 py-1.5 text-sm font-medium transition-colors duration-fast',
+                      'inline-flex min-h-[36px] items-center gap-1.5 rounded-r-md px-2.5 py-1.5 text-sm font-medium transition-colors duration-fast',
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1',
                       editorState === 'previewing'
                         ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
@@ -519,90 +476,42 @@ export function LetterheadPage(): JSX.Element {
                       <path d="M10 4.5C5.5 4.5 2 10 2 10s3.5 5.5 8 5.5 8-5.5 8-5.5-3.5-5.5-8-5.5z" />
                       <circle cx="10" cy="10" r="2.5" />
                     </svg>
-                    Preview
+                    <span className="hidden sm:inline">Preview</span>
                   </button>
                 </div>
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleExportAsPdf}
-                  loading={isExporting}
-                  disabled={isExporting}
-                >
-                  <svg
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    aria-hidden="true"
+                {/* Export buttons — stack on mobile */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExportAsPdf}
+                    loading={isExporting}
+                    disabled={isExporting}
                   >
-                    <path d="M3 14v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v11M10 14l-3-3M10 14l3-3" />
-                  </svg>
-                  Export PDF
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleExportAsDocx}
-                  loading={isExporting}
-                  disabled={isExporting}
-                >
-                  <svg
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    aria-hidden="true"
-                  >
-                    <path d="M3 14v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v11M10 14l-3-3M10 14l3-3" />
-                  </svg>
-                  Export Word
-                </Button>
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => {
-                    if (!pdfData) {
-                      addToast('Please upload a PDF file first.', 'warning');
-                      return;
-                    }
-                    setIsApplyModalOpen(true);
-                  }}
-                  disabled={isApplying}
-                  loading={isApplying}
-                >
-                  Apply to Document
-                </Button>
+                    <svg
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M3 14v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v11M10 14l-3-3M10 14l3-3" />
+                    </svg>
+                    <span className="hidden md:inline">PDF</span>
+                  </Button>
+                </div>
               </div>
 
               {/* Editor or Preview */}
               <div className="transition-opacity duration-moderate ease-out">
-                {editorState === 'editing' ? (
-                  <div className="flex flex-col gap-4 lg:flex-row">
-                    <div className="w-full lg:max-w-[400px]">
-                      <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
-                        <LetterheadEditor
-                          template={activeTemplate}
-                          onChange={handleTemplateChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="rounded-lg border border-secondary-200 bg-white dark:border-secondary-700 dark:bg-secondary-800">
-                        <LetterheadPreview template={activeTemplate} />
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="rounded-lg border border-secondary-200 bg-white dark:border-secondary-700 dark:bg-secondary-800">
-                    <LetterheadPreview template={activeTemplate} />
-                  </div>
-                )}
+                <div className="rounded-lg border border-secondary-200 bg-white p-4 dark:border-secondary-700 dark:bg-secondary-800">
+                  <LetterheadVisualEditor
+                    template={activeTemplate}
+                    onChange={handleTemplateChange}
+                  />
+                </div>
               </div>
             </div>
           )}

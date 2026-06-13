@@ -719,7 +719,7 @@ export function useCanvasInput(canvasRef: React.RefObject<HTMLCanvasElement | nu
 
   // === onWheel ===
 
-  const onWheel = useCallback((e: React.WheelEvent<HTMLCanvasElement>) => {
+  const onWheel = useCallback((e: WheelEvent | React.WheelEvent<HTMLCanvasElement>) => {
     const store = useCanvasStore.getState();
 
     // Ctrl/Cmd + wheel → zoom

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useCanvasInput } from '../hooks/useCanvasInput';
 import { useCanvasRenderer } from '../hooks/useCanvasRenderer';
@@ -40,12 +40,26 @@ export function CanvasViewport({ onEditText, onSnapGuidesChange }: CanvasViewpor
   // Wire up the double-click text editing callback
   onDoubleClickTextRef.current = onEditText ?? null;
 
-  // Report snap guides to parent
-  const prevGuidesRef = useRef(activeSnapGuides);
-  if (prevGuidesRef.current !== activeSnapGuides) {
-    prevGuidesRef.current = activeSnapGuides;
-    onSnapGuidesChange?.(activeSnapGuides);
-  }
+  // Report snap guides to parent via useEffect (not during render)
+  const onSnapGuidesChangeRef = useRef(onSnapGuidesChange);
+  onSnapGuidesChangeRef.current = onSnapGuidesChange;
+
+  useEffect(() => {
+    onSnapGuidesChangeRef.current?.(activeSnapGuides);
+  }, [activeSnapGuides]);
+
+  // Attach wheel listener with { passive: false } to allow preventDefault
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      onWheel(e);
+    };
+
+    canvas.addEventListener('wheel', handleWheel, { passive: false });
+    return () => canvas.removeEventListener('wheel', handleWheel);
+  }, [onWheel]);
 
   // Set up rendering loop (subscribes to store, handles DPR, requestAnimationFrame)
   // Pass ghostElementRef so the renderer can include the ghost element in the render state
@@ -60,7 +74,6 @@ export function CanvasViewport({ onEditText, onSnapGuidesChange }: CanvasViewpor
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
-      onWheel={onWheel}
       aria-label="Canvas editor viewport"
       role="img"
     />

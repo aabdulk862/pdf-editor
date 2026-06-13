@@ -8,6 +8,17 @@
 export type Alignment = 'left' | 'center' | 'right';
 
 /**
+ * Layout type determines the header structure.
+ * Each layout defines fixed zones where content goes.
+ */
+export type LetterheadLayout =
+  | 'logo-center' // [Left Text] [Logo] [Right Text] — like GAMEC
+  | 'logo-left' // [Logo + Name] ............. [Contact Right]
+  | 'logo-right' // [Contact Left] ............. [Logo + Name]
+  | 'centered' // Everything centered vertically (logo, name, tagline)
+  | 'minimal'; // Just name + line, no logo zone
+
+/**
  * A configurable text field within a letterhead template.
  * Used for company name, address lines, phone, email, website, and tagline.
  */
@@ -109,6 +120,26 @@ export interface LetterheadTemplate {
    * Defaults to '#E5E7EB' (light gray).
    */
   separatorColor?: string;
+  /**
+   * Layout type for the header structure.
+   * Defaults to 'centered' for backward compatibility.
+   */
+  layout?: LetterheadLayout;
+  /**
+   * Left header text (used in 'logo-center' layout).
+   * Displayed to the left of the centered logo.
+   */
+  headerLeftText?: string;
+  /**
+   * Right header text (used in 'logo-center' layout).
+   * Displayed to the right of the centered logo.
+   */
+  headerRightText?: string;
+  /**
+   * Letter body content that the user can edit.
+   * This is the actual letter text that appears below the header.
+   */
+  letterBody?: string;
 }
 
 /**

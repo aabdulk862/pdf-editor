@@ -282,7 +282,7 @@ export function CanvasEditorPage() {
 
   return (
     <div
-      className="canvas-editor-page -mx-4 sm:-mx-6 lg:-mx-8 -my-6 w-[calc(100%+2rem)] sm:w-[calc(100%+3rem)] lg:w-[calc(100%+4rem)] flex h-[calc(100dvh-3.5rem)] md:h-dvh overflow-hidden"
+      className="canvas-editor-page -mx-3 sm:-mx-6 lg:-mx-8 -my-6 w-[calc(100%+1.5rem)] sm:w-[calc(100%+3rem)] lg:w-[calc(100%+4rem)] flex flex-col h-[calc(100dvh-3.5rem)] overflow-hidden"
       style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}
     >
       {/* Landing view when no document is open */}
@@ -354,87 +354,77 @@ export function CanvasEditorPage() {
       {/* Editor view when a document is open */}
       {document && (
         <>
-          {/* Page Navigator (left sidebar) */}
-          <PageNavigator />
-
-          {/* Main canvas area */}
-          <div className="flex-1 flex flex-col relative min-w-0">
-            {/* Canvas workspace with dark background and white page surface */}
-            <CanvasWorkspace />
-
-            {/* Floating toolbar overlays the canvas at the top center */}
-            <FloatingToolbar />
-
-            {/* Document actions menu (top-left) */}
-            <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  useCanvasStore.getState().createDocument();
-                }}
-                className="flex items-center gap-1.5 px-4 py-2.5 bg-primary-600 text-white rounded-lg shadow-level-2 text-sm font-medium hover:bg-primary-700 active:bg-primary-800 active:scale-[0.98] transition-[transform,background-color] duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                aria-label="New design"
-                title="New Design (creates a blank canvas)"
+          {/* Top action bar — document actions in a proper menu bar */}
+          <div className="hidden md:flex items-center w-full h-10 px-3 gap-2 border-b border-secondary-200 dark:border-secondary-700 bg-white dark:bg-secondary-900 shrink-0 z-30">
+            <button
+              type="button"
+              onClick={() => {
+                useCanvasStore.getState().createDocument();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              aria-label="New design"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                >
-                  <path d="M8 3v10M3 8h10" />
-                </svg>
-                New Design
-              </button>
-              <button
-                type="button"
-                onClick={handleOpenTemplatePicker}
-                className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-secondary-800 rounded-lg shadow-level-2 border border-secondary-200 dark:border-secondary-600 text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-50 dark:hover:bg-secondary-700 active:scale-[0.98] transition-[transform,background-color] duration-normal ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                aria-label="Browse templates"
-                title="Templates"
+                <path d="M8 3v10M3 8h10" />
+              </svg>
+              New
+            </button>
+            <button
+              type="button"
+              onClick={handleOpenTemplatePicker}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              aria-label="Browse templates"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                aria-hidden="true"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <rect x="2" y="2" width="5" height="5" rx="1" />
-                  <rect x="9" y="2" width="5" height="5" rx="1" />
-                  <rect x="2" y="9" width="5" height="5" rx="1" />
-                  <rect x="9" y="9" width="5" height="5" rx="1" />
-                </svg>
-                Templates
-              </button>
+                <rect x="2" y="2" width="5" height="5" rx="1" />
+                <rect x="9" y="2" width="5" height="5" rx="1" />
+                <rect x="2" y="9" width="5" height="5" rx="1" />
+                <rect x="9" y="9" width="5" height="5" rx="1" />
+              </svg>
+              Templates
+            </button>
+
+            {/* Document name — centered */}
+            <div className="flex-1 text-center">
+              <span className="text-xs font-medium text-secondary-600 dark:text-secondary-300 truncate">
+                {document.name}
+              </span>
             </div>
 
-            {/* Empty state shown when no elements on current page */}
-            {isPageEmpty && <EmptyState onOpenTemplatePicker={handleOpenTemplatePicker} />}
-
-            {/* Minimap overlay in bottom-right corner */}
-            <MinimapOverlay />
-
-            {/* Export button (floating, bottom-left area) */}
+            {/* Export button — right side */}
             <button
               type="button"
               onClick={handleOpenExportDialog}
-              className="absolute bottom-4 left-4 z-30 flex items-center gap-2 px-4 py-3 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-lg shadow-level-2 border border-secondary-200/60 dark:border-secondary-700/60 text-sm font-medium text-secondary-700 dark:text-secondary-200 hover:bg-white dark:hover:bg-secondary-800 hover:shadow-level-3 active:scale-[0.98] transition-[transform,box-shadow,background-color] duration-moderate ease-in-out motion-reduce:transition-none motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               aria-label="Export document"
             >
               <svg
-                width="16"
-                height="16"
+                width="14"
+                height="14"
                 viewBox="0 0 16 16"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                aria-hidden="true"
               >
                 <path d="M8 2v8M5 7l3 3 3-3M3 12h10" />
               </svg>
@@ -442,11 +432,79 @@ export function CanvasEditorPage() {
             </button>
           </div>
 
-          {/* Properties panel (right side on desktop, bottom sheet on mobile) */}
-          <PropertiesPanel
-            isOpen={effectivePropertiesPanelOpen}
-            onClose={handleClosePropertiesPanel}
-          />
+          {/* Main editor area — horizontal flex: PageNav | Canvas | PropertiesPanel */}
+          <div className="flex-1 flex flex-row min-h-0 overflow-hidden">
+            {/* Page Navigator (left sidebar) — hidden on mobile */}
+            <PageNavigator />
+
+            {/* Main canvas area */}
+            <div className="flex-1 flex flex-col relative min-w-0">
+              {/* Canvas workspace with dark background and white page surface */}
+              <CanvasWorkspace />
+
+              {/* Floating toolbar overlays the canvas */}
+              <FloatingToolbar />
+
+              {/* Mobile-only document actions (top-left floating) */}
+              <div className="md:hidden absolute top-3 left-3 z-50 flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    useCanvasStore.getState().createDocument();
+                  }}
+                  className="flex items-center gap-1 px-2.5 py-2 bg-primary-600 text-white rounded-lg shadow-level-2 text-xs font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                  aria-label="New design"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M8 3v10M3 8h10" />
+                  </svg>
+                  New
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenExportDialog}
+                  className="flex items-center gap-1 px-2.5 py-2 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-lg shadow-level-2 border border-secondary-200/60 dark:border-secondary-700/60 text-xs font-medium text-secondary-700 dark:text-secondary-200 transition-colors duration-normal ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                  aria-label="Export document"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M8 2v8M5 7l3 3 3-3M3 12h10" />
+                  </svg>
+                  Export
+                </button>
+              </div>
+
+              {/* Empty state shown when no elements on current page */}
+              {isPageEmpty && <EmptyState onOpenTemplatePicker={handleOpenTemplatePicker} />}
+
+              {/* Minimap overlay in bottom-right corner */}
+              <MinimapOverlay />
+            </div>
+
+            {/* Properties panel (right side on desktop, bottom sheet on mobile) */}
+            <PropertiesPanel
+              isOpen={effectivePropertiesPanelOpen}
+              onClose={handleClosePropertiesPanel}
+            />
+          </div>
         </>
       )}
 

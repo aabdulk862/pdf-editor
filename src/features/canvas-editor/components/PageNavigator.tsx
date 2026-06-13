@@ -25,7 +25,7 @@ export function PageNavigator() {
 
   return (
     <aside
-      className="flex flex-col w-[140px] bg-secondary-900 border-r border-secondary-700 overflow-y-auto py-3 px-2 gap-2"
+      className="hidden md:flex flex-col w-[72px] bg-secondary-900 border-r border-secondary-700 overflow-y-auto py-2 px-1 gap-2 shrink-0"
       aria-label="Page navigator"
       data-testid="page-navigator"
     >
@@ -36,9 +36,8 @@ export function PageNavigator() {
       {pages.map((page, index) => {
         const isActive = index === activePageIndex;
         const aspectRatio = page.width / page.height;
-        // Thumbnail width is fixed at 112px (w-[112px] inside the sidebar)
-        // Height is derived from aspect ratio
-        const thumbWidth = 112;
+        // Thumbnail width fits the 72px sidebar with padding
+        const thumbWidth = 56;
         const thumbHeight = Math.round(thumbWidth / aspectRatio);
 
         return (
@@ -57,7 +56,7 @@ export function PageNavigator() {
                   ? 'ring-2 ring-primary-500 shadow-level-2'
                   : 'ring-1 ring-secondary-600 hover:ring-secondary-400'
               }`}
-              style={{ height: `${Math.min(thumbHeight, 160)}px` }}
+              style={{ height: `${Math.min(thumbHeight, 80)}px` }}
               aria-label={`Page ${index + 1}${isActive ? ' (active)' : ''}`}
               aria-current={isActive ? 'page' : undefined}
             >
@@ -72,7 +71,7 @@ export function PageNavigator() {
                     {page.elements.slice(0, 8).map((el) => {
                       // Scale element positions to thumbnail size
                       const scaleX = (thumbWidth * 0.9) / page.width;
-                      const scaleY = (Math.min(thumbHeight, 160) * 0.9) / page.height;
+                      const scaleY = (Math.min(thumbHeight, 80) * 0.9) / page.height;
                       const left = el.x * scaleX;
                       const top = el.y * scaleY;
                       const width = Math.max(4, el.width * scaleX);

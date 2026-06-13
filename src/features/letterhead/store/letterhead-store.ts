@@ -141,7 +141,20 @@ export const useLetterheadStore = create<LetterheadStoreState>((set, get) => ({
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
-          set({ templates: parsed });
+          // Restore ArrayBuffer from base64 for logo data
+          const restored = parsed.map((t: Record<string, unknown>) => {
+            if (t.logo && typeof (t.logo as Record<string, unknown>).dataBase64 === 'string') {
+              const logo = t.logo as Record<string, unknown>;
+              const binary = atob(logo.dataBase64 as string);
+              const bytes = new Uint8Array(binary.length);
+              for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+              }
+              return { ...t, logo: { ...logo, data: bytes.buffer, dataBase64: undefined } };
+            }
+            return t;
+          });
+          set({ templates: restored as unknown as LetterheadTemplate[] });
         }
       }
     } catch {
@@ -161,7 +174,20 @@ export const useLetterheadStore = create<LetterheadStoreState>((set, get) => ({
   saveToStorage: () => {
     const { templates } = get();
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
+      // Convert ArrayBuffer logo data to base64 for JSON serialization
+      const serializable = templates.map((t) => {
+        if (t.logo && t.logo.data instanceof ArrayBuffer && t.logo.data.byteLength > 0) {
+          const bytes = new Uint8Array(t.logo.data);
+          let binary = '';
+          for (let i = 0; i < bytes.length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          const dataBase64 = btoa(binary);
+          return { ...t, logo: { ...t.logo, data: undefined, dataBase64 } };
+        }
+        return t;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
     } catch (error: unknown) {
       if (error instanceof DOMException && error.name === 'QuotaExceededError') {
         useToastStore

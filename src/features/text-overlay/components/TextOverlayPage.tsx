@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FileUploadZone } from '@/components/ui/FileUploadZone';
 import { PreviewPanel } from '@/components/ui/PreviewPanel';
 import { Button } from '@/components/ui/Button';
+import { MiniEditor } from '@/components/ui/MiniEditor';
 import { useToast } from '@/hooks/useToast';
 import { getPdfWorkerClient } from '@/workers/pdf-worker-client';
 import type { TextOverlay } from '@/core/pdf-engine/index';
@@ -205,14 +206,6 @@ export function TextOverlayPage(): JSX.Element {
     URL.revokeObjectURL(url);
   }, [modifiedData, pdfName]);
 
-  // Handle text input change with max length enforcement
-  const handleTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    if (value.length <= MAX_TEXT_LENGTH) {
-      setText(value);
-    }
-  }, []);
-
   // Handle font size change with clamping
   const handleFontSizeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
@@ -259,22 +252,14 @@ export function TextOverlayPage(): JSX.Element {
             >
               Text Content
             </label>
-            <textarea
-              id="overlay-text"
-              value={text}
-              onChange={handleTextChange}
+            <MiniEditor
+              content={text}
+              onChange={(html) => {
+                const plain = html.replace(/<[^>]+>/g, '').substring(0, MAX_TEXT_LENGTH);
+                setText(plain);
+              }}
               placeholder="Enter text to overlay on the PDF..."
-              maxLength={MAX_TEXT_LENGTH}
-              rows={3}
-              className={[
-                'w-full rounded-md border px-3 py-2 text-sm resize-y',
-                'border-secondary-300 bg-white text-text-light',
-                'dark:border-secondary-600 dark:bg-secondary-900 dark:text-text-dark',
-                'focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500',
-                'dark:focus:border-primary-400 dark:focus:ring-primary-400',
-                'placeholder:text-secondary-400 dark:placeholder:text-secondary-500',
-              ].join(' ')}
-              aria-describedby="text-char-count"
+              minHeight={80}
             />
             <p id="text-char-count" className="text-xs text-secondary-500 dark:text-secondary-400">
               {text.length} / {MAX_TEXT_LENGTH} characters

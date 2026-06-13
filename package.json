@@ -25,7 +25,11 @@
     ]
   },
   "dependencies": {
+    "@tiptap/pm": "^2.6.6",
+    "@tiptap/react": "^2.6.6",
+    "@tiptap/starter-kit": "^2.6.6",
     "docx": "9.7.0",
+    "html2pdf.js": "0.10.2",
     "immer": "11.1.8",
     "jszip": "^3.10.1",
     "pdf-lib": "^1.17.1",
@@ -34,6 +38,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
     "tesseract.js": "^7.0.0",
+    "tiptap-pagination-breaks": "^1.0.3",
     "zustand": "^5.0.13"
   },
   "devDependencies": {

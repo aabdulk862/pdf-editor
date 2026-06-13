@@ -77,6 +77,23 @@ export const TextEditOverlay: React.FC<TextEditOverlayProps> = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // Text formatting shortcuts
+      if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+        e.preventDefault();
+        document.execCommand('bold');
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+        e.preventDefault();
+        document.execCommand('italic');
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+        e.preventDefault();
+        document.execCommand('underline');
+        return;
+      }
+
       if (e.key === 'Escape') {
         e.preventDefault();
         e.stopPropagation();
@@ -122,6 +139,52 @@ export const TextEditOverlay: React.FC<TextEditOverlayProps> = ({
 
   return (
     <div className="pointer-events-none absolute inset-0 z-30" data-testid="text-edit-overlay">
+      {/* Formatting toolbar */}
+      <div
+        className="pointer-events-auto absolute flex items-center gap-0.5 px-1.5 py-1 bg-white dark:bg-secondary-800 rounded-lg shadow-level-2 border border-secondary-200 dark:border-secondary-700"
+        style={{
+          left: screenX,
+          top: screenY - 36,
+        }}
+      >
+        <button
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            document.execCommand('bold');
+          }}
+          className="w-7 h-7 flex items-center justify-center rounded text-xs font-bold text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700"
+          aria-label="Bold"
+          title="Bold (Ctrl+B)"
+        >
+          B
+        </button>
+        <button
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            document.execCommand('italic');
+          }}
+          className="w-7 h-7 flex items-center justify-center rounded text-xs italic text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700"
+          aria-label="Italic"
+          title="Italic (Ctrl+I)"
+        >
+          I
+        </button>
+        <button
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            document.execCommand('underline');
+          }}
+          className="w-7 h-7 flex items-center justify-center rounded text-xs underline text-secondary-700 dark:text-secondary-200 hover:bg-secondary-100 dark:hover:bg-secondary-700"
+          aria-label="Underline"
+          title="Underline (Ctrl+U)"
+        >
+          U
+        </button>
+      </div>
+
       <div
         ref={editableRef}
         className="pointer-events-auto absolute outline-none ring-2 ring-primary-500 rounded-sm z-30"

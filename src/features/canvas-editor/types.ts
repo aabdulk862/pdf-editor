@@ -197,7 +197,13 @@ export interface CanvasTemplate {
   pages: CanvasPage[];
 }
 
-export type TemplateCategory = 'blank' | 'invoice' | 'resume' | 'letter' | 'presentation';
+export type TemplateCategory =
+  | 'blank'
+  | 'invoice'
+  | 'resume'
+  | 'letter'
+  | 'presentation'
+  | 'letterhead';
 
 // === Onboarding ===
 

@@ -173,6 +173,11 @@ const LetterheadPage = lazy(() =>
     default: m.LetterheadPage,
   })),
 );
+const ReceiptGeneratorPage = lazy(() =>
+  import('../features/receipt-generator/components/ReceiptGeneratorPage').then((m) => ({
+    default: m.ReceiptGeneratorPage,
+  })),
+);
 
 // Lazy-loaded canvas editor (large feature module)
 const CanvasEditorPage = lazy(() =>
@@ -264,6 +269,7 @@ export function AppRouter() {
           <Route path="/duplicate-pages" element={<DuplicatePagesPage />} />
           <Route path="/ocr" element={<OcrPage />} />
           <Route path="/letterhead" element={<LetterheadPage />} />
+          <Route path="/receipt-generator" element={<ReceiptGeneratorPage />} />
           <Route
             path="/canvas-editor"
             element={

@@ -5,15 +5,17 @@ import type {
   LetterheadPageTarget,
   LetterheadTextField,
   LetterheadLogo,
+  LetterheadLayout,
   Alignment,
 } from '../types';
+import { getEffectiveLetterBody } from './defaults';
 
 /** Horizontal margin in points */
 const MARGIN = 40;
 
-/** A4 page dimensions in points */
-const A4_WIDTH = 595.28;
-const A4_HEIGHT = 841.89;
+/** US Letter page dimensions in points (8.5 × 11 inches) */
+const LETTER_WIDTH = 612;
+const LETTER_HEIGHT = 792;
 
 /** Font mapping from user-facing names to pdf-lib StandardFonts */
 const FONT_MAP: Record<string, (typeof StandardFonts)[keyof typeof StandardFonts]> = {
@@ -86,41 +88,64 @@ async function embedLogoImage(pdfDoc: PDFDocument, logo: LetterheadLogo): Promis
 }
 
 /**
- * Draw a logo onto a page within the header area, preserving aspect ratio.
+ * Word-wrap a line of text to fit within maxWidth using the given font and size.
+ * Returns an array of wrapped lines.
  */
-function drawLogo(
-  page: PDFPage,
-  image: PDFImage,
-  logo: LetterheadLogo,
-  pageWidth: number,
-  pageHeight: number,
-): void {
-  const originalDims = image.scale(1);
-  const targetWidth = Math.max(50, Math.min(300, logo.width));
-  const scale = targetWidth / originalDims.width;
-  const scaledHeight = originalDims.height * scale;
+function wrapTextLine(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
+  if (!text.trim()) return [''];
 
-  const x = getAlignedX(logo.alignment, pageWidth, targetWidth);
-  // Position logo at the top of the header area (vertically centered in header)
-  const y = pageHeight - MARGIN - scaledHeight;
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let currentLine = '';
 
-  page.drawImage(image, {
-    x,
-    y,
-    width: targetWidth,
-    height: scaledHeight,
-  });
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+
+    if (testWidth > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines.length > 0 ? lines : [''];
+}
+
+/** Font cache helper for a single render pass */
+class FontCache {
+  private cache = new Map<string, PDFFont>();
+  private pdfDoc: PDFDocument;
+
+  constructor(pdfDoc: PDFDocument) {
+    this.pdfDoc = pdfDoc;
+  }
+
+  async getFont(fontFamily: string): Promise<PDFFont> {
+    const key = resolveFontKey(fontFamily);
+    if (!this.cache.has(key)) {
+      const font = await this.pdfDoc.embedFont(key);
+      this.cache.set(key, font);
+    }
+    return this.cache.get(key)!;
+  }
 }
 
 /**
- * Draw a text field onto a page at the specified vertical position within the header area.
+ * Draw a text field onto a page at the specified Y position.
+ * Returns the height consumed (fontSize + spacing).
  */
 function drawTextField(
   page: PDFPage,
   field: LetterheadTextField,
   font: PDFFont,
   pageWidth: number,
-  yPosition: number,
+  yBaseline: number,
 ): void {
   if (!field.content.trim()) return;
 
@@ -131,7 +156,7 @@ function drawTextField(
 
   page.drawText(field.content, {
     x,
-    y: yPosition,
+    y: yBaseline,
     size: fontSize,
     font,
     color: rgb(color.r, color.g, color.b),
@@ -139,57 +164,288 @@ function drawTextField(
 }
 
 /**
- * Render all letterhead elements (logo + text fields) onto a single page.
+ * Render the header using the 'logo-center' layout:
+ * [Left Text] [Logo centered] [Right Text]
  */
-async function renderLetterheadOnPage(
+async function renderLogoCenterLayout(
   pdfDoc: PDFDocument,
   page: PDFPage,
   template: LetterheadTemplate,
-): Promise<void> {
-  const { width: pageWidth, height: pageHeight } = page.getSize();
+  fonts: FontCache,
+  startY: number,
+): Promise<number> {
+  const { width: pageWidth } = page.getSize();
+  let currentY = startY;
 
-  // Embed and draw logo if present
+  // Draw logo centered
+  let logoHeight = 0;
   if (template.logo) {
     const image = await embedLogoImage(pdfDoc, template.logo);
-    drawLogo(page, image, template.logo, pageWidth, pageHeight);
+    const originalDims = image.scale(1);
+    const targetWidth = Math.max(50, Math.min(300, template.logo.width));
+    const scale = targetWidth / originalDims.width;
+    const scaledHeight = originalDims.height * scale;
+    logoHeight = scaledHeight;
+
+    const x = pageWidth / 2 - targetWidth / 2;
+    const y = currentY - scaledHeight;
+
+    page.drawImage(image, { x, y, width: targetWidth, height: scaledHeight });
   }
 
-  // Embed fonts needed for text fields
-  const fontsCache = new Map<string, PDFFont>();
+  // Draw left text and right text at the vertical center of the logo
+  const sideTextFont = await fonts.getFont('Helvetica');
+  const sideTextSize = 10;
+  const sideTextY = currentY - (logoHeight > 0 ? logoHeight / 2 + sideTextSize / 2 : sideTextSize);
 
-  async function getFont(fontFamily: string): Promise<PDFFont> {
-    const key = resolveFontKey(fontFamily);
-    if (!fontsCache.has(key)) {
-      const font = await pdfDoc.embedFont(key);
-      fontsCache.set(key, font);
+  if (template.headerLeftText?.trim()) {
+    const color = parseHexColor('#000000');
+    const lines = template.headerLeftText.split('\n').filter((l) => l.trim());
+    let lineY = sideTextY;
+    for (const line of lines) {
+      page.drawText(line, {
+        x: MARGIN,
+        y: lineY,
+        size: sideTextSize,
+        font: sideTextFont,
+        color: rgb(color.r, color.g, color.b),
+      });
+      lineY -= sideTextSize + 2;
     }
-    return fontsCache.get(key)!;
   }
 
-  // Calculate text positions within the header area
-  // Header area: from (pageHeight - HEADER_HEIGHT) to pageHeight
-  // We lay out text fields vertically starting below any logo space
-  const headerTop = pageHeight - MARGIN;
-  let currentY = headerTop - 20; // Start below top margin for company name
+  if (template.headerRightText?.trim()) {
+    const color = parseHexColor('#000000');
+    const lines = template.headerRightText.split('\n').filter((l) => l.trim());
+    let lineY = sideTextY;
+    for (const line of lines) {
+      const textWidth = sideTextFont.widthOfTextAtSize(line, sideTextSize);
+      page.drawText(line, {
+        x: pageWidth - MARGIN - textWidth,
+        y: lineY,
+        size: sideTextSize,
+        font: sideTextFont,
+        color: rgb(color.r, color.g, color.b),
+      });
+      lineY -= sideTextSize + 2;
+    }
+  }
 
-  // Company name (largest, at top of text area)
+  currentY -= Math.max(logoHeight, sideTextSize + 4) + 8;
+
+  return currentY;
+}
+
+/**
+ * Render the header using the 'logo-left' layout:
+ * [Logo] [Company Name to the right of logo]
+ */
+async function renderLogoLeftLayout(
+  pdfDoc: PDFDocument,
+  page: PDFPage,
+  template: LetterheadTemplate,
+  fonts: FontCache,
+  startY: number,
+): Promise<number> {
+  page.getSize(); // dimensions used implicitly via MARGIN constants
+  let currentY = startY;
+  let logoEndX = MARGIN;
+  let logoHeight = 0;
+
+  // Draw logo on the left
+  if (template.logo) {
+    const image = await embedLogoImage(pdfDoc, template.logo);
+    const originalDims = image.scale(1);
+    const targetWidth = Math.max(50, Math.min(300, template.logo.width));
+    const scale = targetWidth / originalDims.width;
+    const scaledHeight = originalDims.height * scale;
+    logoHeight = scaledHeight;
+    logoEndX = MARGIN + targetWidth + 12;
+
+    const y = currentY - scaledHeight;
+    page.drawImage(image, { x: MARGIN, y, width: targetWidth, height: scaledHeight });
+  }
+
+  // Company name to the right of logo, vertically centered with logo
   if (template.companyName.content.trim()) {
-    const font = await getFont(template.companyName.fontFamily);
-    drawTextField(page, template.companyName, font, pageWidth, currentY);
-    currentY -= template.companyName.fontSize + 4;
+    const font = await fonts.getFont(template.companyName.fontFamily);
+    const fontSize = Math.max(8, Math.min(24, template.companyName.fontSize));
+    const color = parseHexColor(template.companyName.color);
+    const textY = currentY - (logoHeight > 0 ? logoHeight / 2 + fontSize / 2 : fontSize);
+
+    page.drawText(template.companyName.content, {
+      x: logoEndX,
+      y: textY,
+      size: fontSize,
+      font,
+      color: rgb(color.r, color.g, color.b),
+    });
   }
 
-  // Tagline (right below company name if present)
-  if (template.tagline && template.tagline.content.trim()) {
-    const font = await getFont(template.tagline.fontFamily);
-    drawTextField(page, template.tagline, font, pageWidth, currentY);
-    currentY -= template.tagline.fontSize + 4;
+  currentY -= Math.max(logoHeight, template.companyName.fontSize + 4) + 8;
+  return currentY;
+}
+
+/**
+ * Render the header using the 'logo-right' layout:
+ * [Company Name on left] [Logo on right]
+ */
+async function renderLogoRightLayout(
+  pdfDoc: PDFDocument,
+  page: PDFPage,
+  template: LetterheadTemplate,
+  fonts: FontCache,
+  startY: number,
+): Promise<number> {
+  const { width: pageWidth } = page.getSize();
+  let currentY = startY;
+  let logoHeight = 0;
+
+  // Draw logo on the right
+  if (template.logo) {
+    const image = await embedLogoImage(pdfDoc, template.logo);
+    const originalDims = image.scale(1);
+    const targetWidth = Math.max(50, Math.min(300, template.logo.width));
+    const scale = targetWidth / originalDims.width;
+    const scaledHeight = originalDims.height * scale;
+    logoHeight = scaledHeight;
+
+    const logoX = pageWidth - MARGIN - targetWidth;
+    const y = currentY - scaledHeight;
+    page.drawImage(image, { x: logoX, y, width: targetWidth, height: scaledHeight });
   }
+
+  // Company name on the left, vertically centered with logo
+  if (template.companyName.content.trim()) {
+    const font = await fonts.getFont(template.companyName.fontFamily);
+    const fontSize = Math.max(8, Math.min(24, template.companyName.fontSize));
+    const color = parseHexColor(template.companyName.color);
+    const textY = currentY - (logoHeight > 0 ? logoHeight / 2 + fontSize / 2 : fontSize);
+
+    page.drawText(template.companyName.content, {
+      x: MARGIN,
+      y: textY,
+      size: fontSize,
+      font,
+      color: rgb(color.r, color.g, color.b),
+    });
+  }
+
+  currentY -= Math.max(logoHeight, template.companyName.fontSize + 4) + 8;
+  return currentY;
+}
+
+/**
+ * Render the header using the 'centered' layout:
+ * Everything centered vertically (logo, name, tagline)
+ */
+async function renderCenteredLayout(
+  pdfDoc: PDFDocument,
+  page: PDFPage,
+  template: LetterheadTemplate,
+  fonts: FontCache,
+  startY: number,
+): Promise<number> {
+  const { width: pageWidth } = page.getSize();
+  let currentY = startY;
+
+  // Logo centered
+  if (template.logo) {
+    const image = await embedLogoImage(pdfDoc, template.logo);
+    const originalDims = image.scale(1);
+    const targetWidth = Math.max(50, Math.min(300, template.logo.width));
+    const scale = targetWidth / originalDims.width;
+    const scaledHeight = originalDims.height * scale;
+
+    const x = pageWidth / 2 - targetWidth / 2;
+    const y = currentY - scaledHeight;
+    page.drawImage(image, { x, y, width: targetWidth, height: scaledHeight });
+    currentY -= scaledHeight + 8;
+  }
+
+  // Company name centered
+  if (template.companyName.content.trim()) {
+    const font = await fonts.getFont(template.companyName.fontFamily);
+    const fontSize = Math.max(8, Math.min(24, template.companyName.fontSize));
+    const textWidth = font.widthOfTextAtSize(template.companyName.content, fontSize);
+    const color = parseHexColor(template.companyName.color);
+
+    page.drawText(template.companyName.content, {
+      x: pageWidth / 2 - textWidth / 2,
+      y: currentY - fontSize,
+      size: fontSize,
+      font,
+      color: rgb(color.r, color.g, color.b),
+    });
+    currentY -= fontSize + 4;
+  }
+
+  // Tagline centered
+  if (template.tagline && template.tagline.content.trim()) {
+    const font = await fonts.getFont(template.tagline.fontFamily);
+    const fontSize = Math.max(8, Math.min(24, template.tagline.fontSize));
+    const textWidth = font.widthOfTextAtSize(template.tagline.content, fontSize);
+    const color = parseHexColor(template.tagline.color);
+
+    page.drawText(template.tagline.content, {
+      x: pageWidth / 2 - textWidth / 2,
+      y: currentY - fontSize,
+      size: fontSize,
+      font,
+      color: rgb(color.r, color.g, color.b),
+    });
+    currentY -= fontSize + 4;
+  }
+
+  return currentY;
+}
+
+/**
+ * Render the header using the 'minimal' layout:
+ * Just company name, no logo zone
+ */
+async function renderMinimalLayout(
+  _pdfDoc: PDFDocument,
+  page: PDFPage,
+  template: LetterheadTemplate,
+  fonts: FontCache,
+  startY: number,
+): Promise<number> {
+  const { width: pageWidth } = page.getSize();
+  let currentY = startY;
+
+  // Company name only
+  if (template.companyName.content.trim()) {
+    const font = await fonts.getFont(template.companyName.fontFamily);
+    drawTextField(
+      page,
+      template.companyName,
+      font,
+      pageWidth,
+      currentY - template.companyName.fontSize,
+    );
+    currentY -= template.companyName.fontSize + 8;
+  }
+
+  return currentY;
+}
+
+/**
+ * Render additional header fields (address, contact) below the layout-specific header.
+ */
+async function renderCommonHeaderFields(
+  page: PDFPage,
+  template: LetterheadTemplate,
+  fonts: FontCache,
+  pageWidth: number,
+  startY: number,
+): Promise<number> {
+  let currentY = startY;
 
   // Address lines
   for (const addressLine of template.addressLines) {
     if (addressLine.content.trim()) {
-      const font = await getFont(addressLine.fontFamily);
+      const font = await fonts.getFont(addressLine.fontFamily);
       drawTextField(page, addressLine, font, pageWidth, currentY);
       currentY -= addressLine.fontSize + 2;
     }
@@ -199,9 +455,109 @@ async function renderLetterheadOnPage(
   const contactFields = [template.phone, template.email, template.website];
   for (const field of contactFields) {
     if (field.content.trim()) {
-      const font = await getFont(field.fontFamily);
+      const font = await fonts.getFont(field.fontFamily);
       drawTextField(page, field, font, pageWidth, currentY);
       currentY -= field.fontSize + 2;
+    }
+  }
+
+  return currentY;
+}
+
+/**
+ * Render all letterhead elements (logo + text fields + separator + body) onto a single page.
+ * Properly tracks Y position from top to bottom.
+ * PDF coordinates: Y=0 is bottom, Y=pageHeight is top.
+ * We start at pageHeight - MARGIN and decrease Y as we go down.
+ */
+async function renderLetterheadOnPage(
+  pdfDoc: PDFDocument,
+  page: PDFPage,
+  template: LetterheadTemplate,
+): Promise<void> {
+  const { width: pageWidth, height: pageHeight } = page.getSize();
+  const fonts = new FontCache(pdfDoc);
+
+  // Start from the top of the page
+  const startY = pageHeight - MARGIN;
+  const layout: LetterheadLayout = template.layout ?? 'centered';
+
+  // Render layout-specific header
+  let currentY: number;
+  switch (layout) {
+    case 'logo-center':
+      currentY = await renderLogoCenterLayout(pdfDoc, page, template, fonts, startY);
+      break;
+    case 'logo-left':
+      currentY = await renderLogoLeftLayout(pdfDoc, page, template, fonts, startY);
+      break;
+    case 'logo-right':
+      currentY = await renderLogoRightLayout(pdfDoc, page, template, fonts, startY);
+      break;
+    case 'centered':
+      currentY = await renderCenteredLayout(pdfDoc, page, template, fonts, startY);
+      break;
+    case 'minimal':
+      currentY = await renderMinimalLayout(pdfDoc, page, template, fonts, startY);
+      break;
+    default:
+      currentY = await renderCenteredLayout(pdfDoc, page, template, fonts, startY);
+      break;
+  }
+
+  // Render common fields (address, contact) for non-minimal layouts
+  if (layout !== 'minimal') {
+    currentY = await renderCommonHeaderFields(page, template, fonts, pageWidth, currentY);
+  }
+
+  // Draw separator line if enabled
+  if (template.showSeparator) {
+    currentY -= 8;
+    const sepColor = parseHexColor(template.separatorColor ?? '#E5E7EB');
+    page.drawLine({
+      start: { x: MARGIN, y: currentY },
+      end: { x: pageWidth - MARGIN, y: currentY },
+      thickness: 1,
+      color: rgb(sepColor.r, sepColor.g, sepColor.b),
+    });
+    currentY -= 12;
+  } else {
+    currentY -= 16;
+  }
+
+  // Render letter body text — use the same text the user sees in the editor
+  const bodyText = getEffectiveLetterBody(template);
+  if (bodyText.trim()) {
+    const bodyFont = await fonts.getFont('Helvetica');
+    const bodyFontSize = 12;
+    const lineHeight = bodyFontSize + 4;
+    const maxWidth = pageWidth - 2 * MARGIN;
+    const bodyColor = parseHexColor('#000000');
+
+    const paragraphs = bodyText.split('\n');
+
+    for (const paragraph of paragraphs) {
+      if (!paragraph.trim()) {
+        // Empty line — just add spacing
+        currentY -= lineHeight;
+        if (currentY < MARGIN) break;
+        continue;
+      }
+
+      const wrappedLines = wrapTextLine(paragraph, bodyFont, bodyFontSize, maxWidth);
+      for (const line of wrappedLines) {
+        if (currentY < MARGIN) break;
+        page.drawText(line, {
+          x: MARGIN,
+          y: currentY,
+          size: bodyFontSize,
+          font: bodyFont,
+          color: rgb(bodyColor.r, bodyColor.g, bodyColor.b),
+        });
+        currentY -= lineHeight;
+      }
+
+      if (currentY < MARGIN) break;
     }
   }
 }
@@ -236,19 +592,121 @@ export async function applyLetterhead(
 }
 
 /**
- * Export a letterhead template as a standalone single-page A4 PDF.
- *
- * Creates a new PDF document with a blank A4 page and renders the letterhead
- * template onto it. Useful for sharing or using as a background in other applications.
- *
- * @param template - The letterhead template to export
- * @returns The generated PDF as an ArrayBuffer
+ * Export a letterhead as a multi-page PDF.
+ * Page 1: header + body text start
+ * Pages 2+: body text continuation with page numbers
  */
 export async function exportLetterheadAsPdf(template: LetterheadTemplate): Promise<ArrayBuffer> {
   const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([A4_WIDTH, A4_HEIGHT]);
+  const fonts = new FontCache(pdfDoc);
+  const bodyFont = await fonts.getFont('Helvetica');
+  const bodyFontSize = 12;
+  const lineHeight = bodyFontSize + 5;
+  const maxWidth = LETTER_WIDTH - 2 * MARGIN;
+  const bodyColor = parseHexColor('#000000');
+  const layout: LetterheadLayout = template.layout ?? 'centered';
 
-  await renderLetterheadOnPage(pdfDoc, page, template);
+  // ─── Page 1: Header + Body Start ─────────────────────────────────────────
+  const page1 = pdfDoc.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
+  const { width: pageWidth } = page1.getSize();
+  const startY = LETTER_HEIGHT - MARGIN;
+
+  let currentY: number;
+  switch (layout) {
+    case 'logo-center':
+      currentY = await renderLogoCenterLayout(pdfDoc, page1, template, fonts, startY);
+      break;
+    case 'logo-left':
+      currentY = await renderLogoLeftLayout(pdfDoc, page1, template, fonts, startY);
+      break;
+    case 'logo-right':
+      currentY = await renderLogoRightLayout(pdfDoc, page1, template, fonts, startY);
+      break;
+    case 'centered':
+      currentY = await renderCenteredLayout(pdfDoc, page1, template, fonts, startY);
+      break;
+    case 'minimal':
+      currentY = await renderMinimalLayout(pdfDoc, page1, template, fonts, startY);
+      break;
+    default:
+      currentY = await renderCenteredLayout(pdfDoc, page1, template, fonts, startY);
+      break;
+  }
+
+  if (layout !== 'minimal') {
+    currentY = await renderCommonHeaderFields(page1, template, fonts, pageWidth, currentY);
+  }
+
+  if (template.showSeparator) {
+    currentY -= 8;
+    const sepColor = parseHexColor(template.separatorColor ?? '#E5E7EB');
+    page1.drawLine({
+      start: { x: MARGIN, y: currentY },
+      end: { x: pageWidth - MARGIN, y: currentY },
+      thickness: 1,
+      color: rgb(sepColor.r, sepColor.g, sepColor.b),
+    });
+    currentY -= 16;
+  } else {
+    currentY -= 20;
+  }
+
+  // ─── Body text across pages ──────────────────────────────────────────────
+  const bodyText = getEffectiveLetterBody(template);
+  const paragraphs = bodyText.split('\n');
+  let currentPage = page1;
+  let pageNum = 1;
+
+  for (const paragraph of paragraphs) {
+    if (!paragraph.trim()) {
+      currentY -= lineHeight;
+      if (currentY < MARGIN + 30) {
+        // New page
+        pageNum++;
+        currentPage = pdfDoc.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
+        currentY = LETTER_HEIGHT - MARGIN;
+        // Page number
+        const numText = `Page ${pageNum}`;
+        const numWidth = bodyFont.widthOfTextAtSize(numText, 9);
+        currentPage.drawText(numText, {
+          x: LETTER_WIDTH / 2 - numWidth / 2,
+          y: MARGIN - 20,
+          size: 9,
+          font: bodyFont,
+          color: rgb(0.5, 0.5, 0.5),
+        });
+      }
+      continue;
+    }
+
+    const wrappedLines = wrapTextLine(paragraph, bodyFont, bodyFontSize, maxWidth);
+    for (const line of wrappedLines) {
+      if (currentY < MARGIN + 30) {
+        // New page
+        pageNum++;
+        currentPage = pdfDoc.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
+        currentY = LETTER_HEIGHT - MARGIN;
+        // Page number
+        const numText = `Page ${pageNum}`;
+        const numWidth = bodyFont.widthOfTextAtSize(numText, 9);
+        currentPage.drawText(numText, {
+          x: LETTER_WIDTH / 2 - numWidth / 2,
+          y: MARGIN - 20,
+          size: 9,
+          font: bodyFont,
+          color: rgb(0.5, 0.5, 0.5),
+        });
+      }
+      currentPage.drawText(line, {
+        x: MARGIN,
+        y: currentY,
+        size: bodyFontSize,
+        font: bodyFont,
+        color: rgb(bodyColor.r, bodyColor.g, bodyColor.b),
+      });
+      currentY -= lineHeight;
+    }
+  }
 
   const savedBytes = await pdfDoc.save();
   return savedBytes.buffer as ArrayBuffer;

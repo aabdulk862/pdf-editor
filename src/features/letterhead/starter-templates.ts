@@ -24,6 +24,7 @@ export interface StarterTemplateOption {
 function createClassicTemplate(): StarterTemplateData {
   return {
     name: 'Classic Corporate',
+    layout: 'logo-left',
     logo: null,
     companyName: {
       content: 'Harrison & Associates',
@@ -76,6 +77,7 @@ function createClassicTemplate(): StarterTemplateData {
 function createModernTemplate(): StarterTemplateData {
   return {
     name: 'Modern Tech',
+    layout: 'centered',
     logo: null,
     companyName: {
       content: 'NEXUS LABS',
@@ -126,6 +128,7 @@ function createModernTemplate(): StarterTemplateData {
 function createCreativeTemplate(): StarterTemplateData {
   return {
     name: 'Creative Agency',
+    layout: 'logo-left',
     logo: null,
     companyName: {
       content: 'Prism Studio',
@@ -184,6 +187,7 @@ function createCreativeTemplate(): StarterTemplateData {
 function createMinimalTemplate(): StarterTemplateData {
   return {
     name: 'Minimal Professional',
+    layout: 'minimal',
     logo: null,
     companyName: {
       content: 'Elena Marchetti',
@@ -228,9 +232,12 @@ function createMinimalTemplate(): StarterTemplateData {
 function createOrganizationTemplate(): StarterTemplateData {
   return {
     name: 'Organization Letterhead',
+    layout: 'logo-center',
+    headerLeftText: '[Organization\nName]',
+    headerRightText: '[Est. Year\nCity, State]',
     logo: null,
     companyName: {
-      content: 'Global Community Foundation',
+      content: '',
       fontFamily: 'Helvetica',
       fontSize: 18,
       color: '#1e3a5f',
@@ -238,7 +245,7 @@ function createOrganizationTemplate(): StarterTemplateData {
     },
     addressLines: [
       {
-        content: '1200 Constitution Ave NW, Washington, DC 20001',
+        content: '',
         fontFamily: 'Helvetica',
         fontSize: 9,
         color: '#6b7280',
@@ -246,35 +253,42 @@ function createOrganizationTemplate(): StarterTemplateData {
       },
     ],
     phone: {
-      content: '+1 (202) 555-0140',
+      content: '',
       fontFamily: 'Helvetica',
       fontSize: 9,
       color: '#6b7280',
       alignment: 'center',
     },
     email: {
-      content: 'info@globalcf.org',
+      content: '',
       fontFamily: 'Helvetica',
       fontSize: 9,
       color: '#6b7280',
       alignment: 'center',
     },
     website: {
-      content: 'www.globalcf.org',
+      content: '',
       fontFamily: 'Helvetica',
       fontSize: 9,
       color: '#1e3a5f',
       alignment: 'center',
     },
-    tagline: {
-      content: 'Empowering Communities Worldwide',
-      fontFamily: 'Helvetica',
-      fontSize: 10,
-      color: '#6b7280',
-      alignment: 'center',
-    },
+    tagline: null,
     showSeparator: true,
     separatorColor: '#1e3a5f',
+    letterBody: `Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+
+Subject: [Your Subject Here]
+
+Dear Brothers and Sisters,
+
+We are writing to inform you about our upcoming initiative and to request your valued support. Our organization has been working diligently to serve our community and we believe that together we can achieve even greater impact.
+
+Your contribution, whether large or small, will directly support our programs and help us continue our mission.
+
+With gratitude,
+
+Executive Committee`,
   };
 }
 

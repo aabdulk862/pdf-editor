@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 import type { Alignment, LetterheadTemplate, LetterheadTextField } from '../types';
+import { getEffectiveLetterBody } from '../utils/defaults';
 
 export interface LetterheadPreviewProps {
   template: LetterheadTemplate;
@@ -20,37 +21,6 @@ const MARGIN_TOP = 20;
 /** Zone boundaries (percentage of canvas height) */
 const HEADER_MAX_HEIGHT = 0.13; // Header uses max 13% of page
 const FOOTER_Y = 0.94; // Footer at 94% of page height
-
-/** Placeholder body text to simulate a real letter */
-const BODY_PLACEHOLDER_LINES = [
-  'Date: September 22, 2025',
-  '',
-  'Subject: Support Our Mission',
-  '',
-  'Dear Brothers and Sisters,',
-  '',
-  'We are writing to inform you about our upcoming initiative and to',
-  'request your valued support. Our organization has been working',
-  'diligently to serve our community and we believe that together',
-  'we can achieve even greater impact.',
-  '',
-  'Your contribution, whether large or small, will directly support:',
-  '',
-  '  • Educational and Cultural Programs',
-  '  • Community Support Services',
-  '  • Media and Outreach Programs',
-  '',
-  'We invite all who believe in our mission to join hands with us.',
-  'You are not only supporting our organization, but investing in',
-  'the growth, unity, and future of our communities everywhere.',
-  '',
-  'May your generosity be a source of ongoing benefit.',
-  '',
-  'With gratitude,',
-  '',
-  '',
-  'Executive Committee',
-];
 
 /**
  * LetterheadPreview renders a live canvas-based preview of a letterhead template.
@@ -234,16 +204,16 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
 
     // Determine the brand/accent color from template
     const accentColor = template.separatorColor || '#1a2332';
+    const layout = template.layout ?? 'centered';
 
     let currentY = MARGIN_TOP;
 
     // --- HEADER ZONE (compact, max 13% of page) ---
 
     const hasLogo = template.logo && logoImageRef.current && logoImageRef.current.complete;
-    const logoIsCentered = template.logo?.alignment === 'center';
 
-    if (hasLogo && logoIsCentered) {
-      // THREE-COLUMN LAYOUT: [tagline LEFT] [LOGO CENTER] [company name RIGHT]
+    if (layout === 'logo-center' && hasLogo) {
+      // THREE-COLUMN LAYOUT: [Left Text] [LOGO CENTER] [Right Text]
       const img = logoImageRef.current!;
       const maxLogoHeight = 56;
       const logoWidth = Math.min(template.logo!.width * 0.6, 80);
@@ -255,30 +225,44 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
       const logoX = (CANVAS_WIDTH - actualLogoWidth) / 2;
       ctx.drawImage(img, logoX, currentY, actualLogoWidth, logoHeight);
 
-      // Calculate safe text zones (don't overlap the logo)
-      const leftZoneEnd = logoX - 8; // 8px gap before logo
-      const rightZoneStart = logoX + actualLogoWidth + 8; // 8px gap after logo
+      // Calculate safe text zones
+      const leftZoneEnd = logoX - 8;
+      const rightZoneStart = logoX + actualLogoWidth + 8;
 
-      // Draw company name on the right side of the logo (vertically centered with logo)
+      // Draw right text (headerRightText or company name)
+      const rightText = template.headerRightText || template.companyName.content;
       const nameSize = getScaledFontSize(template.companyName.fontSize);
       ctx.font = `bold ${nameSize}px ${template.companyName.fontFamily || 'Helvetica'}`;
       ctx.fillStyle = template.companyName.color || '#000000';
       ctx.textAlign = 'left';
       const nameCenterY = currentY + logoHeight / 2 + nameSize / 3;
-      ctx.fillText(template.companyName.content, rightZoneStart, nameCenterY);
+      ctx.fillText(rightText, rightZoneStart, nameCenterY);
 
-      // Draw tagline on the left side (if present), right-aligned to not overlap logo
-      if (template.tagline && template.tagline.content.trim()) {
-        const tagSize = getScaledFontSize(template.tagline.fontSize);
-        ctx.font = `italic ${tagSize}px ${template.tagline.fontFamily || 'Helvetica'}`;
-        ctx.fillStyle = template.tagline.color || '#6b7280';
+      // Draw left text (headerLeftText or tagline)
+      const leftText = template.headerLeftText || (template.tagline?.content ?? '');
+      if (leftText) {
+        const tagSize = getScaledFontSize(template.tagline?.fontSize ?? 10);
+        ctx.font = `italic ${tagSize}px ${template.tagline?.fontFamily || 'Helvetica'}`;
+        ctx.fillStyle = template.tagline?.color || '#6b7280';
         ctx.textAlign = 'right';
-        ctx.fillText(template.tagline.content, leftZoneEnd, nameCenterY);
+        ctx.fillText(leftText, leftZoneEnd, nameCenterY);
       }
 
       currentY += logoHeight + 8;
-    } else if (hasLogo) {
-      // Logo with non-center alignment: logo first, then company name BELOW
+    } else if (layout === 'logo-center' && !hasLogo) {
+      // Logo-center without logo: show company name centered
+      const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
+      currentY = drawTextField(
+        ctx,
+        { ...template.companyName, alignment: 'center' },
+        currentY + 4,
+        {
+          bold: true,
+          letterSpacing: isAllCaps ? 2.5 : 0,
+        },
+      );
+    } else if ((layout === 'logo-left' || layout === 'logo-right') && hasLogo) {
+      // Logo on one side, company name + tagline on the other
       const img = logoImageRef.current!;
       const maxLogoHeight = 48;
       const logoWidth = Math.min(template.logo!.width * 0.6, 120);
@@ -286,48 +270,64 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
       const logoHeight = Math.min(logoWidth * aspectRatio, maxLogoHeight);
       const actualLogoWidth = logoHeight / aspectRatio;
 
-      let logoX: number;
-      switch (template.logo!.alignment) {
-        case 'left':
-          logoX = MARGIN_X;
-          break;
-        case 'right':
-          logoX = CANVAS_WIDTH - MARGIN_X - actualLogoWidth;
-          break;
-        default:
-          logoX = (CANVAS_WIDTH - actualLogoWidth) / 2;
-          break;
+      const logoX = layout === 'logo-left' ? MARGIN_X : CANVAS_WIDTH - MARGIN_X - actualLogoWidth;
+      ctx.drawImage(img, logoX, currentY, actualLogoWidth, logoHeight);
+
+      // Company name beside the logo
+      const nameSize = getScaledFontSize(template.companyName.fontSize);
+      ctx.font = `bold ${nameSize}px ${template.companyName.fontFamily || 'Helvetica'}`;
+      ctx.fillStyle = template.companyName.color || '#000000';
+      const textX = layout === 'logo-left' ? logoX + actualLogoWidth + 10 : MARGIN_X;
+      ctx.textAlign = 'left';
+      const nameCenterY = currentY + logoHeight / 2 - (template.tagline ? 4 : 0) + nameSize / 3;
+      ctx.fillText(template.companyName.content, textX, nameCenterY);
+
+      // Tagline below company name
+      if (template.tagline && template.tagline.content.trim()) {
+        const tagSize = getScaledFontSize(template.tagline.fontSize);
+        ctx.font = `italic ${tagSize}px ${template.tagline.fontFamily || 'Helvetica'}`;
+        ctx.fillStyle = template.tagline.color || '#6b7280';
+        ctx.fillText(template.tagline.content, textX, nameCenterY + nameSize + 2);
       }
 
-      ctx.drawImage(img, logoX, currentY, actualLogoWidth, logoHeight);
       currentY += logoHeight + 6;
-
-      // Company name below logo with clear separation
-      const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
-      currentY = drawTextField(ctx, template.companyName, currentY, {
-        bold: true,
-        letterSpacing: isAllCaps ? 2 : 0,
-      });
-    } else if (template.logo) {
-      // Logo data exists but image not loaded yet — reserve minimal space
-      currentY += 30;
-      const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
-      currentY = drawTextField(ctx, template.companyName, currentY, {
-        bold: true,
-        letterSpacing: isAllCaps ? 2 : 0,
-      });
-    } else {
-      // NO LOGO: company name centered/aligned as configured
+    } else if (layout === 'minimal') {
+      // Minimal: just company name, no logo zone
       const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
       currentY = drawTextField(ctx, template.companyName, currentY + 4, {
         bold: true,
         letterSpacing: isAllCaps ? 2.5 : 0,
       });
+    } else {
+      // Centered layout (default) or fallback for logo-left/right without logo
+      if (hasLogo) {
+        const img = logoImageRef.current!;
+        const maxLogoHeight = 48;
+        const logoWidth = Math.min(template.logo!.width * 0.6, 120);
+        const aspectRatio = img.naturalHeight / img.naturalWidth;
+        const logoHeight = Math.min(logoWidth * aspectRatio, maxLogoHeight);
+        const actualLogoWidth = logoHeight / aspectRatio;
+        const logoX = (CANVAS_WIDTH - actualLogoWidth) / 2;
+        ctx.drawImage(img, logoX, currentY, actualLogoWidth, logoHeight);
+        currentY += logoHeight + 6;
+      }
 
-      // Tagline right after company name (for styles like Modern Tech)
+      const isAllCaps = template.companyName.content === template.companyName.content.toUpperCase();
+      currentY = drawTextField(
+        ctx,
+        { ...template.companyName, alignment: 'center' },
+        currentY + 4,
+        {
+          bold: true,
+          letterSpacing: isAllCaps ? 2.5 : 0,
+        },
+      );
+
       if (template.tagline && template.tagline.content.trim()) {
         currentY += 1;
-        currentY = drawTextField(ctx, template.tagline, currentY, { italic: true });
+        currentY = drawTextField(ctx, { ...template.tagline, alignment: 'center' }, currentY, {
+          italic: true,
+        });
       }
     }
 
@@ -369,9 +369,13 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
     const bodyLineHeight = 16;
     const maxBodyY = CANVAS_HEIGHT * FOOTER_Y - 16;
 
-    for (const line of BODY_PLACEHOLDER_LINES) {
+    // Use the template's letter body (or default placeholder)
+    const bodyText = getEffectiveLetterBody(template);
+    const bodyLines = bodyText.split('\n');
+
+    for (const line of bodyLines) {
       if (bodyY > maxBodyY) break;
-      if (line === '') {
+      if (line.trim() === '') {
         bodyY += 9;
         continue;
       }
@@ -448,12 +452,10 @@ export function LetterheadPreview({ template }: LetterheadPreviewProps): JSX.Ele
       <div className="relative rounded-sm shadow-level-3 ring-1 ring-black/5">
         <canvas
           ref={canvasRef}
-          width={CANVAS_WIDTH}
-          height={CANVAS_HEIGHT}
-          className="block rounded-sm bg-white max-w-full h-auto"
+          className="block rounded-sm bg-white w-full h-auto"
           style={{
-            width: `${CANVAS_WIDTH}px`,
-            height: `${CANVAS_HEIGHT}px`,
+            maxWidth: `${CANVAS_WIDTH}px`,
+            aspectRatio: `${CANVAS_WIDTH} / ${CANVAS_HEIGHT}`,
           }}
           role="img"
           aria-label="Letterhead preview showing template applied to a US Letter page with sample body text"

@@ -259,4 +259,16 @@ export const NAV_CATEGORIES: NavCategory[] = [
       },
     ],
   },
+  {
+    id: 'business',
+    label: 'Business',
+    tools: [
+      {
+        path: '/receipt-generator',
+        label: 'Receipt Generator',
+        description: 'Generate invoices and receipts for any organization',
+        categoryId: 'business',
+      },
+    ],
+  },
 ];

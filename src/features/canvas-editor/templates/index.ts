@@ -4,6 +4,11 @@ import { invoiceTemplate } from './invoice';
 import { resumeTemplate } from './resume';
 import { letterTemplate } from './letter';
 import { presentationTemplate } from './presentation';
+import {
+  letterheadClassicTemplate,
+  letterheadModernTemplate,
+  letterheadOrgTemplate,
+} from './letterhead';
 
 const templates: CanvasTemplate[] = [
   blankTemplate,
@@ -11,6 +16,9 @@ const templates: CanvasTemplate[] = [
   resumeTemplate,
   letterTemplate,
   presentationTemplate,
+  letterheadClassicTemplate,
+  letterheadModernTemplate,
+  letterheadOrgTemplate,
 ];
 
 /**
@@ -22,6 +30,7 @@ export const CATEGORY_LABELS: Record<TemplateCategory, string> = {
   resume: 'Resume',
   letter: 'Letter',
   presentation: 'Presentation',
+  letterhead: 'Letterhead',
 };
 
 /**
@@ -58,3 +67,8 @@ export { invoiceTemplate } from './invoice';
 export { resumeTemplate } from './resume';
 export { letterTemplate } from './letter';
 export { presentationTemplate } from './presentation';
+export {
+  letterheadClassicTemplate,
+  letterheadModernTemplate,
+  letterheadOrgTemplate,
+} from './letterhead';

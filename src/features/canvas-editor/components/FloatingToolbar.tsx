@@ -411,7 +411,7 @@ export function FloatingToolbar() {
 
   return (
     <div
-      className="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-1 md:py-2 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-xl shadow-level-2 border border-secondary-200/60 dark:border-secondary-700/60 max-w-[calc(100vw-2rem)] overflow-x-auto"
+      className="absolute bottom-4 md:bottom-auto md:top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-1 md:py-2 bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-xl shadow-level-2 border border-secondary-200/60 dark:border-secondary-700/60 max-w-[calc(100vw-2rem)] overflow-x-auto"
       role="toolbar"
       aria-label="Canvas tools"
     >

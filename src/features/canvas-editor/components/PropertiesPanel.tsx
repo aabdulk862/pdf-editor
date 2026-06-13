@@ -188,11 +188,11 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ isOpen, onClos
 
   return (
     <>
-      {/* Desktop panel: fixed right side, 320px wide */}
+      {/* Desktop panel: right side flex panel, 320px wide */}
       <aside
-        className={`hidden md:flex fixed right-0 top-0 h-full w-80 bg-white dark:bg-secondary-900 border-l border-secondary-200 dark:border-secondary-700
-          shadow-level-3 flex-col z-40 transition-transform duration-moderate ease-out motion-reduce:transition-none
-          ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`hidden md:flex w-80 bg-white dark:bg-secondary-900 border-l border-secondary-200 dark:border-secondary-700
+          flex-col shrink-0 transition-[width,opacity] duration-moderate ease-out motion-reduce:transition-none overflow-hidden
+          ${isOpen ? 'w-80 opacity-100' : 'w-0 opacity-0 border-l-0'}`}
         aria-label="Properties panel"
         role="complementary"
         data-testid="properties-panel"
